@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMUConfiguration;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,11 +22,13 @@ import java.util.function.DoubleSupplier;
 public class Swerve extends SubsystemBase {
   public SwerveDriveOdometry swerveOdometry;
   public SwerveModule[] mSwerveMods;
-  public Pigeon2 gyro;
+  public PigeonIMU gyro;
+  private Field2d field = new Field2d();
 
   public Swerve() {
-    gyro = new Pigeon2(Constants.Swerve.pigeonID);
-    gyro.getConfigurator().apply(new Pigeon2Configuration());
+    SmartDashboard.putData(field);
+    gyro = new PigeonIMU(Constants.Swerve.pigeonID);
+    gyro.configAllSettings(new PigeonIMUConfiguration());
     gyro.setYaw(0);
 
     mSwerveMods =
@@ -106,7 +109,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public Rotation2d getGyroYaw() {
-    return Rotation2d.fromDegrees(gyro.getYaw().getValue());
+    return Rotation2d.fromDegrees(gyro.getYaw());
   }
 
   public void resetModulesToAbsolute() {
@@ -135,7 +138,7 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     swerveOdometry.update(getGyroYaw(), getModulePositions());
-
+    field.setRobotPose(swerveOdometry.getPoseMeters());
     for (SwerveModule mod : mSwerveMods) {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());

@@ -12,21 +12,18 @@ import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
-  public static final double stickDeadband = 0.1;
+  public static final double stickDeadband = 0.02;
 
   public static final class Swerve {
     public static final int pigeonID = 1;
 
-    public static final COTSTalonFXSwerveConstants
-        chosenModule = // TODO: This must be tuned to specific robot
+    public static final COTSTalonFXSwerveConstants chosenModule =
         COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(
-                COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
+            COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
     /* Drivetrain Constants */
-    public static final double trackWidth =
-        Units.inchesToMeters(21.75); // TODO: This must be tuned to specific robot
-    public static final double wheelBase =
-        Units.inchesToMeters(21.75); // TODO: This must be tuned to specific robot
+    public static final double trackWidth = Units.inchesToMeters(21.75);
+    public static final double wheelBase = Units.inchesToMeters(21.75);
     public static final double wheelCircumference = chosenModule.wheelCircumference;
 
     /* Swerve Kinematics
