@@ -3,6 +3,8 @@ package frc.robot;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -13,6 +15,9 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
   public static final double stickDeadband = 0.02;
+
+  public static final AprilTagFieldLayout kOfficialField =
+      AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
   public static final class Swerve {
     public static final int pigeonID = 1;

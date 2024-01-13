@@ -3,26 +3,49 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMUConfiguration;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
+import java.util.List;
 import java.util.function.DoubleSupplier;
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class Swerve extends SubsystemBase {
-  public SwerveDriveOdometry swerveOdometry;
-  public SwerveModule[] mSwerveMods;
-  public PigeonIMU gyro;
+  private SwerveDrivePoseEstimator swerveOdometry;
+  private List<PhotonPoseEstimator> cameras =
+      List.of(
+          new PhotonPoseEstimator(
+              Constants.kOfficialField,
+              PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+              new PhotonCamera("Arducam_OV9281_3"),
+              new Transform3d(
+                  new Translation3d(
+                      Units.inchesToMeters(0.75),
+                      Units.inchesToMeters(-11.25),
+                      Units.inchesToMeters(27.625)),
+                  new Rotation3d(
+                      Units.degreesToRadians(0),
+                      Units.degreesToRadians(-30),
+                      Units.degreesToRadians(180)))));
+  private SwerveModule[] mSwerveMods;
+  private PigeonIMU gyro;
   private Field2d field = new Field2d();
 
   public Swerve() {
@@ -40,8 +63,8 @@ public class Swerve extends SubsystemBase {
         };
 
     swerveOdometry =
-        new SwerveDriveOdometry(
-            Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+        new SwerveDrivePoseEstimator(
+            Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions(), new Pose2d());
   }
 
   public void drive(
@@ -85,7 +108,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return swerveOdometry.getPoseMeters();
+    return swerveOdometry.getEstimatedPosition();
   }
 
   public void setPose(Pose2d pose) {
@@ -138,7 +161,17 @@ public class Swerve extends SubsystemBase {
   @Override
   public void periodic() {
     swerveOdometry.update(getGyroYaw(), getModulePositions());
-    field.setRobotPose(swerveOdometry.getPoseMeters());
+    for (var camera : cameras) {
+      var result = camera.update();
+      if (result.isPresent()) {
+        swerveOdometry.addVisionMeasurement(
+            result.get().estimatedPose.toPose2d(), result.get().timestampSeconds);
+      }
+    }
+    var pose = getPose();
+    field.setRobotPose(pose);
+    SmartDashboard.putNumberArray(
+        "Pose", new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
     for (SwerveModule mod : mSwerveMods) {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
