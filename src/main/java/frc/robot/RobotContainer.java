@@ -36,9 +36,9 @@ public class RobotContainer {
   public RobotContainer() {
     s_Swerve.setDefaultCommand(
         s_Swerve.teleopDriveCommand(
-            () -> -0.5 * driver.getRawAxis(translationAxis),
-            () -> -0.5 * driver.getRawAxis(strafeAxis),
-            () -> -0.5 * driver.getRawAxis(rotationAxis)));
+            () -> -driver.getRawAxis(translationAxis),
+            () -> -driver.getRawAxis(strafeAxis),
+            () -> -driver.getRawAxis(rotationAxis)));
 
     // Configure the button bindings
     configureButtonBindings();
