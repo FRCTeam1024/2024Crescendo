@@ -1,7 +1,7 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMUConfiguration;
+import com.ctre.phoenix.sensors.WPI_PigeonIMU;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,7 +28,7 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class Swerve extends SubsystemBase {
-  private SwerveDrivePoseEstimator swerveOdometry;
+  private SwerveDrivePoseEstimator poseEstimator;
   private List<PhotonPoseEstimator> cameras =
       List.of(
           new PhotonPoseEstimator(
@@ -45,12 +45,12 @@ public class Swerve extends SubsystemBase {
                       Units.degreesToRadians(-30),
                       Units.degreesToRadians(180)))));
   private SwerveModule[] mSwerveMods;
-  private PigeonIMU gyro;
+  private WPI_PigeonIMU gyro;
   private Field2d field = new Field2d();
 
   public Swerve() {
     SmartDashboard.putData(field);
-    gyro = new PigeonIMU(Constants.Swerve.pigeonID);
+    gyro = new WPI_PigeonIMU(Constants.Swerve.pigeonID);
     gyro.configAllSettings(new PigeonIMUConfiguration());
     gyro.setYaw(0);
 
@@ -62,7 +62,7 @@ public class Swerve extends SubsystemBase {
           new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
-    swerveOdometry =
+    poseEstimator =
         new SwerveDrivePoseEstimator(
             Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions(), new Pose2d());
   }
@@ -108,11 +108,11 @@ public class Swerve extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return swerveOdometry.getEstimatedPosition();
+    return poseEstimator.getEstimatedPosition();
   }
 
   public void setPose(Pose2d pose) {
-    swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
   }
 
   public Rotation2d getHeading() {
@@ -120,19 +120,19 @@ public class Swerve extends SubsystemBase {
   }
 
   public void setHeading(Rotation2d heading) {
-    swerveOdometry.resetPosition(
+    poseEstimator.resetPosition(
         getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
   }
 
   public void zeroHeading() {
-    swerveOdometry.resetPosition(
+    poseEstimator.resetPosition(
         getGyroYaw(),
         getModulePositions(),
         new Pose2d(getPose().getTranslation(), new Rotation2d()));
   }
 
   public Rotation2d getGyroYaw() {
-    return Rotation2d.fromDegrees(gyro.getYaw());
+    return gyro.getRotation2d();
   }
 
   public void resetModulesToAbsolute() {
@@ -160,11 +160,11 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-    swerveOdometry.update(getGyroYaw(), getModulePositions());
+    poseEstimator.update(getGyroYaw(), getModulePositions());
     for (var camera : cameras) {
       var result = camera.update();
       if (result.isPresent()) {
-        swerveOdometry.addVisionMeasurement(
+        poseEstimator.addVisionMeasurement(
             result.get().estimatedPose.toPose2d(), result.get().timestampSeconds);
       }
     }
