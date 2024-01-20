@@ -18,7 +18,7 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
   public static final double stickDeadband = 0.02;
 
-  public static final boolean apriltagsEnabled = true;
+  public static final boolean apriltagsEnabled = false;
 
   public static final AprilTagFieldLayout kOfficialField =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
@@ -33,7 +33,7 @@ public final class Constants {
     /* Drivetrain Constants */
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
-    public static final double wheelCircumference = chosenModule.wheelCircumference;
+    public static final double wheelCircumference = Units.inchesToMeters(Math.PI * 4 * 0.931755098);
 
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
