@@ -14,7 +14,7 @@ public class Autos {
   }
 
   public Command driveStraight() {
-    var path = PathPlannerPath.fromPathFile("3 Feet");
+    var path = PathPlannerPath.fromPathFile("Circuit");
     System.out.println(path.getPreviewStartingHolonomicPose());
     return AutoBuilder.followPath(path)
         .beforeStarting(

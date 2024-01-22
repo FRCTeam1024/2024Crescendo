@@ -33,6 +33,7 @@ public final class Constants {
     /* Drivetrain Constants */
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
+    // 4 inches * correction factor obtained via measured distance
     public static final double wheelCircumference = Units.inchesToMeters(Math.PI * 4 * 0.931755098);
 
     /* Swerve Kinematics
@@ -77,15 +78,16 @@ public final class Constants {
     public static final double angleKD = chosenModule.angleKD;
 
     /* Drive Motor PID Values */
-    public static final double driveKP = 0.12; // TODO: This must be tuned to specific robot
+    public static final double driveKP = 0.2;
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
     public static final double driveKF = 0.0;
 
     /* Drive Motor Characterization Values From SYSID */
-    public static final double driveKS = 0.32; // TODO: This must be tuned to specific robot
-    public static final double driveKV = 1.51;
-    public static final double driveKA = 0.27;
+    // kV was obtained from a linear regression on empirical voltage/velocity data.
+    public static final double driveKS = 0.32;
+    public static final double driveKV = 2.57847;
+    public static final double driveKA = 0.0;
 
     /* Swerve Profiling Values */
     /** Meters per Second */
@@ -101,7 +103,7 @@ public final class Constants {
 
     /* Module Specific Constants */
     /* Front Left Module - Module 0 */
-    public static final class Mod0 { // TODO: This must be tuned to specific robot
+    public static final class Mod0 {
       public static final int driveMotorID = 21;
       public static final int angleMotorID = 20;
       public static final int canCoderID = 22;
@@ -111,7 +113,7 @@ public final class Constants {
     }
 
     /* Front Right Module - Module 1 */
-    public static final class Mod1 { // TODO: This must be tuned to specific robot
+    public static final class Mod1 {
       public static final int driveMotorID = 51;
       public static final int angleMotorID = 50;
       public static final int canCoderID = 52;
@@ -121,7 +123,7 @@ public final class Constants {
     }
 
     /* Back Left Module - Module 2 */
-    public static final class Mod2 { // TODO: This must be tuned to specific robot
+    public static final class Mod2 {
       public static final int driveMotorID = 31;
       public static final int angleMotorID = 30;
       public static final int canCoderID = 32;
@@ -131,7 +133,7 @@ public final class Constants {
     }
 
     /* Back Right Module - Module 3 */
-    public static final class Mod3 { // TODO: This must be tuned to specific robot
+    public static final class Mod3 {
       public static final int driveMotorID = 41;
       public static final int angleMotorID = 40;
       public static final int canCoderID = 42;
@@ -149,9 +151,9 @@ public final class Constants {
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
-    public static final double kPXController = 1;
-    public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPXController = 3;
+    public static final double kPYController = 3;
+    public static final double kPThetaController = Math.PI;
 
     public static final double kMaxSpeedForPathPlanner = 4.5;
 

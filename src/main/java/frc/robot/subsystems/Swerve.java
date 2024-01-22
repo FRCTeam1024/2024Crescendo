@@ -99,7 +99,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public void driveRobotRelative(ChassisSpeeds speeds) {
-    drive(speeds, false, true);
+    drive(speeds, false, false);
   }
 
   /* Used by SwerveControllerCommand in Auto */
