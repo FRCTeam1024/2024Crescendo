@@ -30,6 +30,9 @@ public final class Constants {
         COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(
             COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
+    /** Drive motor rotations per rotation of azimuth */
+    public static final double azimuthCouplingRatio = 50.0 / 14.0;
+
     /* Drivetrain Constants */
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);

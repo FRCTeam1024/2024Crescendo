@@ -63,7 +63,7 @@ public class SwerveModule {
     } else {
       driveVelocity.Velocity =
           Conversions.MPSToRPS(
-              desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference);
+              desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference) * Constants.Swerve.driveGearRatio;
       driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
       mDriveMotor.setControl(driveVelocity);
     }
@@ -81,14 +81,18 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         Conversions.RPSToMPS(
-            mDriveMotor.getVelocity().getValue(), Constants.Swerve.wheelCircumference),
+            mDriveMotor.getVelocity().getValue() / Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference),
         Rotation2d.fromRotations(mAngleMotor.getPosition().getValue()));
   }
 
   public SwerveModulePosition getPosition() {
+    var driveRotations = mDriveMotor.getPosition().getValueAsDouble();
+    var azimuthCompensationDistance = mAngleMotor.getPosition().getValueAsDouble() * Constants.Swerve.azimuthCouplingRatio;
+    driveRotations -= azimuthCompensationDistance;
+
     return new SwerveModulePosition(
         Conversions.rotationsToMeters(
-            mDriveMotor.getPosition().getValue(), Constants.Swerve.wheelCircumference),
-        Rotation2d.fromRotations(mAngleMotor.getPosition().getValue()));
+            mDriveMotor.getPosition().getValue() / Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference),
+        Rotation2d.fromRotations(mAngleMotor.getPosition().getValueAsDouble()));
   }
 }
