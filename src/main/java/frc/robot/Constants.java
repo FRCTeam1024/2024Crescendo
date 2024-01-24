@@ -153,7 +153,7 @@ public final class Constants {
 
     public static final double kPXController = 3;
     public static final double kPYController = 3;
-    public static final double kPThetaController = Math.PI;
+    public static final double kPThetaController = 5;
 
     public static final double kMaxSpeedForPathPlanner = 4.5;
 

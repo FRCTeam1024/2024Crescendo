@@ -2,6 +2,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -34,6 +36,8 @@ public class RobotContainer {
 
   private final Autos autos = new Autos(s_Swerve);
 
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     s_Swerve.setDefaultCommand(
@@ -44,6 +48,16 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    setupAutoChooser();
+  }
+
+  public void setupAutoChooser() {
+    autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
+    autoChooser.addOption("Circuit", autos.circuitAuto());
+    autoChooser.addOption("LC Speaker", autos.runPathPlannerAuto("LC Speaker"));
+    autoChooser.addOption("LNE1", autos.runPathAuto("LNEnd Speaker"));
+    autoChooser.addOption("LC AMP", autos.runPathPlannerAuto("LC AMP"));
+    SmartDashboard.putData(autoChooser);
   }
 
   /**
@@ -63,7 +77,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return autos.driveStraight();
+    return autoChooser.getSelected();
   }
 }
