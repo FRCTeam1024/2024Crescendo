@@ -52,25 +52,33 @@ public class SwerveModule {
 
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
     desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
-    mAngleMotor.setControl(anglePosition.withPosition(desiredState.angle.getRotations()));
-    setSpeed(desiredState, isOpenLoop);
+    setAngle(desiredState.angle);
+    setSpeed(desiredState.speedMetersPerSecond, isOpenLoop);
   }
 
-  private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
+  private void setAngle(Rotation2d angle) {
+    mAngleMotor.setControl(anglePosition.withPosition(angle.getRotations()));
+  }
+
+  private void setSpeed(double speedMetersPerSecond, boolean isOpenLoop) {
     if (isOpenLoop) {
-      driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
+      driveDutyCycle.Output = speedMetersPerSecond / Constants.Swerve.maxSpeed;
       mDriveMotor.setControl(driveDutyCycle);
     } else {
       driveVelocity.Velocity =
-          Conversions.MPSToRPS(
-              desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference) * Constants.Swerve.driveGearRatio;
-      driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
+          Conversions.MPSToRPS(speedMetersPerSecond, Constants.Swerve.wheelCircumference)
+              * Constants.Swerve.driveGearRatio;
+      driveVelocity.FeedForward = driveFeedForward.calculate(speedMetersPerSecond);
       mDriveMotor.setControl(driveVelocity);
     }
   }
 
   public Rotation2d getCANcoder() {
     return Rotation2d.fromRotations(angleEncoder.getAbsolutePosition().getValue());
+  }
+
+  public Rotation2d getAngle() {
+    return Rotation2d.fromRotations(mAngleMotor.getPosition().getValueAsDouble());
   }
 
   public void resetToAbsolute() {
@@ -81,18 +89,21 @@ public class SwerveModule {
   public SwerveModuleState getState() {
     return new SwerveModuleState(
         Conversions.RPSToMPS(
-            mDriveMotor.getVelocity().getValue() / Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference),
-        Rotation2d.fromRotations(mAngleMotor.getPosition().getValue()));
+            mDriveMotor.getVelocity().getValue() / Constants.Swerve.driveGearRatio,
+            Constants.Swerve.wheelCircumference),
+        getAngle());
   }
 
   public SwerveModulePosition getPosition() {
     var driveRotations = mDriveMotor.getPosition().getValueAsDouble();
-    var azimuthCompensationDistance = mAngleMotor.getPosition().getValueAsDouble() * Constants.Swerve.azimuthCouplingRatio;
+    var azimuthCompensationDistance =
+        getAngle().getRotations() * Constants.Swerve.azimuthCouplingRatio;
     driveRotations -= azimuthCompensationDistance;
 
     return new SwerveModulePosition(
         Conversions.rotationsToMeters(
-            mDriveMotor.getPosition().getValue() / Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference),
-        Rotation2d.fromRotations(mAngleMotor.getPosition().getValueAsDouble()));
+            mDriveMotor.getPosition().getValue() / Constants.Swerve.driveGearRatio,
+            Constants.Swerve.wheelCircumference),
+        getAngle());
   }
 }

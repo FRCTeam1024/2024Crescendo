@@ -41,7 +41,7 @@ public final class CTREConfigs {
     swerveDriveFXConfig.MotorOutput.NeutralMode = Constants.Swerve.driveNeutralMode;
 
     /* Gear Ratio Config */
-    //swerveDriveFXConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.driveGearRatio;
+    // swerveDriveFXConfig.Feedback.SensorToMechanismRatio = Constants.Swerve.driveGearRatio;
 
     /* Current Limiting */
     swerveDriveFXConfig.CurrentLimits.SupplyCurrentLimitEnable =

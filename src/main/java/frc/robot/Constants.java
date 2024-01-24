@@ -158,13 +158,13 @@ public final class Constants {
     public static final double kPYController = 3;
     public static final double kPThetaController = 5;
 
-    public static final double kMaxSpeedForPathPlanner = 4.5;
+    public static final double kMaxModuleSpeed = 4.5;
 
     public static final HolonomicPathFollowerConfig pathFollowerConfig =
         new HolonomicPathFollowerConfig(
             new PIDConstants(kPXController, 0, 0),
             new PIDConstants(kPThetaController, 0, 0),
-            kMaxSpeedForPathPlanner,
+            kMaxModuleSpeed,
             Math.hypot(Swerve.wheelBase, Swerve.trackWidth),
             new ReplanningConfig(false, false));
   }
