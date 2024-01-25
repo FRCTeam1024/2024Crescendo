@@ -61,13 +61,21 @@ public class SwerveModule {
   }
 
   private void setSpeed(double speedMetersPerSecond, boolean isOpenLoop) {
+    // Convert linear speed of wheel to motor speed
+    var requestedVelocityRPS =
+        (Conversions.MPSToRPS(speedMetersPerSecond, Constants.Swerve.wheelCircumference)
+            * Constants.Swerve.driveGearRatio);
+    // Calculate motor velocity required to hold wheel still at the current azimuth velocity
+    var compensationVelocity =
+        mAngleMotor.getVelocity().getValueAsDouble() * Constants.Swerve.azimuthCouplingRatio;
+    var outputVelocity = requestedVelocityRPS + compensationVelocity;
+
     if (isOpenLoop) {
-      driveDutyCycle.Output = speedMetersPerSecond / Constants.Swerve.maxSpeed;
+      driveDutyCycle.Output = outputVelocity / Constants.Swerve.maxSpeed;
       mDriveMotor.setControl(driveDutyCycle);
     } else {
-      driveVelocity.Velocity =
-          Conversions.MPSToRPS(speedMetersPerSecond, Constants.Swerve.wheelCircumference)
-              * Constants.Swerve.driveGearRatio;
+      driveVelocity.Velocity = outputVelocity;
+      // The feedforward still uses meters per second
       driveVelocity.FeedForward = driveFeedForward.calculate(speedMetersPerSecond);
       mDriveMotor.setControl(driveVelocity);
     }
@@ -96,10 +104,14 @@ public class SwerveModule {
 
   public SwerveModulePosition getPosition() {
     var driveRotations = mDriveMotor.getPosition().getValueAsDouble();
+    // Calculate how many drive rotations were caused by azimuth coupling
     var azimuthCompensationDistance =
         getAngle().getRotations() * Constants.Swerve.azimuthCouplingRatio;
-    driveRotations -= azimuthCompensationDistance;
+    // Subtract the "false" rotations from the recorded rotations to get the rotations that caused
+    // wheel motion
+    var trueDriveRotations = driveRotations - azimuthCompensationDistance;
 
+    // Convert to wheel rotations, then meters
     return new SwerveModulePosition(
         Conversions.rotationsToMeters(
             mDriveMotor.getPosition().getValue() / Constants.Swerve.driveGearRatio,
