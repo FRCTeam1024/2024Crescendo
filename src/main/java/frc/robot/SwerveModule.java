@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -52,8 +53,15 @@ public class SwerveModule {
 
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
     desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+
+    var angleError = desiredState.angle.minus(getAngle());
+    // Clamp scale factor to (0, 1) to prevent reversing
+    // This shouldn't ever happen but just in case
+    var velocityInDesiredDirection =
+        MathUtil.clamp(angleError.getCos(), 0, 1) * desiredState.speedMetersPerSecond;
+
     setAngle(desiredState.angle);
-    setSpeed(desiredState.speedMetersPerSecond, isOpenLoop);
+    setSpeed(velocityInDesiredDirection, isOpenLoop);
   }
 
   private void setAngle(Rotation2d angle) {
