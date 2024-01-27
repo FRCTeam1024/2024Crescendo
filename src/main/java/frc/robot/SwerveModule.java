@@ -71,7 +71,7 @@ public class SwerveModule {
     var outputVelocity = requestedVelocityRPS + compensationVelocity;
 
     if (isOpenLoop) {
-      driveDutyCycle.Output = outputVelocity / Constants.Swerve.maxSpeed;
+      driveDutyCycle.Output = outputVelocity / Conversions.MPSToRPS(Constants.Swerve.maxSpeed * Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference);
       mDriveMotor.setControl(driveDutyCycle);
     } else {
       driveVelocity.Velocity = outputVelocity;
@@ -114,7 +114,7 @@ public class SwerveModule {
     // Convert to wheel rotations, then meters
     return new SwerveModulePosition(
         Conversions.rotationsToMeters(
-            mDriveMotor.getPosition().getValue() / Constants.Swerve.driveGearRatio,
+            trueDriveRotations / Constants.Swerve.driveGearRatio,
             Constants.Swerve.wheelCircumference),
         getAngle());
   }
