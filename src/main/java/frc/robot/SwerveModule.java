@@ -62,16 +62,14 @@ public class SwerveModule {
 
   private void setSpeed(double speedMetersPerSecond, boolean isOpenLoop) {
     // Convert linear speed of wheel to motor speed
-    var requestedVelocityRPS =
-        (Conversions.MPSToRPS(speedMetersPerSecond, Constants.Swerve.wheelCircumference)
-            * Constants.Swerve.driveGearRatio);
+    var requestedVelocityRPS = wheelMeterToMotorRot(speedMetersPerSecond);
     // Calculate motor velocity required to hold wheel still at the current azimuth velocity
     var compensationVelocity =
         mAngleMotor.getVelocity().getValueAsDouble() * Constants.Swerve.azimuthCouplingRatio;
     var outputVelocity = requestedVelocityRPS + compensationVelocity;
 
     if (isOpenLoop) {
-      driveDutyCycle.Output = outputVelocity / Conversions.MPSToRPS(Constants.Swerve.maxSpeed * Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference);
+      driveDutyCycle.Output = outputVelocity / wheelMeterToMotorRot(Constants.Swerve.maxSpeed);
       mDriveMotor.setControl(driveDutyCycle);
     } else {
       driveVelocity.Velocity = outputVelocity;
@@ -96,10 +94,7 @@ public class SwerveModule {
 
   public SwerveModuleState getState() {
     return new SwerveModuleState(
-        Conversions.RPSToMPS(
-            mDriveMotor.getVelocity().getValue() / Constants.Swerve.driveGearRatio,
-            Constants.Swerve.wheelCircumference),
-        getAngle());
+        motorRotToWheelMeter(mDriveMotor.getVelocity().getValue()), getAngle());
   }
 
   public SwerveModulePosition getPosition() {
@@ -111,11 +106,16 @@ public class SwerveModule {
     // wheel motion
     var trueDriveRotations = driveRotations - azimuthCompensationDistance;
 
-    // Convert to wheel rotations, then meters
-    return new SwerveModulePosition(
-        Conversions.rotationsToMeters(
-            trueDriveRotations / Constants.Swerve.driveGearRatio,
-            Constants.Swerve.wheelCircumference),
-        getAngle());
+    return new SwerveModulePosition(motorRotToWheelMeter(trueDriveRotations), getAngle());
+  }
+
+  public static double wheelMeterToMotorRot(double wheelMeters) {
+    return Conversions.metersToRotations(wheelMeters, Constants.Swerve.wheelCircumference)
+        * Constants.Swerve.driveGearRatio;
+  }
+
+  public static double motorRotToWheelMeter(double motorRot) {
+    return Conversions.RPSToMPS(
+        motorRot / Constants.Swerve.driveGearRatio, Constants.Swerve.wheelCircumference);
   }
 }
