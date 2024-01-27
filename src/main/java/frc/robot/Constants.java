@@ -18,7 +18,7 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
   public static final double stickDeadband = 0.02;
 
-  public static final boolean apriltagsEnabled = false;
+  public static final boolean apriltagsEnabled = true;
 
   public static final AprilTagFieldLayout kOfficialField =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
