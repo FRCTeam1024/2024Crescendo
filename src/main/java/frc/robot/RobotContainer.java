@@ -54,9 +54,13 @@ public class RobotContainer {
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
     autoChooser.addOption("Circuit", autos.circuitAuto());
-    autoChooser.addOption("LC Speaker", autos.runPathPlannerAuto("LC Speaker"));
+    autoChooser.addOption("NL Speaker", autos.runPathPlannerAuto("NL Speaker"));
     autoChooser.addOption("LNE1", autos.runPathAuto("LNEnd Speaker"));
-    autoChooser.addOption("LC AMP", autos.runPathPlannerAuto("LC AMP"));
+    autoChooser.addOption("NL AMP", autos.runPathPlannerAuto("NL AMP"));
+    autoChooser.addOption("RN Start", autos.runPathAuto("RN Start"));
+    autoChooser.addOption("3 Near", autos.runPathPlannerAuto("3 Near"));
+    autoChooser.addOption("NM Speaker", autos.runPathPlannerAuto("NM Speaker"));
+    autoChooser.addOption("NR Speaker", autos.runPathPlannerAuto("NR Speaker"));
     SmartDashboard.putData(autoChooser);
   }
 
