@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7,
+      "y": 6.69
+    },
+    "rotation": 60.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LNStart"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LNEnd Speaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LF Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": " LF End"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
