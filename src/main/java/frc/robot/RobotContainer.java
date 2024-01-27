@@ -62,6 +62,8 @@ public class RobotContainer {
     autoChooser.addOption("NM Speaker", autos.runPathPlannerAuto("NM Speaker"));
     autoChooser.addOption("NR Speaker", autos.runPathPlannerAuto("NR Speaker"));
     autoChooser.addOption("LN and F", autos.runPathPlannerAuto("LN and F"));
+     autoChooser.addOption("FR", autos.runPathPlannerAuto("FR"));
+      autoChooser.addOption("MN and F", autos.runPathPlannerAuto("MN and F"));
     SmartDashboard.putData(autoChooser);
   }
 

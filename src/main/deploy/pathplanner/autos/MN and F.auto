@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.338998314360265,
+      "y": 5.587918812201261
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MNStart"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MNEnd Speaker"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FM Start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FM End"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
