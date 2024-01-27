@@ -30,6 +30,9 @@ public final class Constants {
         COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(
             COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
+    /** Drive motor rotations per rotation of azimuth */
+    public static final double azimuthCouplingRatio = 50.0 / 14.0;
+
     /* Drivetrain Constants */
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
@@ -155,13 +158,13 @@ public final class Constants {
     public static final double kPYController = 3;
     public static final double kPThetaController = 5;
 
-    public static final double kMaxSpeedForPathPlanner = 4.5;
+    public static final double kMaxModuleSpeed = 4.5;
 
     public static final HolonomicPathFollowerConfig pathFollowerConfig =
         new HolonomicPathFollowerConfig(
             new PIDConstants(kPXController, 0, 0),
             new PIDConstants(kPThetaController, 0, 0),
-            kMaxSpeedForPathPlanner,
+            kMaxModuleSpeed,
             Math.hypot(Swerve.wheelBase, Swerve.trackWidth),
             new ReplanningConfig(false, false));
   }
