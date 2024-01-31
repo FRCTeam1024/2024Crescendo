@@ -99,24 +99,23 @@ public class Swerve extends SubsystemBase {
     SwerveModuleState[] swerveModuleStates =
         Constants.Swerve.swerveKinematics.toSwerveModuleStates(
             fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(speed, getHeading()) : speed);
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, Constants.Swerve.maxModuleSpeed);
-
-    for (SwerveModule mod : mSwerveMods) {
-      mod.setDesiredState(swerveModuleStates[mod.moduleNumber], openLoop);
-    }
+    setModuleStates(swerveModuleStates, openLoop);
   }
 
   public void driveRobotRelative(ChassisSpeeds speeds) {
     drive(speeds, false, false);
   }
 
-  /* Used by SwerveControllerCommand in Auto */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
+  /**
+   * Set the module states. States will be desaturated before setting the state.
+   *
+   * @param desiredStates the desired states of the swerve modules
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxModuleSpeed);
 
     for (SwerveModule mod : mSwerveMods) {
-      mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+      mod.setDesiredState(desiredStates[mod.moduleNumber], isOpenLoop);
     }
   }
 
