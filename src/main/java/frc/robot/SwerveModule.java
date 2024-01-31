@@ -77,7 +77,8 @@ public class SwerveModule {
     var outputVelocity = requestedVelocityRPS + compensationVelocity;
 
     if (isOpenLoop) {
-      driveDutyCycle.Output = outputVelocity / wheelMeterToMotorRot(Constants.Swerve.maxSpeed);
+      driveDutyCycle.Output =
+          outputVelocity / wheelMeterToMotorRot(Constants.Swerve.maxModuleSpeed);
       mDriveMotor.setControl(driveDutyCycle);
     } else {
       driveVelocity.Velocity = outputVelocity;

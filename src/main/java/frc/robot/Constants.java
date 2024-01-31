@@ -101,7 +101,7 @@ public final class Constants {
 
     /* Swerve Profiling Values */
     /** Meters per Second */
-    public static final double maxSpeed = 4.5; // TODO: This must be tuned to specific robot
+    public static final double maxModuleSpeed = 4.5; // TODO: This must be tuned to specific robot
 
     /** Radians per Second */
     public static final double maxAngularVelocity =
@@ -169,13 +169,11 @@ public final class Constants {
     public static final double kPYController = 3;
     public static final double kPThetaController = 5;
 
-    public static final double kMaxModuleSpeed = 4.5;
-
     public static final HolonomicPathFollowerConfig pathFollowerConfig =
         new HolonomicPathFollowerConfig(
             new PIDConstants(kPXController, 0, 0),
             new PIDConstants(kPThetaController, 0, 0),
-            kMaxModuleSpeed,
+            Swerve.maxModuleSpeed,
             Math.hypot(Swerve.wheelBase, Swerve.trackWidth),
             new ReplanningConfig(false, false));
   }
