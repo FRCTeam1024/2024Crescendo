@@ -27,7 +27,8 @@ public final class Constants {
   // For now, comp bot is the 2023 robot, practice bot is the practice bot
   public static final String compBotSerialNum = "03264208";
   public static final String practiceBotSerialNum = "REPLACEME";
-  public static final boolean isPracticeBot = RobotController.getSerialNumber().equals(practiceBotSerialNum);
+  public static final boolean isPracticeBot =
+      RobotController.getSerialNumber().equals(practiceBotSerialNum);
 
   public static final class Swerve {
     public static final int pigeonID = 1;
@@ -116,7 +117,8 @@ public final class Constants {
       public static final int driveMotorID = 21;
       public static final int angleMotorID = 20;
       public static final int canCoderID = 22;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
+      public static final Rotation2d angleOffset =
+          Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -126,7 +128,8 @@ public final class Constants {
       public static final int driveMotorID = 51;
       public static final int angleMotorID = 50;
       public static final int canCoderID = 52;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
+      public static final Rotation2d angleOffset =
+          Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -136,7 +139,8 @@ public final class Constants {
       public static final int driveMotorID = 31;
       public static final int angleMotorID = 30;
       public static final int canCoderID = 32;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
+      public static final Rotation2d angleOffset =
+          Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -146,7 +150,8 @@ public final class Constants {
       public static final int driveMotorID = 41;
       public static final int angleMotorID = 40;
       public static final int canCoderID = 42;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
+      public static final Rotation2d angleOffset =
+          Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
