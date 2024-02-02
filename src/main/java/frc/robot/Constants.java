@@ -157,6 +157,28 @@ public final class Constants {
     }
   }
 
+  public static final class ShooterConstants {
+    public static final int kShooterAId = 44;
+    public static final int kShooterBId = 45;
+
+    // Ratio of motor rotations to wheel rotations
+    // Ratio of wheel pulley teeth to motor pulley teeth
+    public static final double kShooterGearRatio = 1; // TODO: Fix
+
+    public static final InvertedValue kMotorAInversionSetting = InvertedValue.Clockwise_Positive;
+    public static final InvertedValue kMotorBInversionSetting = InvertedValue.Clockwise_Positive;
+
+    // Feedforward
+    public static final double kS = 0;
+    public static final double kV = 0;
+    public static final double kA = 0;
+
+    // Feedback
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+  }
+
   public static final
   class AutoConstants { // TODO: The below constants are used in the example auto, and must be tuned
     // to specific robot
