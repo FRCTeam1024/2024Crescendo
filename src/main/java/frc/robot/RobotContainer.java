@@ -35,6 +35,7 @@ public class RobotContainer {
 
   /* Subsystems */
   private final Swerve swerve = new Swerve();
+  private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
 
   private final Autos autos = new Autos(swerve);
@@ -48,6 +49,7 @@ public class RobotContainer {
             () -> -driver.getRawAxis(translationAxis),
             () -> -driver.getRawAxis(strafeAxis),
             () -> -driver.getRawAxis(rotationAxis)));
+    intake.setDefaultCommand(intake.run(() -> intake.setOutput(operator.getLeftTriggerAxis())));
 
     // Configure the button bindings
     configureButtonBindings();

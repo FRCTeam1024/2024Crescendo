@@ -157,6 +157,11 @@ public final class Constants {
     }
   }
 
+  public static final class IntakeConstants {
+    public static final int intakeMotorId = 43;
+    public static final boolean isInverted = false;
+  }
+
   public static final class ShooterConstants {
     public static final int kShooterAId = 44;
     public static final int kShooterBId = 45;
@@ -165,8 +170,10 @@ public final class Constants {
     // Ratio of wheel pulley teeth to motor pulley teeth
     public static final double kShooterGearRatio = 1; // TODO: Fix
 
-    public static final InvertedValue kMotorAInversionSetting = InvertedValue.CounterClockwise_Positive;
-    public static final InvertedValue kMotorBInversionSetting = InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue kMotorAInversionSetting =
+        InvertedValue.CounterClockwise_Positive;
+    public static final InvertedValue kMotorBInversionSetting =
+        InvertedValue.CounterClockwise_Positive;
 
     // Feedforward
     public static final double kS = 0;
