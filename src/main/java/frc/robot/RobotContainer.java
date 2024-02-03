@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.*;
@@ -19,6 +20,7 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
   /* Controllers */
   private final XboxController driver = new XboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
 
   /* Drive Controls */
   private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -32,16 +34,17 @@ public class RobotContainer {
       new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
 
   /* Subsystems */
-  private final Swerve s_Swerve = new Swerve();
+  private final Swerve swerve = new Swerve();
+  private final Shooter shooter = new Shooter();
 
-  private final Autos autos = new Autos(s_Swerve);
+  private final Autos autos = new Autos(swerve);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    s_Swerve.setDefaultCommand(
-        s_Swerve.teleopDriveCommand(
+    swerve.setDefaultCommand(
+        swerve.teleopDriveCommand(
             () -> -driver.getRawAxis(translationAxis),
             () -> -driver.getRawAxis(strafeAxis),
             () -> -driver.getRawAxis(rotationAxis)));
@@ -75,7 +78,14 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
-    zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+    zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
+    SmartDashboard.putNumber("Shooter power", 0);
+    operator
+        .rightTrigger()
+        .whileTrue(
+            shooter.runEnd(
+                () -> shooter.setOutput(SmartDashboard.getNumber("Shooter power", 0)),
+                shooter::stop));
   }
 
   /**

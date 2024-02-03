@@ -3,12 +3,15 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.ShooterConstants.*;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
   private final TalonFX shooterA = new TalonFX(kShooterAId);
   private final TalonFX shooterB = new TalonFX(kShooterBId);
+
+  private final DutyCycleOut dutyCycleRequest = new DutyCycleOut(0);
 
   public Shooter() {
     var shooterConfig = new TalonFXConfiguration();
@@ -27,5 +30,15 @@ public class Shooter extends SubsystemBase {
     shooterConfig.MotorOutput.Inverted = kMotorBInversionSetting;
 
     shooterB.getConfigurator().apply(shooterConfig);
+  }
+
+  public void setOutput(double output) {
+    dutyCycleRequest.Output = output;
+    shooterA.setControl(dutyCycleRequest);
+    shooterB.setControl(dutyCycleRequest);
+  }
+
+  public void stop() {
+    setOutput(0);
   }
 }
