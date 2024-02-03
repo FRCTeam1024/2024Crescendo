@@ -40,6 +40,7 @@ public class RobotContainer implements Logged {
   private final Shooter shooter = new Shooter();
   private final Climber climber = new Climber();
   private final Feed feed = new Feed();
+  private final Wrist wrist = new Wrist();
 
   private final Autos autos = new Autos(swerve);
 

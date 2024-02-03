@@ -159,6 +159,10 @@ public final class Constants {
     }
   }
 
+  public static final class WristConstants {
+    public static final int kWristId = 42;
+  }
+
   public static final class IntakeConstants {
     public static final int intakeMotorId = 43;
     public static final boolean isInverted = false;
