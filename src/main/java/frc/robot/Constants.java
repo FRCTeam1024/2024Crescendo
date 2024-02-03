@@ -19,14 +19,14 @@ import frc.lib.util.SwerveModuleConstants;
 public final class Constants {
   public static final double stickDeadband = 0.02;
 
-  public static final boolean apriltagsEnabled = true;
+  public static final boolean apriltagsEnabled = false;
 
   public static final AprilTagFieldLayout kOfficialField =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
   // For now, comp bot is the 2023 robot, practice bot is the practice bot
   public static final String compBotSerialNum = "03264208";
-  public static final String practiceBotSerialNum = "REPLACEME";
+  public static final String practiceBotSerialNum = "03241508";
   public static final boolean isPracticeBot =
       RobotController.getSerialNumber().equals(practiceBotSerialNum);
 
@@ -114,44 +114,44 @@ public final class Constants {
     /* Module Specific Constants */
     /* Front Left Module - Module 0 */
     public static final class Mod0 {
-      public static final int driveMotorID = 21;
-      public static final int angleMotorID = 20;
-      public static final int canCoderID = 22;
+      public static final int driveMotorID = 1;
+      public static final int angleMotorID = 2;
+      public static final int canCoderID = 3;
       public static final Rotation2d angleOffset =
-          Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
+          Rotation2d.fromDegrees(isPracticeBot ? -126.562500 : 0.0);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
 
     /* Front Right Module - Module 1 */
     public static final class Mod1 {
-      public static final int driveMotorID = 51;
-      public static final int angleMotorID = 50;
-      public static final int canCoderID = 52;
+      public static final int driveMotorID = 11;
+      public static final int angleMotorID = 12;
+      public static final int canCoderID = 13;
       public static final Rotation2d angleOffset =
-          Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
+          Rotation2d.fromDegrees(isPracticeBot ? -168.046875 : 0.0);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
 
     /* Back Left Module - Module 2 */
     public static final class Mod2 {
-      public static final int driveMotorID = 31;
-      public static final int angleMotorID = 30;
-      public static final int canCoderID = 32;
+      public static final int driveMotorID = 21;
+      public static final int angleMotorID = 22;
+      public static final int canCoderID = 23;
       public static final Rotation2d angleOffset =
-          Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
+          Rotation2d.fromDegrees(isPracticeBot ? -21.005859 : 0.0);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
 
     /* Back Right Module - Module 3 */
     public static final class Mod3 {
-      public static final int driveMotorID = 41;
-      public static final int angleMotorID = 40;
-      public static final int canCoderID = 42;
+      public static final int driveMotorID = 31;
+      public static final int angleMotorID = 32;
+      public static final int canCoderID = 33;
       public static final Rotation2d angleOffset =
-          Rotation2d.fromDegrees(isPracticeBot ? 0.0 : 0.0);
+          Rotation2d.fromDegrees(isPracticeBot ? 11.777344 : 0.0);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }

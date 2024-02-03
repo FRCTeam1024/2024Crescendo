@@ -38,7 +38,7 @@ public class SwerveModule {
 
     /* Angle Encoder Config */
     angleEncoder = new CANcoder(moduleConstants.cancoderID);
-    // angleEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCANcoderConfig);
+    angleEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCANcoderConfig);
 
     /* Angle Motor Config */
     mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
