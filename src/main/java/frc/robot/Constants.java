@@ -193,7 +193,6 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
   }
-  }
 
   public static final class IntakeConstants {
     public static final int intakeMotorId = 43;
