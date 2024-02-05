@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
@@ -30,7 +31,7 @@ public final class Constants {
   public static final String compBotSerialNum = "03264208";
   public static final String practiceBotSerialNum = "03241508";
   public static final boolean isPracticeBot =
-      RobotController.getSerialNumber().equals(practiceBotSerialNum);
+      RobotController.getSerialNumber().equals(practiceBotSerialNum) || RobotBase.isSimulation();
 
   public static final class Swerve {
     public static final int pigeonID = 1;
@@ -160,7 +161,38 @@ public final class Constants {
   }
 
   public static final class WristConstants {
+    // ~100 degrees of range
+
     public static final int kWristId = 42;
+
+    public static final int kQuadEncoderAPin = 2;
+    public static final int kQuadEncoderBPin = 3;
+    public static final int kAbsEncoderPin = 5;
+
+    public static final double kPositionOffset = isPracticeBot ? 0.2175 : 0;
+
+    public static final double kMinPosition = Units.degreesToRadians(0);
+    public static final double kMaxPosition = Units.degreesToRadians(90);
+
+    // 3-3-4 maxplanetary, 1:1 gearing with wrist
+    public static final double kMotorToWristRatio = 3.0 * 3.0 * 4.0 * (72 / 64);
+    public static final int kQuadTicks = 2048;
+
+    public static final double kMaxVelocityRadiansPerSecond = Math.PI * 1;
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 10;
+
+    // Min: -0.386
+    // Max: -0.114
+
+    public static final double kS = 0.0;
+    public static final double kV = 0.0;
+    public static final double kA = 0.0;
+    public static final double kG = 0.0;
+
+    public static final double kP = 30;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+  }
   }
 
   public static final class IntakeConstants {

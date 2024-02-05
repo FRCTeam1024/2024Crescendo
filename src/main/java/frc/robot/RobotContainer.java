@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -41,6 +42,7 @@ public class RobotContainer implements Logged {
   private final Climber climber = new Climber();
   private final Feed feed = new Feed();
   private final Wrist wrist = new Wrist();
+  private final Arm arm = new Arm();
 
   private final Autos autos = new Autos(swerve);
 
@@ -87,7 +89,8 @@ public class RobotContainer implements Logged {
     zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
     /*Operator Buttons */
-    SmartDashboard.putNumber("Shooter Speed (RPS)", 60);
+    SmartDashboard.putNumber("Shooter Speed (RPS)", 0);
+    SmartDashboard.putNumber("Wrist Goal", wrist.getPosition());
     operator
         .rightTrigger()
         .whileTrue(
@@ -104,7 +107,15 @@ public class RobotContainer implements Logged {
     operator.y().whileTrue(feed.runFeedCommand(1));
     operator.a().whileTrue(feed.runFeedCommand(-0.3));
 
-    climber.setDefaultCommand(climber.climbCommand(() -> -operator.getLeftY()));
+    climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
+    
+    operator
+        .b()
+        .onTrue(
+            wrist.setGoalCommand(
+                () ->
+                    Units.degreesToRadians(
+                        SmartDashboard.getNumber("Wrist Goal", wrist.getGoal()))));
   }
 
   /**
