@@ -162,6 +162,11 @@ public final class Constants {
     public static final boolean isInverted = false;
   }
 
+  public static final class ClimberConstants {
+    public static final int ClimberMotorAId = 46;
+    public static final int ClimberMotorBId = 47;
+  }
+
   public static final class ShooterConstants {
     public static final int kShooterAId = 44;
     public static final int kShooterBId = 45;
