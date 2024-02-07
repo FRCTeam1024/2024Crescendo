@@ -49,7 +49,7 @@ public class RobotContainer {
             () -> -driver.getRawAxis(translationAxis),
             () -> -driver.getRawAxis(strafeAxis),
             () -> -driver.getRawAxis(rotationAxis)));
-    intake.setDefaultCommand(intake.run(() -> intake.setOutput(operator.getLeftTriggerAxis())));
+    //intake.setDefaultCommand(intake.run(() -> intake.setOutput(operator.getLeftTriggerAxis())));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -81,13 +81,35 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /* Driver Buttons */
     zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
-    SmartDashboard.putNumber("Shooter power", 0);
+
+    /*Operator Buttons */
+    SmartDashboard.putNumber("Shooter Speed (RPS)", 0);
     operator
         .rightTrigger()
         .whileTrue(
             shooter.runEnd(
-                () -> shooter.setOutput(SmartDashboard.getNumber("Shooter power", 0)),
+                () -> shooter.setOutput(SmartDashboard.getNumber("Shooter Speed (RPS)", 0)),
                 shooter::stop));
+    operator
+        .rightBumper()
+        .whileTrue(
+            shooter.runEnd(
+                () -> shooter.setOutput(-10),
+                shooter::stop));
+    operator
+        .leftTrigger()
+        .whileTrue(
+            intake.runEnd(
+                () -> intake.setOutput(0.7),
+                intake::stop));
+    
+    operator
+        .leftBumper()
+        .whileTrue(
+            intake.runEnd(
+                () -> intake.setOutput(-0.7),
+                intake::stop));
+              
   }
 
   /**

@@ -20,4 +20,8 @@ public class Intake extends SubsystemBase {
   public void setOutput(double output) {
     intakeMotor.set(output);
   }
+
+  public void stop() {
+    setOutput(0);
+  }
 }
