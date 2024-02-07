@@ -169,12 +169,18 @@ public final class Constants {
     public static final int kQuadEncoderBPin = 3;
     public static final int kAbsEncoderPin = 5;
 
-    public static final double kPositionOffset = isPracticeBot ? 0.2175 : 0;
+    /**
+     * Difference between what the absolute encoder reads and what we want that angle to be, in
+     * radians To find this, set the offset to 0 and read the measured position of the wrist when
+     * the wrist is at 0
+     */
+    public static final double kPositionOffset =
+        Units.degreesToRadians(isPracticeBot ? 0 : 0); // 0.2175 : 0;
 
     public static final double kMinPosition = Units.degreesToRadians(0);
     public static final double kMaxPosition = Units.degreesToRadians(90);
 
-    // 3-3-4 maxplanetary, 1:1 gearing with wrist
+    // 3-3-4 maxplanetary, 72:64 gearing with wrist
     public static final double kMotorToWristRatio = 3.0 * 3.0 * 4.0 * (72 / 64);
     public static final int kQuadTicks = 2048;
 

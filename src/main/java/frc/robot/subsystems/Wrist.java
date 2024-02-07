@@ -11,14 +11,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.DoubleSupplier;
+import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Wrist extends SubsystemBase implements Logged {
@@ -27,6 +28,7 @@ public class Wrist extends SubsystemBase implements Logged {
   private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(kAbsEncoderPin);
   private final Encoder quadEncoder = new Encoder(kQuadEncoderAPin, kQuadEncoderBPin);
 
+  @Log.NT
   private final ProfiledPIDController controller =
       new ProfiledPIDController(
           kP,
@@ -39,6 +41,8 @@ public class Wrist extends SubsystemBase implements Logged {
 
   private final VoltageOut voltageRequest = new VoltageOut(0);
 
+  private final double kInitializationOffset;
+
   public Wrist() {
     var wristConfig = new TalonFXConfiguration();
     wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -47,32 +51,37 @@ public class Wrist extends SubsystemBase implements Logged {
     wristMotor.getConfigurator().apply(wristConfig);
 
     quadEncoder.setDistancePerPulse(2.0 * Math.PI / kQuadTicks);
-    absoluteEncoder.setDistancePerRotation(-1 * 2 * Math.PI);
-    absoluteEncoder.setPositionOffset(kPositionOffset);
+    quadEncoder.reset();
     // Wait for encoder to produce valid values
     Timer.delay(2);
-    setGoal(getPosition());
+    kInitializationOffset = getAbsolutePosition();
 
+    setGoal(getPosition());
     setDefaultCommand(holdPositionCommand());
-    SmartDashboard.putData("Wrist PID Controller", controller);
   }
 
   public void setOutput(double output) {
     setVoltage(output * 12);
   }
 
+  public void stop() {
+    setOutput(0);
+  }
+
   public void setVoltage(double voltage) {
     wristMotor.setControl(voltageRequest.withOutput(voltage));
+  }
+
+  @Log.NT
+  public double getAppliedVoltage(double voltage) {
+    return wristMotor.getMotorVoltage().getValue();
   }
 
   public void setGoal(double goal) {
     controller.setGoal(MathUtil.clamp(goal, kMinPosition, kMaxPosition));
   }
 
-  public void stop() {
-    setOutput(0);
-  }
-
+  @Log.NT
   public double getGoal() {
     return controller.getGoal().position;
   }
@@ -82,18 +91,40 @@ public class Wrist extends SubsystemBase implements Logged {
    *
    * @return current position in radians
    */
+  @Log.NT
   public double getPosition() {
-    return absoluteEncoder.getDistance();
+    return getQuadPosition() + kInitializationOffset;
   }
 
+  /**
+   * Gets the angle of the quadrature encoder since the start
+   *
+   * @return angle of the quad encoder
+   */
   public double getQuadPosition() {
     return quadEncoder.getDistance();
   }
 
+  @Log.NT
   public double getSetpoint() {
     return controller.getSetpoint().position;
   }
 
+  /**
+   * Returns the absolute position of the wrist in radians, bounded by (-pi, pi)
+   *
+   * @return absolute position
+   */
+  @Log.NT
+  public double getAbsolutePosition() {
+    var rawPosition = absoluteEncoder.getAbsolutePosition();
+    var positionRadians = Units.rotationsToRadians(rawPosition);
+    // Absolute position from the encoder will *always* be positive - convert to (-pi, pi)
+    positionRadians = MathUtil.angleModulus(positionRadians);
+    return positionRadians - kPositionOffset;
+  }
+
+  @Log.NT
   public boolean atGoal() {
     return controller.atGoal();
   }
@@ -127,10 +158,6 @@ public class Wrist extends SubsystemBase implements Logged {
     if (DriverStation.isDisabled()) {
       controller.reset(getPosition());
     }
-    log("Position", getPosition());
-    log("Setpoint", getSetpoint());
-    log("Goal", getGoal());
-    log("AtGoal", atGoal());
     log("AbsEncoderAbsolute", absoluteEncoder.getAbsolutePosition());
     log("AbsEncoderGet", absoluteEncoder.get());
   }
