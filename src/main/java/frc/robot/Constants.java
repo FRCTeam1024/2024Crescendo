@@ -200,6 +200,42 @@ public final class Constants {
     public static final double kD = 0.0;
   }
 
+  public static final class ArmConstants {
+    public static final int kWristId = 41;
+
+    public static final int kQuadEncoderAPin = 6;
+    public static final int kQuadEncoderBPin = 7;
+    public static final int kAbsEncoderPin = 9;
+
+    /**
+     * Difference between what the absolute encoder reads and what we want that angle to be, in
+     * radians To find this, set the offset to 0 and read the measured position of the wrist when
+     * the wrist is at 0
+     */
+    public static final double kPositionOffset =
+        Units.degreesToRadians(isPracticeBot ? 0 : 0); // 0.2175 : 0;
+
+    public static final double kMinPosition = Units.degreesToRadians(0);
+    public static final double kMaxPosition = Units.degreesToRadians(720);
+
+    public static final double kGearboxToArmRatio = 40.0 / 12.0;
+    // 3-3-4 maxplanetary, 12 t to 40 t
+    public static final double kMotorToArmRatio = 3.0 * 3.0 * 4.0 * kGearboxToArmRatio;
+    public static final int kQuadTicks = 2048;
+
+    public static final double kMaxAccelerationRadiansPerSecondSquared = 25;
+    public static final double kMaxVelocityRadiansPerSecond = 15;
+
+    public static final double kS = 0.0;
+    public static final double kV = 0.0;
+    public static final double kA = 0.0;
+    public static final double kG = 0.0;
+
+    public static final double kP = 50.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+  }
+
   public static final class IntakeConstants {
     public static final int intakeMotorId = 43;
     public static final boolean isInverted = false;

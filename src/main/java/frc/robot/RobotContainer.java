@@ -116,6 +116,11 @@ public class RobotContainer implements Logged {
                 () ->
                     Units.degreesToRadians(
                         SmartDashboard.getNumber("Wrist Goal", wrist.getGoal()))));
+    operator
+        .b()
+        .onTrue(
+            arm.setGoalCommand(
+                () -> Units.degreesToRadians(SmartDashboard.getNumber("Arm Goal", arm.getGoal()))));
   }
 
   /**

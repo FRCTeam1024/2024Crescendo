@@ -1,0 +1,167 @@
+package frc.robot.subsystems;
+
+import static frc.robot.Constants.ArmConstants.*;
+
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.function.DoubleSupplier;
+import monologue.Annotations.Log;
+import monologue.Logged;
+
+public class Arm extends SubsystemBase implements Logged {
+
+  private final TalonFX armMotor = new TalonFX(kWristId);
+  private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(kAbsEncoderPin);
+  private final Encoder quadEncoder = new Encoder(kQuadEncoderAPin, kQuadEncoderBPin);
+
+  @Log.NT
+  private final ProfiledPIDController controller =
+      new ProfiledPIDController(
+          kP,
+          kI,
+          kD,
+          new TrapezoidProfile.Constraints(
+              kMaxVelocityRadiansPerSecond, kMaxAccelerationRadiansPerSecondSquared));
+
+  private final ArmFeedforward armFeedforward = new ArmFeedforward(kS, kG, kV, kA);
+
+  private final VoltageOut voltageRequest = new VoltageOut(0);
+
+  private final double kInitializationOffset;
+
+  public Arm() {
+    var armConfig = new TalonFXConfiguration();
+    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    armConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    armConfig.Feedback.SensorToMechanismRatio = kMotorToArmRatio;
+    armMotor.getConfigurator().apply(armConfig);
+
+    quadEncoder.setDistancePerPulse((2.0 * Math.PI / kQuadTicks) / kGearboxToArmRatio);
+    quadEncoder.reset();
+    // Wait for encoder to produce valid values
+    Timer.delay(2);
+    kInitializationOffset = getAbsolutePosition();
+
+    setGoal(getPosition());
+    setDefaultCommand(holdPositionCommand());
+  }
+
+  public void setOutput(double output) {
+    setVoltage(output * 12);
+  }
+
+  public void stop() {
+    setOutput(0);
+  }
+
+  public void setVoltage(double voltage) {
+    armMotor.setControl(voltageRequest.withOutput(voltage));
+  }
+
+  @Log.NT
+  public double getAppliedVoltage(double voltage) {
+    return armMotor.getMotorVoltage().getValue();
+  }
+  
+  public void setGoal(double goal) {
+    controller.setGoal(MathUtil.clamp(goal, kMinPosition, kMaxPosition));
+  }
+
+  @Log.NT
+  public double getGoal() {
+    return controller.getGoal().position;
+  }
+
+  /**
+   * Returns the current position of the wrist in radians. The value will be bounded by -pi, pi
+   *
+   * @return current position in radians
+   */
+  @Log.NT
+  public double getPosition() {
+    return getQuadPosition() + kInitializationOffset;
+  }
+
+  /**
+   * Gets the angle of the quadrature encoder since the start
+   *
+   * @return angle of the quad encoder
+   */
+  public double getQuadPosition() {
+    return quadEncoder.getDistance();
+  }
+
+  @Log.NT
+  public double getSetpoint() {
+    return controller.getSetpoint().position;
+  }
+
+  /**
+   * Returns the absolute position of the arm in radians, bounded by (-pi, pi) The arm *can* wrap
+   * around, so additional checking is needed to ensure that you aren't in an ambiguous range
+   *
+   * @return absolute position
+   */
+  @Log.NT
+  public double getAbsolutePosition() {
+    var rawPosition = absoluteEncoder.getAbsolutePosition();
+    // Convert to arm rotations
+    rawPosition /= kGearboxToArmRatio;
+    var positionRadians = Units.rotationsToRadians(rawPosition);
+    // Absolute position from the encoder will *always* be positive - convert to (-pi, pi)
+    positionRadians = MathUtil.angleModulus(positionRadians);
+    return positionRadians - kPositionOffset;
+  }
+
+  @Log.NT
+  public boolean atGoal() {
+    return controller.atGoal();
+  }
+
+  private void updatePositionController() {
+    var position = getPosition();
+    var feedback = controller.calculate(position);
+    var feedforward = armFeedforward.calculate(position, controller.getSetpoint().velocity);
+    setVoltage(feedforward + feedback);
+  }
+
+  public Command continuousGoalCommand(DoubleSupplier goalSupplier) {
+    return run(
+        () -> {
+          setGoal(goalSupplier.getAsDouble());
+          updatePositionController();
+        });
+  }
+
+  public Command setGoalCommand(DoubleSupplier goalSupplier) {
+    return runOnce(() -> setGoal(goalSupplier.getAsDouble()))
+        .andThen(holdPositionCommand().until(this::atGoal));
+  }
+
+  public Command holdPositionCommand() {
+    return run(this::updatePositionController);
+  }
+
+  @Override
+  public void periodic() {
+    if (DriverStation.isDisabled()) {
+      controller.reset(getPosition());
+    }
+    log("AbsEncoderAbsolute", absoluteEncoder.getAbsolutePosition());
+    log("AbsEncoderGet", absoluteEncoder.get());
+  }
+}
