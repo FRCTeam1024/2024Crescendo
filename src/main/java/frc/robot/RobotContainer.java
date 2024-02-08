@@ -37,6 +37,7 @@ public class RobotContainer {
   private final Swerve swerve = new Swerve();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
+  private final Climber climber = new Climber();
 
   private final Autos autos = new Autos(swerve);
 
@@ -109,6 +110,8 @@ public class RobotContainer {
             intake.runEnd(
                 () -> intake.setOutput(-0.7),
                 intake::stop));
+
+    climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
               
   }
 

@@ -18,10 +18,12 @@ public class Climber extends SubsystemBase {
     // Motor A
     climberMotorA.restoreFactoryDefaults();
     climberMotorA.setIdleMode(IdleMode.kCoast);
+    climberMotorA.setInverted(false);
     climberMotorA.burnFlash();
     // Motor B
     climberMotorB.restoreFactoryDefaults();
     climberMotorB.setIdleMode(IdleMode.kCoast);
+    climberMotorB.setInverted(true);
     climberMotorB.burnFlash();
   }
 
