@@ -45,7 +45,7 @@ public class Arm extends SubsystemBase implements Logged {
 
   public Arm() {
     var armConfig = new TalonFXConfiguration();
-    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    armConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     armConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     armConfig.Feedback.SensorToMechanismRatio = kMotorToArmRatio;
     armMotor.getConfigurator().apply(armConfig);
@@ -73,10 +73,10 @@ public class Arm extends SubsystemBase implements Logged {
   }
 
   @Log.NT
-  public double getAppliedVoltage(double voltage) {
+  public double getAppliedVoltage() {
     return armMotor.getMotorVoltage().getValue();
   }
-  
+
   public void setGoal(double goal) {
     controller.setGoal(MathUtil.clamp(goal, kMinPosition, kMaxPosition));
   }
@@ -101,6 +101,7 @@ public class Arm extends SubsystemBase implements Logged {
    *
    * @return angle of the quad encoder
    */
+  @Log.NT
   public double getQuadPosition() {
     return quadEncoder.getDistance();
   }
@@ -118,13 +119,14 @@ public class Arm extends SubsystemBase implements Logged {
    */
   @Log.NT
   public double getAbsolutePosition() {
-    var rawPosition = absoluteEncoder.getAbsolutePosition();
+    // Encoder is out of phase with arm
+    var rawPosition = -absoluteEncoder.getAbsolutePosition();
     // Convert to arm rotations
     rawPosition /= kGearboxToArmRatio;
     var positionRadians = Units.rotationsToRadians(rawPosition);
-    // Absolute position from the encoder will *always* be positive - convert to (-pi, pi)
-    positionRadians = MathUtil.angleModulus(positionRadians);
-    return positionRadians - kPositionOffset;
+    positionRadians -= kPositionOffset;
+    // Bring us back into (-pi, pi)
+    return MathUtil.angleModulus(positionRadians);
   }
 
   @Log.NT

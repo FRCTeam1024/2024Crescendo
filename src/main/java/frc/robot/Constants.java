@@ -174,8 +174,7 @@ public final class Constants {
      * radians To find this, set the offset to 0 and read the measured position of the wrist when
      * the wrist is at 0
      */
-    public static final double kPositionOffset =
-        Units.degreesToRadians(isPracticeBot ? 0 : 0); // 0.2175 : 0;
+    public static final double kPositionOffset = isPracticeBot ? 1.6713 : 0; // 0.2175 : 0;
 
     public static final double kMinPosition = Units.degreesToRadians(0);
     public static final double kMaxPosition = Units.degreesToRadians(90);
@@ -212,8 +211,7 @@ public final class Constants {
      * radians To find this, set the offset to 0 and read the measured position of the wrist when
      * the wrist is at 0
      */
-    public static final double kPositionOffset =
-        Units.degreesToRadians(isPracticeBot ? 0 : 0); // 0.2175 : 0;
+    public static final double kPositionOffset = isPracticeBot ? -1.2955 : 0; // 0.2175 : 0;
 
     public static final double kMinPosition = Units.degreesToRadians(0);
     public static final double kMaxPosition = Units.degreesToRadians(720);

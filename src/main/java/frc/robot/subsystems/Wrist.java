@@ -73,7 +73,7 @@ public class Wrist extends SubsystemBase implements Logged {
   }
 
   @Log.NT
-  public double getAppliedVoltage(double voltage) {
+  public double getAppliedVoltage() {
     return wristMotor.getMotorVoltage().getValue();
   }
 
@@ -101,6 +101,7 @@ public class Wrist extends SubsystemBase implements Logged {
    *
    * @return angle of the quad encoder
    */
+  @Log.NT
   public double getQuadPosition() {
     return quadEncoder.getDistance();
   }
@@ -117,11 +118,12 @@ public class Wrist extends SubsystemBase implements Logged {
    */
   @Log.NT
   public double getAbsolutePosition() {
-    var rawPosition = absoluteEncoder.getAbsolutePosition();
+    // Encoder is out of phase with wrist
+    var rawPosition = -absoluteEncoder.getAbsolutePosition();
     var positionRadians = Units.rotationsToRadians(rawPosition);
-    // Absolute position from the encoder will *always* be positive - convert to (-pi, pi)
-    positionRadians = MathUtil.angleModulus(positionRadians);
-    return positionRadians - kPositionOffset;
+    positionRadians -= kPositionOffset;
+    // Bring us back into (-pi, pi)
+    return MathUtil.angleModulus(positionRadians);
   }
 
   @Log.NT
