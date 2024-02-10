@@ -177,6 +177,16 @@ public final class Constants {
     public static final int ClimberMotorBId = 47;
   }
 
+  public static final class FeedConstants {
+    public static final int FeedMotorID = 48;
+
+    // Ratio of motor rotations to wheel rotations
+    // Ratio of wheel pulley teeth to motor pulley teeth
+    public static final double kFeedGearRatio = 1; // TODO: Fix
+  
+    public static final InvertedValue kFeedMotorInversionSetting =
+        InvertedValue.CounterClockwise_Positive;
+  }
   public static final class ShooterConstants {
     public static final int kShooterAId = 44;
     public static final int kShooterBId = 45;
@@ -199,6 +209,16 @@ public final class Constants {
     public static final double kP = 0.2;
     public static final double kI = 0;
     public static final double kD = 0;
+  }
+  public static final class Controller {
+    public static final int X_BUTTON = 1;
+    public static final int A_BUTTON = 2;
+    public static final int B_BUTTON = 3;   
+    public static final int Y_BUTTON = 4;
+    public static final int BACK_BUTTON = 9;
+    public static final int START_BUTTON = 10;
+    public static final int LEFT_STICK_BUTTON = 11;
+    public static final int RIGHT_STICK_BUTTON = 12;
   }
 
   public static final

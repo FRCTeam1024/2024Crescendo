@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.*;
+import frc.robot.Constants.Controller;
 import monologue.Logged;
 
 /**
@@ -39,6 +40,7 @@ public class RobotContainer implements Logged {
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final Climber climber = new Climber();
+  private final Feed feed = new Feed();
 
   private final Autos autos = new Autos(swerve);
 
@@ -96,6 +98,9 @@ public class RobotContainer implements Logged {
     operator.leftTrigger().whileTrue(intake.runEnd(() -> intake.setOutput(0.7), intake::stop));
 
     operator.leftBumper().whileTrue(intake.runEnd(() -> intake.setOutput(-0.7), intake::stop));
+
+    operator.button(Controller.Y_BUTTON).whileTrue(feed.runEnd(() -> feed.setOutput(0.3), feed::stop));
+    operator.button(Controller.A_BUTTON).whileTrue(feed.runEnd(() -> feed.setOutput(-0.3), feed::stop));
 
     climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
   }
