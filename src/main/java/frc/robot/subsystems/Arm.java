@@ -23,7 +23,6 @@ import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Arm extends SubsystemBase implements Logged {
-
   private final TalonFX armMotor = new TalonFX(kWristId);
   private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(kAbsEncoderPin);
   private final Encoder quadEncoder = new Encoder(kQuadEncoderAPin, kQuadEncoderBPin);
@@ -60,27 +59,53 @@ public class Arm extends SubsystemBase implements Logged {
     setDefaultCommand(holdPositionCommand());
   }
 
+  /**
+   * Sets the output of the motor as a proportion of 12v
+   *
+   * @param output The proportion of 12v to output (-1, 1)
+   */
   public void setOutput(double output) {
     setVoltage(output * 12);
   }
 
+  /** Disables all motor output. */
   public void stop() {
     setOutput(0);
   }
 
+  /**
+   * Sets the voltage output to the motor
+   *
+   * @param voltage Voltage to output
+   */
   public void setVoltage(double voltage) {
     armMotor.setControl(voltageRequest.withOutput(voltage));
   }
 
+  /**
+   * Returns the voltage applied to the motor
+   *
+   * @return Voltage applied to the motor
+   */
   @Log.NT
   public double getAppliedVoltage() {
     return armMotor.getMotorVoltage().getValue();
   }
 
+  /**
+   * Sets the goal for the closed loop controller
+   *
+   * @param goal Goal, in radians
+   */
   public void setGoal(double goal) {
     controller.setGoal(MathUtil.clamp(goal, kMinPosition, kMaxPosition));
   }
 
+  /**
+   * Returns the current goal position in radians
+   *
+   * @return goal position in radians
+   */
   @Log.NT
   public double getGoal() {
     return controller.getGoal().position;
@@ -129,18 +154,30 @@ public class Arm extends SubsystemBase implements Logged {
     return MathUtil.angleModulus(positionRadians);
   }
 
+  /**
+   * Returns true when the arm is at the current goal
+   *
+   * @return true when the arm is at the goal, otherwise false.
+   */
   @Log.NT
   public boolean atGoal() {
     return controller.atGoal();
   }
 
-  private void updatePositionController() {
+  /** Updates the arm's closed loop controller. */
+  public void updatePositionController() {
     var position = getPosition();
     var feedback = controller.calculate(position);
     var feedforward = armFeedforward.calculate(position, controller.getSetpoint().velocity);
     setVoltage(feedforward + feedback);
   }
 
+  /**
+   * Returns a command that will constantly update the goal to the value returned by goalSupplier
+   *
+   * @param goalSupplier Function that returns the desired goal in radians
+   * @return the command
+   */
   public Command continuousGoalCommand(DoubleSupplier goalSupplier) {
     return run(
         () -> {
@@ -149,21 +186,33 @@ public class Arm extends SubsystemBase implements Logged {
         });
   }
 
+  /**
+   * Returns a command that will: 1) set the goal to the value returned by goalSupplier 2) update
+   * the closed loop controller until the goal is reached
+   *
+   * @param goalSupplier function that returns desired goal in radians. This will be polled once
+   *     each time the command is initialized.
+   * @return the command
+   */
   public Command setGoalCommand(DoubleSupplier goalSupplier) {
     return runOnce(() -> setGoal(goalSupplier.getAsDouble()))
         .andThen(holdPositionCommand().until(this::atGoal));
   }
 
+  /**
+   * Returns a command that continuously updates the closed loop controller
+   *
+   * @return the command
+   */
   public Command holdPositionCommand() {
     return run(this::updatePositionController);
   }
 
   @Override
   public void periodic() {
+    // Reset the controller when disabled so it profiles to the setpoint when re-enabled
     if (DriverStation.isDisabled()) {
       controller.reset(getPosition());
     }
-    log("AbsEncoderAbsolute", absoluteEncoder.getAbsolutePosition());
-    log("AbsEncoderGet", absoluteEncoder.get());
   }
 }
