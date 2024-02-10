@@ -2,16 +2,28 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.ShooterConstants.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class Shooter extends SubsystemBase {
+public class Shooter extends SubsystemBase implements Logged {
   private final TalonFX shooterA = new TalonFX(kShooterAId);
   private final TalonFX shooterB = new TalonFX(kShooterBId);
+
+  private final StatusSignal<Double> shooterAVelocity = shooterA.getVelocity();
+  private final StatusSignal<Double> shooterBVelocity = shooterB.getVelocity();
+  private final StatusSignal<Double> shooterAStatorCurrent = shooterA.getStatorCurrent();
+  private final StatusSignal<Double> shooterBStatorCurrent = shooterB.getStatorCurrent();
+  private final StatusSignal<Double> shooterAVoltage = shooterA.getMotorVoltage();
+  private final StatusSignal<Double> shooterBVoltage = shooterB.getMotorVoltage();
+  private final StatusSignal<Double> shooterASupplyVoltage = shooterA.getSupplyVoltage();
+  private final StatusSignal<Double> shooterBSupplyVoltage = shooterB.getSupplyVoltage();
 
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0).withSlot(0);
 
@@ -36,7 +48,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setOutput(double speed) {
-    if(speed < 0) {
+    if (speed < 0) {
       velocityRequest.LimitForwardMotion = true;
       velocityRequest.LimitReverseMotion = false;
     } else {
@@ -47,7 +59,33 @@ public class Shooter extends SubsystemBase {
     shooterB.setControl(velocityRequest.withVelocity(speed));
   }
 
+  @Log.NT(key = "Velocity Setpoint (RPS)")
+  public double getVelocitySetpointRPS() {
+    return velocityRequest.Velocity;
+  }
+
   public void stop() {
     setOutput(0);
+  }
+
+  @Override
+  public void periodic() {
+    BaseStatusSignal.refreshAll(
+        shooterAVelocity,
+        shooterBVelocity,
+        shooterAStatorCurrent,
+        shooterBStatorCurrent,
+        shooterAVoltage,
+        shooterBVoltage,
+        shooterASupplyVoltage,
+        shooterBSupplyVoltage);
+    log("Upper Velocity", shooterAVelocity.getValue());
+    log("Lower Velocity", shooterBVelocity.getValue());
+    log("Upper Stator Current", shooterAStatorCurrent.getValue());
+    log("Lower Stator Current", shooterBStatorCurrent.getValue());
+    log("Upper Voltage", shooterAVoltage.getValue());
+    log("Lower Voltage", shooterBVoltage.getValue());
+    log("Upper Supply Voltage", shooterASupplyVoltage.getValue());
+    log("Lower Supply Voltage", shooterBSupplyVoltage.getValue());
   }
 }

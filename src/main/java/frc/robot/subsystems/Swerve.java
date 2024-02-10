@@ -26,11 +26,12 @@ import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import monologue.Logged;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
-public class Swerve extends SubsystemBase {
+public class Swerve extends SubsystemBase implements Logged {
   private SwerveDrivePoseEstimator poseEstimator;
   private List<PhotonPoseEstimator> cameras;
   private SwerveModule[] mSwerveMods;

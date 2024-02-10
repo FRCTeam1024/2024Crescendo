@@ -7,8 +7,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
+import monologue.Logged;
 
-public class Climber extends SubsystemBase {
+public class Climber extends SubsystemBase implements Logged {
   private final CANSparkMax climberMotorA =
       new CANSparkMax(Constants.ClimberConstants.ClimberMotorAId, MotorType.kBrushless);
   private final CANSparkMax climberMotorB =

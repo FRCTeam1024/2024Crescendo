@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.*;
+import monologue.Logged;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -17,7 +18,7 @@ import frc.robot.subsystems.*;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Logged {
   /* Controllers */
   private final XboxController driver = new XboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -50,7 +51,7 @@ public class RobotContainer {
             () -> -driver.getRawAxis(translationAxis),
             () -> -driver.getRawAxis(strafeAxis),
             () -> -driver.getRawAxis(rotationAxis)));
-    //intake.setDefaultCommand(intake.run(() -> intake.setOutput(operator.getLeftTriggerAxis())));
+    // intake.setDefaultCommand(intake.run(() -> intake.setOutput(operator.getLeftTriggerAxis())));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -91,28 +92,12 @@ public class RobotContainer {
             shooter.runEnd(
                 () -> shooter.setOutput(SmartDashboard.getNumber("Shooter Speed (RPS)", 0)),
                 shooter::stop));
-    operator
-        .rightBumper()
-        .whileTrue(
-            shooter.runEnd(
-                () -> shooter.setOutput(-10),
-                shooter::stop));
-    operator
-        .leftTrigger()
-        .whileTrue(
-            intake.runEnd(
-                () -> intake.setOutput(0.7),
-                intake::stop));
-    
-    operator
-        .leftBumper()
-        .whileTrue(
-            intake.runEnd(
-                () -> intake.setOutput(-0.7),
-                intake::stop));
+    operator.rightBumper().whileTrue(shooter.runEnd(() -> shooter.setOutput(-10), shooter::stop));
+    operator.leftTrigger().whileTrue(intake.runEnd(() -> intake.setOutput(0.7), intake::stop));
+
+    operator.leftBumper().whileTrue(intake.runEnd(() -> intake.setOutput(-0.7), intake::stop));
 
     climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
-              
   }
 
   /**
