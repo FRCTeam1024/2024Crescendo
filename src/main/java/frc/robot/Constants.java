@@ -210,16 +210,6 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
   }
-  public static final class Controller {
-    public static final int X_BUTTON = 1;
-    public static final int A_BUTTON = 2;
-    public static final int B_BUTTON = 3;   
-    public static final int Y_BUTTON = 4;
-    public static final int BACK_BUTTON = 9;
-    public static final int START_BUTTON = 10;
-    public static final int LEFT_STICK_BUTTON = 11;
-    public static final int RIGHT_STICK_BUTTON = 12;
-  }
 
   public static final
   class AutoConstants { // TODO: The below constants are used in the example auto, and must be tuned

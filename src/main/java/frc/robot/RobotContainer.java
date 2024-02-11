@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.*;
-import frc.robot.Constants.Controller;
 import monologue.Logged;
 
 /**
@@ -99,8 +98,9 @@ public class RobotContainer implements Logged {
 
     operator.leftBumper().whileTrue(intake.runEnd(() -> intake.setOutput(-0.7), intake::stop));
 
-    operator.button(Controller.Y_BUTTON).whileTrue(feed.runEnd(() -> feed.setOutput(0.3), feed::stop));
-    operator.button(Controller.A_BUTTON).whileTrue(feed.runEnd(() -> feed.setOutput(-0.3), feed::stop));
+    operator.y().whileTrue(feed.runEnd(() -> feed.setOutput(0.3), feed::stop));
+    operator.a().whileTrue(feed.runEnd(() -> feed.setOutput(-0.3), feed::stop));
+  
 
     climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
   }
