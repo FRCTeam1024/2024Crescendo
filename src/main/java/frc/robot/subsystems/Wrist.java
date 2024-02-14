@@ -11,6 +11,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -50,6 +51,7 @@ public class Wrist extends SubsystemBase implements Logged {
     wristMotor.getConfigurator().apply(wristConfig);
 
     quadEncoder.setDistancePerPulse(2.0 * Math.PI / kQuadTicks);
+    quadEncoder.setSamplesToAverage(80);
     quadEncoder.reset();
     // Wait for encoder to produce valid values
     Timer.delay(2);
@@ -121,6 +123,11 @@ public class Wrist extends SubsystemBase implements Logged {
     return getQuadPosition() + kInitializationOffset;
   }
 
+  @Log.NT
+  public double getVelocity() {
+    return quadEncoder.getRate();
+  }
+
   /**
    * Gets the angle of the quadrature encoder since the start
    *
@@ -131,9 +138,8 @@ public class Wrist extends SubsystemBase implements Logged {
     return quadEncoder.getDistance();
   }
 
-  @Log.NT
-  public double getSetpoint() {
-    return controller.getSetpoint().position;
+  public State getSetpoint() {
+    return controller.getSetpoint();
   }
 
   /**
@@ -196,6 +202,10 @@ public class Wrist extends SubsystemBase implements Logged {
         .andThen(holdPositionCommand().until(this::atGoal));
   }
 
+  public Command incrementGoalCommand(double incrementBy) {
+    return setGoalCommand(() -> getGoal() + incrementBy);
+  }
+
   /**
    * Returns a command that continuously updates the closed loop controller
    *
@@ -211,5 +221,10 @@ public class Wrist extends SubsystemBase implements Logged {
     if (DriverStation.isDisabled()) {
       controller.reset(getPosition());
     }
+    var setpoint = getSetpoint();
+    log("Setpoint Position", setpoint.position);
+    log("Setpoint Velocity", setpoint.velocity);
+    log("Stator Current", wristMotor.getStatorCurrent().getValue());
+    log("Supply Voltage", wristMotor.getSupplyVoltage().getValue());
   }
 }
