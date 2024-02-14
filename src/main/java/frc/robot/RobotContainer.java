@@ -94,13 +94,16 @@ public class RobotContainer implements Logged {
                 () -> shooter.setOutput(SmartDashboard.getNumber("Shooter Speed (RPS)", 0)),
                 shooter::stop));
     operator.rightBumper().whileTrue(shooter.runEnd(() -> shooter.setOutput(-10), shooter::stop));
-    operator.leftTrigger().whileTrue(intake.runEnd(() -> intake.setOutput(0.7), intake::stop));
-
+    operator
+        .leftTrigger()
+        .whileTrue(
+            intake
+                .runEnd(() -> intake.setOutput(0.7), intake::stop)
+                .alongWith(feed.runEnd(() -> feed.setOutput(0.3), feed::stop)));
     operator.leftBumper().whileTrue(intake.runEnd(() -> intake.setOutput(-0.7), intake::stop));
 
-    operator.y().whileTrue(feed.runEnd(() -> feed.setOutput(0.3), feed::stop));
+    operator.y().whileTrue(feed.runEnd(() -> feed.setOutput(1), feed::stop));
     operator.a().whileTrue(feed.runEnd(() -> feed.setOutput(-0.3), feed::stop));
-  
 
     climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
   }

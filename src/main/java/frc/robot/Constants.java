@@ -183,10 +183,10 @@ public final class Constants {
     // Ratio of motor rotations to wheel rotations
     // Ratio of wheel pulley teeth to motor pulley teeth
     public static final double kFeedGearRatio = 1; // TODO: Fix
-  
-    public static final InvertedValue kFeedMotorInversionSetting =
-        InvertedValue.CounterClockwise_Positive;
+
+    public static final InvertedValue kFeedMotorInversionSetting = InvertedValue.Clockwise_Positive;
   }
+
   public static final class ShooterConstants {
     public static final int kShooterAId = 44;
     public static final int kShooterBId = 45;
