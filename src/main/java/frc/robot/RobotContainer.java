@@ -98,10 +98,9 @@ public class RobotContainer implements Logged {
         .leftTrigger()
         .whileTrue(
             intake
-                .runEnd(() -> intake.setOutput(0.7), intake::stop)
+                .runIntakeCommand(0.7)
                 .alongWith(feed.runEnd(() -> feed.setOutput(0.3), feed::stop)));
-    operator.leftBumper().whileTrue(intake.runEnd(() -> intake.setOutput(-0.7), intake::stop));
-
+    operator.leftBumper().whileTrue(intake.runIntakeCommand(-0.7));
     operator.y().whileTrue(feed.runEnd(() -> feed.setOutput(1), feed::stop));
     operator.a().whileTrue(feed.runEnd(() -> feed.setOutput(-0.3), feed::stop));
 
