@@ -37,7 +37,7 @@ public class Climber extends SubsystemBase implements Logged {
     setOutput(0);
   }
 
-  public Command getClimbCommand(DoubleSupplier outputSupplier) {
+  public Command climbCommand(DoubleSupplier outputSupplier) {
     return runEnd(() -> setOutput(outputSupplier.getAsDouble()), () -> stop());
   }
 }

@@ -86,25 +86,20 @@ public class RobotContainer implements Logged {
     zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
     /*Operator Buttons */
-    SmartDashboard.putNumber("Shooter Speed (RPS)", 0);
+    SmartDashboard.putNumber("Shooter Speed (RPS)", 60);
     operator
         .rightTrigger()
         .whileTrue(
-            shooter.runEnd(
-                () -> shooter.setOutput(SmartDashboard.getNumber("Shooter Speed (RPS)", 0)),
-                shooter::stop));
-    operator.rightBumper().whileTrue(shooter.runEnd(() -> shooter.setOutput(-10), shooter::stop));
+            shooter.velocityCommand(() -> SmartDashboard.getNumber("Shooter Speed (RPS)", 0)));
+    operator.rightBumper().whileTrue(shooter.velocityCommand(-10));
     operator
         .leftTrigger()
-        .whileTrue(
-            intake
-                .runIntakeCommand(0.7)
-                .alongWith(feed.runEnd(() -> feed.setOutput(0.3), feed::stop)));
+        .whileTrue(intake.runIntakeCommand(0.7).alongWith(feed.runFeedCommand(0.3)));
     operator.leftBumper().whileTrue(intake.runIntakeCommand(-0.7));
-    operator.y().whileTrue(feed.runEnd(() -> feed.setOutput(1), feed::stop));
-    operator.a().whileTrue(feed.runEnd(() -> feed.setOutput(-0.3), feed::stop));
+    operator.y().whileTrue(feed.runFeedCommand(1));
+    operator.a().whileTrue(feed.runFeedCommand(-0.3));
 
-    climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
+    climber.setDefaultCommand(climber.climbCommand(() -> -operator.getLeftY()));
   }
 
   /**
