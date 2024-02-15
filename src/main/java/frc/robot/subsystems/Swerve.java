@@ -197,6 +197,9 @@ public class Swerve extends SubsystemBase implements Logged {
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
     return run(
         () -> {
+          /* Reset goal heading */
+          storedGoalHeading = getHeading();
+          
           /* Get Values, Deadband*/
           double translationVal = MathUtil.applyDeadband(x.getAsDouble(), Constants.stickDeadband);
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
