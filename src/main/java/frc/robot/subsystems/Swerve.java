@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import java.util.List;
@@ -32,6 +34,8 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class Swerve extends SubsystemBase implements Logged {
+  private ProfiledPIDController headingController;
+  private Rotation2d storedGoalHeading;
   private SwerveDrivePoseEstimator poseEstimator;
   private List<PhotonPoseEstimator> cameras;
   private SwerveModule[] mSwerveMods;
@@ -43,6 +47,17 @@ public class Swerve extends SubsystemBase implements Logged {
     gyro = new PigeonIMU(Constants.Swerve.pigeonID);
     gyro.configAllSettings(new PigeonIMUConfiguration());
     gyro.setYaw(0);
+
+    headingController = new ProfiledPIDController(
+                          Constants.Swerve.headingkP,
+                          Constants.Swerve.headingkI,
+                          Constants.Swerve.headingkD,
+                          new TrapezoidProfile.Constraints(
+                            Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAngularAcceleration));
+    
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
+
+    storedGoalHeading = new Rotation2d();
 
     mSwerveMods =
         new SwerveModule[] {
@@ -161,6 +176,8 @@ public class Swerve extends SubsystemBase implements Logged {
         getGyroYaw(),
         getModulePositions(),
         new Pose2d(getPose().getTranslation(), new Rotation2d()));
+    
+    storedGoalHeading = new Rotation2d();
   }
 
   public Rotation2d getGyroYaw() {
@@ -192,6 +209,42 @@ public class Swerve extends SubsystemBase implements Logged {
               true,
               true);
         });
+  }
+
+  public Command teleopHeadingDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier hx, DoubleSupplier hy) {
+    return run(
+        () -> {
+          /* Get Values, Deadband Translation*/
+          double translationVal = MathUtil.applyDeadband(x.getAsDouble(), Constants.stickDeadband);
+          double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
+          double headingX = hx.getAsDouble();
+          double headingY = hy.getAsDouble();
+
+          /* Create a Rotation2D to represent desired heading */
+          Rotation2d goalHeading = new Rotation2d(headingX, headingY);
+
+          /* Polar Deadband Heading without scaling */
+          double r = Math.sqrt(headingX*headingX + headingY*headingY);
+          if(r<0.8) {
+            goalHeading = storedGoalHeading;
+          }
+          else {
+            storedGoalHeading = goalHeading;
+          }
+
+
+
+          /*  Calculate rotation velocity using heading controller */
+          double rotationVelocity = headingController.calculate(MathUtil.angleModulus(getHeading().getRadians()), 
+                                                                MathUtil.angleModulus(goalHeading.getRadians()));
+          
+          /* Drive */
+          drive(
+              new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxModuleSpeed),
+              rotationVelocity,true,true);
+
+        }
+    );
   }
 
   @Override
