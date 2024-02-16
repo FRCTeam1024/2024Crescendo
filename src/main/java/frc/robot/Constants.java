@@ -160,6 +160,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int intakeMotorId = 43;
     public static final boolean isInverted = false;
+    public static final int noteSensorId = 1;
 
     // Feedforward
     public static final double kS = 0;

@@ -5,12 +5,15 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.Constants;
 import monologue.Logged;
 
 public class Intake extends SubsystemBase implements Logged {
   private final CANSparkMax intakeMotor =
       new CANSparkMax(Constants.IntakeConstants.intakeMotorId, MotorType.kBrushless);
+  private final DigitalInput noteSensor = 
+    new DigitalInput(Constants.IntakeConstants.noteSensorId);
 
   public Intake() {
     intakeMotor.restoreFactoryDefaults();
@@ -26,6 +29,11 @@ public class Intake extends SubsystemBase implements Logged {
   public void stop() {
     setOutput(0);
   }
+  
+  public Boolean hasNote() {
+    return noteSensor.get();
+  }
+
 
   public Command runIntakeCommand(double output) {
     return runEnd(
@@ -34,4 +42,6 @@ public class Intake extends SubsystemBase implements Logged {
         },
         () -> stop());
   }
+
+
 }
