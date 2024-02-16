@@ -27,7 +27,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import javax.lang.model.util.ElementScanner14;
+
 import monologue.Logged;
 import monologue.Annotations.Log;
 
@@ -38,6 +42,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 public class Swerve extends SubsystemBase implements Logged {
   private ProfiledPIDController headingController;
   private Rotation2d storedGoalHeading;
+  private Pose2d speakerPose;
   private SwerveDrivePoseEstimator poseEstimator;
   private List<PhotonPoseEstimator> cameras;
   private SwerveModule[] mSwerveMods;
@@ -60,6 +65,7 @@ public class Swerve extends SubsystemBase implements Logged {
     headingController.enableContinuousInput(-Math.PI, Math.PI);
 
     storedGoalHeading = new Rotation2d();
+    
 
     mSwerveMods =
         new SwerveModule[] {
@@ -197,6 +203,24 @@ public class Swerve extends SubsystemBase implements Logged {
     }
   }
 
+  public Rotation2d getHeadingToTarget() {
+    int targetID;
+    Pose2d targetPose;
+    Rotation2d targetHeading; 
+    var alliance = DriverStation.getAlliance();
+    if(alliance.isEmpty()) {
+      return storedGoalHeading;
+    } 
+    else if(alliance.get().equals(Alliance.Red)) {
+      targetID = 4;
+    }
+    else {
+      targetID = 7;
+    }
+    targetPose = Constants.kOfficialField.getTagPose(targetID).get().toPose2d();
+    return targetPose.minus(getPose()).getTranslation().getAngle();
+  }
+
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
     return run(
         () -> {
@@ -217,7 +241,7 @@ public class Swerve extends SubsystemBase implements Logged {
         });
   }
 
-  public Command teleopHeadingDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier hx, DoubleSupplier hy) {
+  public Command teleopHeadingDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier hx, DoubleSupplier hy, BooleanSupplier aim) {
     return run(
         () -> {
           /* Get Values, Deadband Translation*/
@@ -238,7 +262,11 @@ public class Swerve extends SubsystemBase implements Logged {
             storedGoalHeading = goalHeading;
           }
 
-
+          /* Override joystick and aim at goal if requested */
+          if(aim.getAsBoolean()){
+            goalHeading = getHeadingToTarget();
+            storedGoalHeading = goalHeading;
+          }
 
           /*  Calculate rotation velocity using heading controller */
           double rotationVelocity = headingController.calculate(MathUtil.angleModulus(getHeading().getRadians()), 
@@ -248,7 +276,6 @@ public class Swerve extends SubsystemBase implements Logged {
           drive(
               new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxModuleSpeed),
               rotationVelocity,true,true);
-
         }
     );
   }

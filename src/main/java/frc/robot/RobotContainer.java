@@ -36,6 +36,8 @@ public class RobotContainer implements Logged {
       new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton headingControl =
       new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+  private final JoystickButton targetTrack = 
+      new JoystickButton(driver, XboxController.Button.kA.value);
 
   /* Subsystems */
   private final Swerve swerve = new Swerve();
@@ -92,7 +94,8 @@ public class RobotContainer implements Logged {
             () -> -driver.getRawAxis(translationAxis),
             () -> -driver.getRawAxis(strafeAxis),
             () -> -driver.getRawAxis(rotationYAxis),
-            () -> -driver.getRawAxis(rotationXAxis)
+            () -> -driver.getRawAxis(rotationXAxis),
+            targetTrack
             ));
 
     /*Operator Buttons */
