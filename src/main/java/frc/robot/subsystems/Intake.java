@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase implements Logged {
   }
   
   public Boolean hasNote() {
-    return noteSensor.get();
+    return !noteSensor.get();
   }
 
 
