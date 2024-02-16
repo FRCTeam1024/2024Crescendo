@@ -29,6 +29,8 @@ import frc.robot.SwerveModule;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 import monologue.Logged;
+import monologue.Annotations.Log;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -138,6 +140,7 @@ public class Swerve extends SubsystemBase implements Logged {
     }
   }
 
+  @Log.NT
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (SwerveModule mod : mSwerveMods) {
@@ -276,5 +279,7 @@ public class Swerve extends SubsystemBase implements Logged {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
+    log("heading setpoint", headingController.getSetpoint().position);
+    log("heading", getHeading().getRadians());
   }
 }

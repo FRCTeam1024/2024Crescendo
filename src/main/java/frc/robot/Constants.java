@@ -47,7 +47,7 @@ public final class Constants {
     public static final double wheelCircumference = Units.inchesToMeters(Math.PI * 4 * 0.931755098);
 
     /* Heading Control PID Values */
-    public static final double headingkP = 1;
+    public static final double headingkP = 10;
     public static final double headingkI = 0;
     public static final double headingkD = 0;
 
@@ -110,9 +110,9 @@ public final class Constants {
 
     /** Radians per Second */
     public static final double maxAngularVelocity = 10.0; // TODO: This must be tuned to specific robot
-    
+
     /** Radians per Second per Second */
-    public static final double maxAngularAcceleration = 10;
+    public static final double maxAngularAcceleration = 15;
 
     /* Neutral Modes */
     public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
