@@ -123,15 +123,18 @@ public class RobotContainer implements Logged {
                         SmartDashboard.getNumber("Wrist Goal", wrist.getGoal()))));
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
-    operator.pov(0).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
-    operator.pov(180).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
+    operator.pov(90).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
+    operator.pov(270).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
     operator
         .b()
         .onTrue(
             arm.setGoalCommand(
                 () -> Units.degreesToRadians(SmartDashboard.getNumber("Arm Goal", arm.getGoal()))));
 
-    operator.start().onTrue(wristSysID.fullTest(operator.back(), operator.start()));
+    // operator.start().onTrue(wristSysID.fullTest(operator.back(), operator.start()));
+    // spotless:off
+    // arm.setDefaultCommand(arm.run(() -> arm.setVoltage((-operator.getLeftY()*3) + (0.6 * Math.cos(arm.getPosition())))));
+    // spotless:on
   }
 
   /**

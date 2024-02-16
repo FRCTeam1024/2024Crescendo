@@ -208,30 +208,35 @@ public final class Constants {
 
     /**
      * Difference between what the absolute encoder reads and what we want that angle to be, in
-     * radians To find this, set the offset to 0 and read the measured position of the wrist when
-     * the wrist is at 0
+     * radians. To find this, position the arm at the hard stop and use "Position No Offset" as the
+     * new offset
      */
-    public static final double kPositionOffset = isPracticeBot ? -1.2955 : 0; // 0.2175 : 0;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.316084 : 0;
 
-    public static final double kMinPosition = Units.degreesToRadians(0);
-    public static final double kMaxPosition = Units.degreesToRadians(720);
+    public static final double kHardStopPosition = -0.5;
+    public static final double kPositionOffset = kOffsetAtLowerHardStop - kHardStopPosition;
+
+    public static final double kMinPosition = kHardStopPosition;
+    public static final double kMaxPosition = Units.degreesToRadians(80) - kHardStopPosition;
 
     public static final double kGearboxToArmRatio = 40.0 / 12.0;
     // 3-3-4 maxplanetary, 12 t to 40 t
     public static final double kMotorToArmRatio = 3.0 * 3.0 * 4.0 * kGearboxToArmRatio;
     public static final int kQuadTicks = 2048;
 
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 25;
-    public static final double kMaxVelocityRadiansPerSecond = 15;
+    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(120);
+    public static final double kMaxAccelerationRadiansPerSecondSquared =
+        Units.degreesToRadians(480);
 
-    public static final double kS = 0.0;
-    public static final double kV = 0.0;
+    // https://www.reca.lc/arm?armMass=%7B%22s%22%3A13%2C%22u%22%3A%22lbs%22%7D&comLength=%7B%22s%22%3A22%2C%22u%22%3A%22in%22%7D&currentLimit=%7B%22s%22%3A40%2C%22u%22%3A%22A%22%7D&efficiency=80&endAngle=%7B%22s%22%3A90%2C%22u%22%3A%22deg%22%7D&iterationLimit=10000&motor=%7B%22quantity%22%3A1%2C%22name%22%3A%22Falcon%20500%22%7D&ratio=%7B%22magnitude%22%3A120%2C%22ratioType%22%3A%22Reduction%22%7D&startAngle=%7B%22s%22%3A-30%2C%22u%22%3A%22deg%22%7D
+    public static final double kS = 0.1;
+    public static final double kV = 2.22;
     public static final double kA = 0.0;
-    public static final double kG = 0.0;
+    public static final double kG = 0.6;
 
-    public static final double kP = 50.0;
+    public static final double kP = 8;
     public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static final double kD = 0.05;
   }
 
   public static final class IntakeConstants {

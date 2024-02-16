@@ -150,13 +150,19 @@ public class Arm extends SubsystemBase implements Logged {
    */
   @Log.NT
   public double getAbsolutePosition() {
+    var positionRadians = getAbsolutePositionNoOffset();
+    positionRadians -= kPositionOffset;
+    // Bring us back into (-pi, pi)
+    return MathUtil.angleModulus(positionRadians);
+  }
+
+  @Log.NT(key = "Position No Offset")
+  public double getAbsolutePositionNoOffset() {
     // Encoder is out of phase with arm
     var rawPosition = -absoluteEncoder.getAbsolutePosition();
     // Convert to arm rotations
     rawPosition /= kGearboxToArmRatio;
     var positionRadians = Units.rotationsToRadians(rawPosition);
-    positionRadians -= kPositionOffset;
-    // Bring us back into (-pi, pi)
     return MathUtil.angleModulus(positionRadians);
   }
 
