@@ -135,6 +135,14 @@ public class RobotContainer implements Logged {
     // spotless:off
     // arm.setDefaultCommand(arm.run(() -> arm.setVoltage((-operator.getLeftY()*3) + (0.6 * Math.cos(arm.getPosition())))));
     // spotless:on
+    /*
+    wrist.setDefaultCommand(wrist.run(() -> {
+      var output = -operator.getLeftY() * 3;
+      var s = Math.signum(output) * 0.22;
+      var g = 0.36 * Math.cos(wrist.getCOGPosition());
+      wrist.setVoltage(g + output);
+    }));
+    */
   }
 
   /**

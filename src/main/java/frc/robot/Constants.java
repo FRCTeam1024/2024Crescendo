@@ -174,7 +174,12 @@ public final class Constants {
      * radians To find this, set the offset to 0 and read the measured position of the wrist when
      * the wrist is at 0
      */
-    public static final double kPositionOffset = isPracticeBot ? 1.6713 : 0; // 0.2175 : 0;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? 1.630 : 0;
+
+    public static final double kHardStopToMaxExtension = 0;
+    public static final double kHardStopToCOG = 0;
+
+    public static final double kCOGZeroToMaxExtension = 0;
 
     public static final double kMinPosition = Units.degreesToRadians(0);
     public static final double kMaxPosition = Units.degreesToRadians(90);
@@ -183,20 +188,18 @@ public final class Constants {
     public static final double kMotorToWristRatio = 3.0 * 3.0 * 4.0 * (72 / 64);
     public static final int kQuadTicks = 2048;
 
-    public static final double kMaxVelocityRadiansPerSecond = Math.PI * 1;
-    public static final double kMaxAccelerationRadiansPerSecondSquared = 10;
+    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(240);
+    public static final double kMaxAccelerationRadiansPerSecondSquared =
+        Units.degreesToRadians(720);
 
-    // Min: -0.386
-    // Max: -0.114
-
-    public static final double kS = 0.0;
-    public static final double kV = 0.0;
+    public static final double kS = 0;//0.25;
+    public static final double kV = 0.75;
     public static final double kA = 0.0;
-    public static final double kG = 0.0;
+    public static final double kG = 0.36;
 
-    public static final double kP = 30;
+    public static final double kP = 10;
     public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static final double kD = 0;
   }
 
   public static final class ArmConstants {

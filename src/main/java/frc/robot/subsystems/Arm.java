@@ -53,8 +53,12 @@ public class Arm extends SubsystemBase implements Logged {
     quadEncoder.setDistancePerPulse((2.0 * Math.PI / kQuadTicks) / kGearboxToArmRatio);
     quadEncoder.setSamplesToAverage(80);
     quadEncoder.reset();
+
     // Wait for encoder to produce valid values
-    Timer.delay(2);
+    while(absoluteEncoder.getFrequency() < 963) {
+      Timer.delay(0.01);
+    }
+
     kInitializationOffset = getAbsolutePosition();
 
     setGoal(getPosition());
@@ -156,14 +160,20 @@ public class Arm extends SubsystemBase implements Logged {
     return MathUtil.angleModulus(positionRadians);
   }
 
-  @Log.NT(key = "Position No Offset")
+  @Log.NT(key = "Arm Position No Offset")
   public double getAbsolutePositionNoOffset() {
     // Encoder is out of phase with arm
-    var rawPosition = -absoluteEncoder.getAbsolutePosition();
-    // Convert to arm rotations
-    rawPosition /= kGearboxToArmRatio;
-    var positionRadians = Units.rotationsToRadians(rawPosition);
+    var rawPosition = getRawEncoderPosition();
+    // Convert to radians
+    var positionRadians = MathUtil.angleModulus(Units.rotationsToRadians(rawPosition));
+    positionRadians /= kGearboxToArmRatio;
     return MathUtil.angleModulus(positionRadians);
+  }
+
+  @Log.NT
+  public double getRawEncoderPosition() {
+    // Encoder is out of phase with arm
+    return -absoluteEncoder.getAbsolutePosition();
   }
 
   /**
@@ -208,7 +218,7 @@ public class Arm extends SubsystemBase implements Logged {
    */
   public Command setGoalCommand(DoubleSupplier goalSupplier) {
     return runOnce(() -> setGoal(goalSupplier.getAsDouble()))
-        .andThen(holdPositionCommand().until(this::atGoal));
+        .andThen(holdPositionCommand().until(this::atGoal)).asProxy();
   }
 
   public Command incrementGoalCommand(double incrementBy) {
@@ -235,5 +245,6 @@ public class Arm extends SubsystemBase implements Logged {
     log("Setpoint Velocity", setpoint.velocity);
     log("Stator Current", armMotor.getStatorCurrent().getValue());
     log("Supply Voltage", armMotor.getSupplyVoltage().getValue());
+    log("encoder freq", absoluteEncoder.getFrequency());
   }
 }

@@ -37,7 +37,7 @@ public class Wrist extends SubsystemBase implements Logged {
           new TrapezoidProfile.Constraints(
               kMaxVelocityRadiansPerSecond, kMaxAccelerationRadiansPerSecondSquared));
 
-  private final ArmFeedforward armFeedforward = new ArmFeedforward(kS, kG, kV, kA);
+  public final ArmFeedforward armFeedforward = new ArmFeedforward(kS, kG, kV, kA);
 
   private final VoltageOut voltageRequest = new VoltageOut(0);
 
@@ -51,12 +51,14 @@ public class Wrist extends SubsystemBase implements Logged {
     wristMotor.getConfigurator().apply(wristConfig);
 
     quadEncoder.setDistancePerPulse(2.0 * Math.PI / kQuadTicks);
-    quadEncoder.setSamplesToAverage(80);
+    quadEncoder.setSamplesToAverage(127);
     quadEncoder.reset();
     // Wait for encoder to produce valid values
-    Timer.delay(2);
-    kInitializationOffset = getAbsolutePosition();
+    while(absoluteEncoder.getFrequency() < 963) {
+      Timer.delay(0.01);
+    }
 
+    kInitializationOffset = getAbsolutePosition();
     setGoal(getPosition());
     setDefaultCommand(holdPositionCommand());
   }
@@ -114,7 +116,7 @@ public class Wrist extends SubsystemBase implements Logged {
   }
 
   /**
-   * Returns the current position of the wrist in radians. The value will be bounded by -pi, pi
+   * Returns the current position of the wrist in radians relative to the hard stop. The value will be bounded by -pi, pi
    *
    * @return current position in radians
    */
@@ -143,18 +145,40 @@ public class Wrist extends SubsystemBase implements Logged {
   }
 
   /**
-   * Returns the absolute position of the wrist in radians, bounded by (-pi, pi)
+   * Returns the absolute position of the wrist in radians relative to the hardstop, bounded by (-pi, pi)
    *
    * @return absolute position
    */
   @Log.NT
   public double getAbsolutePosition() {
+    var positionRadians = getAbsolutePositionNoOffset();
+    positionRadians -= kOffsetAtLowerHardStop;
+    // Bring us back into (-pi, pi)
+    return MathUtil.angleModulus(positionRadians);
+  }
+
+  @Log.NT(key = "Wrist Position No Offset")
+  public double getAbsolutePositionNoOffset() {
     // Encoder is out of phase with wrist
     var rawPosition = -absoluteEncoder.getAbsolutePosition();
     var positionRadians = Units.rotationsToRadians(rawPosition);
-    positionRadians -= kPositionOffset;
-    // Bring us back into (-pi, pi)
     return MathUtil.angleModulus(positionRadians);
+  }
+
+  /**
+   * Returns the angle of the tip of the wrist
+   * @return angle of tip of the wrist
+   */
+  public double getTipPosition() {
+    return getPosition() - kHardStopToMaxExtension;
+  }
+
+  /**
+   * Returns the angle of the cog of the wrist (for gravity compensation)
+   * @return angle of cog of the wrist
+   */
+  public double getCOGPosition() {
+    return getPosition() - kHardStopToCOG;
   }
 
   /**
@@ -171,7 +195,7 @@ public class Wrist extends SubsystemBase implements Logged {
   public void updatePositionController() {
     var position = getPosition();
     var feedback = controller.calculate(position);
-    var feedforward = armFeedforward.calculate(position, controller.getSetpoint().velocity);
+    var feedforward = armFeedforward.calculate(getCOGPosition(), controller.getSetpoint().velocity);
     setVoltage(feedforward + feedback);
   }
 
@@ -199,7 +223,7 @@ public class Wrist extends SubsystemBase implements Logged {
    */
   public Command setGoalCommand(DoubleSupplier goalSupplier) {
     return runOnce(() -> setGoal(goalSupplier.getAsDouble()))
-        .andThen(holdPositionCommand().until(this::atGoal));
+        .andThen(holdPositionCommand().until(this::atGoal)).asProxy();
   }
 
   public Command incrementGoalCommand(double incrementBy) {
