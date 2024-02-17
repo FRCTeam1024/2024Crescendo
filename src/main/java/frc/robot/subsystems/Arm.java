@@ -55,7 +55,7 @@ public class Arm extends SubsystemBase implements Logged {
     quadEncoder.reset();
 
     // Wait for encoder to produce valid values
-    while(absoluteEncoder.getFrequency() < 963) {
+    while (absoluteEncoder.getFrequency() < 963) {
       Timer.delay(0.01);
     }
 
@@ -218,7 +218,8 @@ public class Arm extends SubsystemBase implements Logged {
    */
   public Command setGoalCommand(DoubleSupplier goalSupplier) {
     return runOnce(() -> setGoal(goalSupplier.getAsDouble()))
-        .andThen(holdPositionCommand().until(this::atGoal)).asProxy();
+        .andThen(holdPositionCommand().until(this::atGoal))
+        .asProxy();
   }
 
   public Command incrementGoalCommand(double incrementBy) {

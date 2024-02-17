@@ -54,7 +54,7 @@ public class Wrist extends SubsystemBase implements Logged {
     quadEncoder.setSamplesToAverage(127);
     quadEncoder.reset();
     // Wait for encoder to produce valid values
-    while(absoluteEncoder.getFrequency() < 963) {
+    while (absoluteEncoder.getFrequency() < 963) {
       Timer.delay(0.01);
     }
 
@@ -116,7 +116,8 @@ public class Wrist extends SubsystemBase implements Logged {
   }
 
   /**
-   * Returns the current position of the wrist in radians relative to the hard stop. The value will be bounded by -pi, pi
+   * Returns the current position of the wrist in radians relative to the hard stop. The value will
+   * be bounded by -pi, pi
    *
    * @return current position in radians
    */
@@ -145,7 +146,8 @@ public class Wrist extends SubsystemBase implements Logged {
   }
 
   /**
-   * Returns the absolute position of the wrist in radians relative to the hardstop, bounded by (-pi, pi)
+   * Returns the absolute position of the wrist in radians relative to the hardstop, bounded by
+   * (-pi, pi)
    *
    * @return absolute position
    */
@@ -167,6 +169,7 @@ public class Wrist extends SubsystemBase implements Logged {
 
   /**
    * Returns the angle of the tip of the wrist
+   *
    * @return angle of tip of the wrist
    */
   public double getTipPosition() {
@@ -175,6 +178,7 @@ public class Wrist extends SubsystemBase implements Logged {
 
   /**
    * Returns the angle of the cog of the wrist (for gravity compensation)
+   *
    * @return angle of cog of the wrist
    */
   public double getCOGPosition() {
@@ -223,7 +227,8 @@ public class Wrist extends SubsystemBase implements Logged {
    */
   public Command setGoalCommand(DoubleSupplier goalSupplier) {
     return runOnce(() -> setGoal(goalSupplier.getAsDouble()))
-        .andThen(holdPositionCommand().until(this::atGoal)).asProxy();
+        .andThen(holdPositionCommand().until(this::atGoal))
+        .asProxy();
   }
 
   public Command incrementGoalCommand(double incrementBy) {
