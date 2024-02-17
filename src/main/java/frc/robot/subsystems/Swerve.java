@@ -25,20 +25,34 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
 import frc.lib.hardware.IMU;
 import frc.lib.hardware.Pigeon1IMU;
 import frc.lib.hardware.Pigeon2IMU;
+
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import javax.lang.model.util.ElementScanner14;
+
 import monologue.Annotations.Log;
 import monologue.Logged;
+import monologue.Annotations.Log;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class Swerve extends SubsystemBase implements Logged {
+  private ProfiledPIDController headingController;
+  private Rotation2d storedGoalHeading;
+  private Pose2d speakerPose;
   private SwerveDrivePoseEstimator poseEstimator;
   private List<PhotonPoseEstimator> cameras;
   private SwerveModule[] mSwerveMods;
@@ -49,6 +63,18 @@ public class Swerve extends SubsystemBase implements Logged {
     SmartDashboard.putData(field);
     gyro = createGyro();
     gyro.setYaw(new Rotation2d());
+
+    headingController = new ProfiledPIDController(
+                          Constants.Swerve.headingkP,
+                          Constants.Swerve.headingkI,
+                          Constants.Swerve.headingkD,
+                          new TrapezoidProfile.Constraints(
+                            Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAngularAcceleration));
+    
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
+
+    storedGoalHeading = new Rotation2d();
+    
 
     mSwerveMods =
         new SwerveModule[] {
@@ -154,6 +180,7 @@ public class Swerve extends SubsystemBase implements Logged {
     }
   }
 
+  @Log.NT
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (SwerveModule mod : mSwerveMods) {
@@ -193,6 +220,8 @@ public class Swerve extends SubsystemBase implements Logged {
         getGyroYaw(),
         getModulePositions(),
         new Pose2d(getPose().getTranslation(), new Rotation2d()));
+    
+    storedGoalHeading = new Rotation2d();
   }
 
   @Log.NT
@@ -210,9 +239,30 @@ public class Swerve extends SubsystemBase implements Logged {
     }
   }
 
+  public Rotation2d getHeadingToTarget() {
+    int targetID;
+    Pose2d targetPose;
+    Rotation2d targetHeading; 
+    var alliance = DriverStation.getAlliance();
+    if(alliance.isEmpty()) {
+      return storedGoalHeading;
+    } 
+    else if(alliance.get().equals(Alliance.Red)) {
+      targetID = 4;
+    }
+    else {
+      targetID = 7;
+    }
+    targetPose = Constants.kOfficialField.getTagPose(targetID).get().toPose2d();
+    return targetPose.minus(getPose()).getTranslation().getAngle();
+  }
+
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
     return run(
         () -> {
+          /* Reset goal heading */
+          storedGoalHeading = getHeading();
+          
           /* Get Values, Deadband*/
           double translationVal = MathUtil.applyDeadband(x.getAsDouble(), Constants.stickDeadband);
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
@@ -225,6 +275,45 @@ public class Swerve extends SubsystemBase implements Logged {
               true,
               true);
         });
+  }
+
+  public Command teleopHeadingDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier hx, DoubleSupplier hy, BooleanSupplier aim) {
+    return run(
+        () -> {
+          /* Get Values, Deadband Translation*/
+          double translationVal = MathUtil.applyDeadband(x.getAsDouble(), Constants.stickDeadband);
+          double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
+          double headingX = hx.getAsDouble();
+          double headingY = hy.getAsDouble();
+
+          /* Create a Rotation2D to represent desired heading */
+          Rotation2d goalHeading = new Rotation2d(headingX, headingY);
+
+          /* Polar Deadband Heading without scaling */
+          double r = Math.sqrt(headingX*headingX + headingY*headingY);
+          if(r<0.8) {
+            goalHeading = storedGoalHeading;
+          }
+          else {
+            storedGoalHeading = goalHeading;
+          }
+
+          /* Override joystick and aim at goal if requested */
+          if(aim.getAsBoolean()){
+            goalHeading = getHeadingToTarget();
+            storedGoalHeading = goalHeading;
+          }
+
+          /*  Calculate rotation velocity using heading controller */
+          double rotationVelocity = headingController.calculate(MathUtil.angleModulus(getHeading().getRadians()), 
+                                                                MathUtil.angleModulus(goalHeading.getRadians()));
+          
+          /* Drive */
+          drive(
+              new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxModuleSpeed),
+              rotationVelocity,true,true);
+        }
+    );
   }
 
   @Override
@@ -253,5 +342,7 @@ public class Swerve extends SubsystemBase implements Logged {
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
     }
+    log("heading setpoint", headingController.getSetpoint().position);
+    log("heading", getHeading().getRadians());
   }
 }
