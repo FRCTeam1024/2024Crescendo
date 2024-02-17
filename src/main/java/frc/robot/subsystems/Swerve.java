@@ -178,6 +178,7 @@ public class Swerve extends SubsystemBase implements Logged {
     poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
   }
 
+  @Log.NT
   public Rotation2d getHeading() {
     return getPose().getRotation();
   }
