@@ -2,11 +2,9 @@ package frc.lib.hardware;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import java.util.Objects;
 
-public class Pigeon2IMU implements IMU, Sendable {
+public class Pigeon2IMU implements IMU {
   private Pigeon2 m_pigeon;
 
   public Pigeon2IMU(Pigeon2 pigeon) {
@@ -31,10 +29,5 @@ public class Pigeon2IMU implements IMU, Sendable {
   @Override
   public void setYaw(Rotation2d yaw) {
     m_pigeon.setYaw(yaw.getDegrees());
-  }
-
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    m_pigeon.initSendable(builder);
   }
 }
