@@ -38,13 +38,8 @@ import frc.robot.SwerveModule;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-
-import javax.lang.model.util.ElementScanner14;
-
 import monologue.Annotations.Log;
 import monologue.Logged;
-import monologue.Annotations.Log;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
@@ -110,16 +105,13 @@ public class Swerve extends SubsystemBase implements Logged {
               new PhotonPoseEstimator(
                   Constants.kOfficialField,
                   PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                  new PhotonCamera("Arducam_OV9281_3"),
-                  new Transform3d(
-                      new Translation3d(
-                          Units.inchesToMeters(0.75),
-                          Units.inchesToMeters(-11.25),
-                          Units.inchesToMeters(27.625)),
-                      new Rotation3d(
-                          Units.degreesToRadians(0),
-                          Units.degreesToRadians(-30),
-                          Units.degreesToRadians(180)))));
+                  Constants.CameraConstants.frontCamera,
+                  Constants.CameraConstants.frontCamTransform),
+              new PhotonPoseEstimator(
+                  Constants.kOfficialField,
+                  PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                  Constants.CameraConstants.rearCamera,
+                  Constants.CameraConstants.rearCamTransform));
     }
   }
 

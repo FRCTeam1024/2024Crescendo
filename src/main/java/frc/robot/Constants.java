@@ -9,12 +9,18 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
+import pabeles.concurrency.ConcurrencyOps.NewInstance;
+
+import org.photonvision.PhotonCamera;
 
 public final class Constants {
   public static final double stickDeadband = 0.02;
@@ -166,6 +172,34 @@ public final class Constants {
     }
   }
 
+  public static final class CameraConstants {
+    public static final PhotonCamera frontCamera = 
+          new PhotonCamera(isPracticeBot ? "Arducam_OV9281_5" : "Arducam_OV92181_2");  //Need to correct comp bot
+    public static final Transform3d frontCamTransform = 
+          new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(isPracticeBot ? -11.25 : -11.25),
+                Units.inchesToMeters(isPracticeBot ? 6.5 : 6.5),
+                Units.inchesToMeters(isPracticeBot ? 19.25 : 19.25)),
+            new Rotation3d(
+                Units.degreesToRadians(isPracticeBot ? 0 : 0),
+                Units.degreesToRadians(isPracticeBot ? 25 : 25),
+                Units.degreesToRadians(isPracticeBot ? 0 : 0)));
+
+    public static final PhotonCamera rearCamera = 
+          new PhotonCamera(isPracticeBot ? "Arducam_OV9281_4" : "Arducam_OV92181_1");  //Need to correct comp bot
+    public static final Transform3d rearCamTransform = 
+          new Transform3d(
+            new Translation3d(
+                Units.inchesToMeters(isPracticeBot ? -13.25 : -13.25),
+                Units.inchesToMeters(isPracticeBot ? -6.5 : -6.5),
+                Units.inchesToMeters(isPracticeBot ? 20.875 : 20.875)),
+            new Rotation3d(
+                Units.degreesToRadians(isPracticeBot ? 0 : 0),
+                Units.degreesToRadians(isPracticeBot ? 18 : 18),
+                Units.degreesToRadians(isPracticeBot ? 180 : 180)));
+  }
+  
   public static final class IntakeConstants {
     public static final int intakeMotorId = 43;
     public static final boolean isInverted = false;
