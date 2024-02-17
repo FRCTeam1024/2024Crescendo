@@ -189,6 +189,7 @@ public class Swerve extends SubsystemBase implements Logged {
     return positions;
   }
 
+  @Log.NT
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
@@ -233,20 +234,22 @@ public class Swerve extends SubsystemBase implements Logged {
 
   public Rotation2d getHeadingToTarget() {
     int targetID;
-    Pose2d targetPose;
-    Rotation2d targetHeading; 
+    Pose2d targetPose; 
+    Boolean invert = false;
     var alliance = DriverStation.getAlliance();
     if(alliance.isEmpty()) {
       return storedGoalHeading;
     } 
     else if(alliance.get().equals(Alliance.Red)) {
       targetID = 4;
+      invert = true;
     }
     else {
       targetID = 7;
     }
     targetPose = Constants.kOfficialField.getTagPose(targetID).get().toPose2d();
-    return targetPose.minus(getPose()).getTranslation().getAngle();
+    return getPose().minus(targetPose).getTranslation().getAngle()
+            .plus(new Rotation2d(Units.degreesToRadians(invert?180:0)));
   }
 
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {

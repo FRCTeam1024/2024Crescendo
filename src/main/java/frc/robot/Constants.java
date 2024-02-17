@@ -24,9 +24,9 @@ import pabeles.concurrency.ConcurrencyOps.NewInstance;
 import org.photonvision.PhotonCamera;
 
 public final class Constants {
-  public static final double stickDeadband = 0.02;
+  public static final double stickDeadband = 0.04;
 
-  public static final boolean apriltagsEnabled = false;
+  public static final boolean apriltagsEnabled = true;
 
   public static final boolean disableUnusedSignals = true;
 
