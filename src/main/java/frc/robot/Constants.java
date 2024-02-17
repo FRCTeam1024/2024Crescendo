@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
@@ -36,7 +37,7 @@ public final class Constants {
   public static final String compBotSerialNum = "03264208";
   public static final String practiceBotSerialNum = "03241508";
   public static final boolean isPracticeBot =
-      RobotController.getSerialNumber().equals(practiceBotSerialNum);
+      RobotController.getSerialNumber().equals(practiceBotSerialNum) || RobotBase.isSimulation();
 
   public static final class Swerve {
     public static final int pigeonID = 1;
@@ -200,6 +201,88 @@ public final class Constants {
                 Units.degreesToRadians(isPracticeBot ? 180 : 180)));
   }
   
+  public static final class WristConstants {
+    // ~100 degrees of range
+
+    public static final int kWristId = 42;
+
+    public static final int kQuadEncoderAPin = 2;
+    public static final int kQuadEncoderBPin = 3;
+    public static final int kAbsEncoderPin = 5;
+
+    /**
+     * Difference between what the absolute encoder reads and what we want that angle to be, in
+     * radians To find this, set the offset to 0 and read the measured position of the wrist when
+     * the wrist is at 0
+     */
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? 1.630 : 0;
+
+    public static final double kHardStopToMaxExtension = 0;
+    public static final double kHardStopToCOG = 0;
+
+    public static final double kCOGZeroToMaxExtension = 0;
+
+    public static final double kMinPosition = Units.degreesToRadians(0);
+    public static final double kMaxPosition = Units.degreesToRadians(90);
+
+    // 3-3-4 maxplanetary, 72:64 gearing with wrist
+    public static final double kMotorToWristRatio = 3.0 * 3.0 * 4.0 * (72 / 64);
+    public static final int kQuadTicks = 2048;
+
+    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(240);
+    public static final double kMaxAccelerationRadiansPerSecondSquared =
+        Units.degreesToRadians(720);
+
+    public static final double kS = 0; // 0.25;
+    public static final double kV = 0.75;
+    public static final double kA = 0.0;
+    public static final double kG = 0.36;
+
+    public static final double kP = 10;
+    public static final double kI = 0.0;
+    public static final double kD = 0;
+  }
+
+  public static final class ArmConstants {
+    public static final int kWristId = 41;
+
+    public static final int kQuadEncoderAPin = 6;
+    public static final int kQuadEncoderBPin = 7;
+    public static final int kAbsEncoderPin = 9;
+
+    /**
+     * Difference between what the absolute encoder reads and what we want that angle to be, in
+     * radians. To find this, position the arm at the hard stop and use "Position No Offset" as the
+     * new offset
+     */
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.316084 : 0;
+
+    public static final double kHardStopPosition = -0.5;
+    public static final double kPositionOffset = kOffsetAtLowerHardStop - kHardStopPosition;
+
+    public static final double kMinPosition = kHardStopPosition;
+    public static final double kMaxPosition = Units.degreesToRadians(80) - kHardStopPosition;
+
+    public static final double kGearboxToArmRatio = 40.0 / 12.0;
+    // 3-3-4 maxplanetary, 12 t to 40 t
+    public static final double kMotorToArmRatio = 3.0 * 3.0 * 4.0 * kGearboxToArmRatio;
+    public static final int kQuadTicks = 2048;
+
+    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(120);
+    public static final double kMaxAccelerationRadiansPerSecondSquared =
+        Units.degreesToRadians(480);
+
+    // https://www.reca.lc/arm?armMass=%7B%22s%22%3A13%2C%22u%22%3A%22lbs%22%7D&comLength=%7B%22s%22%3A22%2C%22u%22%3A%22in%22%7D&currentLimit=%7B%22s%22%3A40%2C%22u%22%3A%22A%22%7D&efficiency=80&endAngle=%7B%22s%22%3A90%2C%22u%22%3A%22deg%22%7D&iterationLimit=10000&motor=%7B%22quantity%22%3A1%2C%22name%22%3A%22Falcon%20500%22%7D&ratio=%7B%22magnitude%22%3A120%2C%22ratioType%22%3A%22Reduction%22%7D&startAngle=%7B%22s%22%3A-30%2C%22u%22%3A%22deg%22%7D
+    public static final double kS = 0.1;
+    public static final double kV = 2.22;
+    public static final double kA = 0.0;
+    public static final double kG = 0.6;
+
+    public static final double kP = 8;
+    public static final double kI = 0.0;
+    public static final double kD = 0.05;
+  }
+
   public static final class IntakeConstants {
     public static final int intakeMotorId = 43;
     public static final boolean isInverted = false;

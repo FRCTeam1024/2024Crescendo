@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -8,7 +9,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.ArmSysID;
 import frc.robot.commands.Autos;
+import frc.robot.commands.WristSysID;
 import frc.robot.subsystems.*;
 import monologue.Logged;
 
@@ -45,6 +48,11 @@ public class RobotContainer implements Logged {
   private final Shooter shooter = new Shooter();
   private final Climber climber = new Climber();
   private final Feed feed = new Feed();
+  private final Wrist wrist = new Wrist();
+  private final Arm arm = new Arm();
+
+  private final WristSysID wristSysID = new WristSysID(wrist);
+  private final ArmSysID armSysID = new ArmSysID(arm);
 
   private final Autos autos = new Autos(swerve);
 
@@ -99,7 +107,8 @@ public class RobotContainer implements Logged {
             ));
 
     /*Operator Buttons */
-    SmartDashboard.putNumber("Shooter Speed (RPS)", 60);
+    SmartDashboard.putNumber("Shooter Speed (RPS)", 0);
+    SmartDashboard.putNumber("Wrist Goal", wrist.getPosition());
     operator
         .rightTrigger()
         .whileTrue(
@@ -116,7 +125,37 @@ public class RobotContainer implements Logged {
     operator.y().whileTrue(feed.runFeedCommand(1));
     operator.a().whileTrue(feed.runFeedCommand(-0.3));
 
-    climber.setDefaultCommand(climber.climbCommand(() -> -operator.getLeftY()));
+    climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
+
+    operator
+        .b()
+        .onTrue(
+            wrist.setGoalCommand(
+                () ->
+                    Units.degreesToRadians(
+                        SmartDashboard.getNumber("Wrist Goal", wrist.getGoal()))));
+    operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
+    operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
+    operator.pov(90).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
+    operator.pov(270).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
+    operator
+        .b()
+        .onTrue(
+            arm.setGoalCommand(
+                () -> Units.degreesToRadians(SmartDashboard.getNumber("Arm Goal", arm.getGoal()))));
+
+    // operator.start().onTrue(wristSysID.fullTest(operator.back(), operator.start()));
+    // spotless:off
+    // arm.setDefaultCommand(arm.run(() -> arm.setVoltage((-operator.getLeftY()*3) + (0.6 * Math.cos(arm.getPosition())))));
+    // spotless:on
+    /*
+    wrist.setDefaultCommand(wrist.run(() -> {
+      var output = -operator.getLeftY() * 3;
+      var s = Math.signum(output) * 0.22;
+      var g = 0.36 * Math.cos(wrist.getCOGPosition());
+      wrist.setVoltage(g + output);
+    }));
+    */
   }
 
   /**
