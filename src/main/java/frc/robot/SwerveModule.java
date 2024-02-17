@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -14,23 +16,31 @@ import frc.lib.math.Conversions;
 import frc.lib.util.SwerveModuleConstants;
 
 public class SwerveModule {
-  public int moduleNumber;
-  private Rotation2d angleOffset;
+  public final int moduleNumber;
+  private final Rotation2d angleOffset;
 
-  private TalonFX mAngleMotor;
-  private TalonFX mDriveMotor;
-  private CANcoder angleEncoder;
+  private final TalonFX mAngleMotor;
+  private final TalonFX mDriveMotor;
+  private final CANcoder angleEncoder;
+
+  private final StatusSignal<Double> angleMotorPosition;
+  private final StatusSignal<Double> angleMotorVelocity;
+
+  private final StatusSignal<Double> driveMotorPosition;
+  private final StatusSignal<Double> driveMotorVelocity;
+
+  private final StatusSignal<Double> angleEncoderAbsolutePosition;
 
   private final SimpleMotorFeedforward driveFeedForward =
       new SimpleMotorFeedforward(
           Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
 
   /* drive motor control requests */
-  private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
-  private final VelocityVoltage driveVelocity = new VelocityVoltage(0);
+  private final DutyCycleOut driveDutyCycleRequest = new DutyCycleOut(0);
+  private final VelocityVoltage driveVelocityRequest = new VelocityVoltage(0);
 
   /* angle motor control requests */
-  private final PositionVoltage anglePosition = new PositionVoltage(0);
+  private final PositionVoltage anglePositionRequest = new PositionVoltage(0);
 
   public SwerveModule(int moduleNumber, SwerveModuleConstants moduleConstants) {
     this.moduleNumber = moduleNumber;
@@ -39,16 +49,34 @@ public class SwerveModule {
     /* Angle Encoder Config */
     angleEncoder = new CANcoder(moduleConstants.cancoderID);
     angleEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCANcoderConfig);
+    angleEncoderAbsolutePosition = angleEncoder.getAbsolutePosition();
 
     /* Angle Motor Config */
     mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
     mAngleMotor.getConfigurator().apply(Robot.ctreConfigs.swerveAngleFXConfig);
+    angleMotorPosition = mAngleMotor.getPosition();
+    angleMotorVelocity = mAngleMotor.getVelocity();
     resetToAbsolute();
 
     /* Drive Motor Config */
     mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
     mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
     mDriveMotor.getConfigurator().setPosition(0.0);
+    driveMotorPosition = mDriveMotor.getPosition();
+    driveMotorVelocity = mDriveMotor.getVelocity();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50,
+        angleMotorPosition,
+        angleMotorVelocity,
+        driveMotorPosition,
+        driveMotorVelocity,
+        angleEncoderAbsolutePosition);
+    if (Constants.disableUnusedSignals) {
+      mAngleMotor.optimizeBusUtilization();
+      mDriveMotor.optimizeBusUtilization();
+      angleEncoder.optimizeBusUtilization();
+    }
   }
 
   public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
@@ -65,7 +93,7 @@ public class SwerveModule {
   }
 
   private void setAngle(Rotation2d angle) {
-    mAngleMotor.setControl(anglePosition.withPosition(angle.getRotations()));
+    mAngleMotor.setControl(anglePositionRequest.withPosition(angle.getRotations()));
   }
 
   private void setSpeed(double speedMetersPerSecond, boolean isOpenLoop) {
@@ -77,14 +105,14 @@ public class SwerveModule {
     var outputVelocity = requestedVelocityRPS + compensationVelocity;
 
     if (isOpenLoop) {
-      driveDutyCycle.Output =
+      driveDutyCycleRequest.Output =
           outputVelocity / wheelMeterToMotorRot(Constants.Swerve.maxModuleSpeed);
-      mDriveMotor.setControl(driveDutyCycle);
+      mDriveMotor.setControl(driveDutyCycleRequest);
     } else {
-      driveVelocity.Velocity = outputVelocity;
+      driveVelocityRequest.Velocity = outputVelocity;
       // The feedforward still uses meters per second
-      driveVelocity.FeedForward = driveFeedForward.calculate(speedMetersPerSecond);
-      mDriveMotor.setControl(driveVelocity);
+      driveVelocityRequest.FeedForward = driveFeedForward.calculate(speedMetersPerSecond);
+      mDriveMotor.setControl(driveVelocityRequest);
     }
   }
 

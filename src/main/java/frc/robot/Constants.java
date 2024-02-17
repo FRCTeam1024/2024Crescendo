@@ -21,6 +21,8 @@ public final class Constants {
 
   public static final boolean apriltagsEnabled = false;
 
+  public static final boolean disableUnusedSignals = true;
+
   public static final AprilTagFieldLayout kOfficialField =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
