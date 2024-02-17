@@ -9,9 +9,10 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -57,6 +58,26 @@ public class Shooter extends SubsystemBase implements Logged {
     shooterB.getConfigurator().apply(shooterConfig);
 
     stableTime.restart();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50,
+        shooterAVelocity,
+        shooterBVelocity,
+        shooterAVoltage,
+        shooterBVoltage,
+        shooterAError,
+        shooterBError);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        10,
+        shooterASupplyVoltage,
+        shooterBSupplyVoltage,
+        shooterAStatorCurrent,
+        shooterBStatorCurrent);
+
+    if (Constants.disableUnusedSignals) {
+      shooterA.optimizeBusUtilization();
+      shooterB.optimizeBusUtilization();
+    }
   }
 
   public void setVelocity(double speed) {
@@ -73,13 +94,16 @@ public class Shooter extends SubsystemBase implements Logged {
 
   @Log.NT(key = "Velocity Setpoint (RPS)")
   public double getVelocitySetpointRPS() {
-    return velocityRequest.Velocity;
+    if (shooterA.getAppliedControl().equals(stopRequest)) {
+      return 0;
+    } else {
+      return velocityRequest.Velocity;
+    }
   }
 
   /**
-   * Checks if the shooter is running at stable speed near
-   * the setpoint
-   * 
+   * Checks if the shooter is running at stable speed near the setpoint
+   *
    * @return TRUE if shooter is spinning at setpoint
    */
   @Log.NT(key = "Ready To Launch")
@@ -130,9 +154,8 @@ public class Shooter extends SubsystemBase implements Logged {
     double velocityA = shooterAVelocity.getValue();
     double velocityB = shooterBVelocity.getValue();
 
-    if(errorA > 5 || errorB > 5 ||  Math.abs(velocityA - velocityB) > 5) {
+    if (errorA > 5 || errorB > 5 || Math.abs(velocityA - velocityB) > 5) {
       stableTime.restart();
     }
-
   }
 }
