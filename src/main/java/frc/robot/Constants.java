@@ -163,16 +163,6 @@ public final class Constants {
     public static final int intakeMotorId = 43;
     public static final boolean isInverted = false;
     public static final int noteSensorId = 1;
-
-    // Feedforward
-    public static final double kS = 0;
-    public static final double kV = .123;
-    public static final double kA = 0;
-
-    // Feedback
-    public static final double kP = 0.2;
-    public static final double kI = 0;
-    public static final double kD = 0;
   }
 
   public static final class ClimberConstants {
