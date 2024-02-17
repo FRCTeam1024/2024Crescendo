@@ -9,8 +9,10 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -27,9 +29,14 @@ public class Shooter extends SubsystemBase implements Logged {
   private final StatusSignal<Double> shooterBVoltage = shooterB.getMotorVoltage();
   private final StatusSignal<Double> shooterASupplyVoltage = shooterA.getSupplyVoltage();
   private final StatusSignal<Double> shooterBSupplyVoltage = shooterB.getSupplyVoltage();
+  private final StatusSignal<Double> shooterAError = shooterA.getClosedLoopError();
+  private final StatusSignal<Double> shooterBError = shooterB.getClosedLoopError();
 
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0).withSlot(0);
   private final NeutralOut stopRequest = new NeutralOut();
+
+  private Boolean atSpeed = false;
+  private Timer stableTime = new Timer();
 
   public Shooter() {
     var shooterConfig = new TalonFXConfiguration();
@@ -49,6 +56,28 @@ public class Shooter extends SubsystemBase implements Logged {
     shooterConfig.MotorOutput.Inverted = kMotorBInversionSetting;
 
     shooterB.getConfigurator().apply(shooterConfig);
+
+    stableTime.restart();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50,
+        shooterAVelocity,
+        shooterBVelocity,
+        shooterAVoltage,
+        shooterBVoltage,
+        shooterAError,
+        shooterBError);
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        10,
+        shooterASupplyVoltage,
+        shooterBSupplyVoltage,
+        shooterAStatorCurrent,
+        shooterBStatorCurrent);
+
+    if (Constants.disableUnusedSignals) {
+      shooterA.optimizeBusUtilization();
+      shooterB.optimizeBusUtilization();
+    }
   }
 
   public void setVelocity(double speed) {
@@ -65,7 +94,21 @@ public class Shooter extends SubsystemBase implements Logged {
 
   @Log.NT(key = "Velocity Setpoint (RPS)")
   public double getVelocitySetpointRPS() {
-    return velocityRequest.Velocity;
+    if (shooterA.getAppliedControl().equals(stopRequest)) {
+      return 0;
+    } else {
+      return velocityRequest.Velocity;
+    }
+  }
+
+  /**
+   * Checks if the shooter is running at stable speed near the setpoint
+   *
+   * @return TRUE if shooter is spinning at setpoint
+   */
+  @Log.NT(key = "Ready To Launch")
+  public Boolean readyToLaunch() {
+    return getVelocitySetpointRPS() > 0 && stableTime.hasElapsed(1);
   }
 
   public void stop() {
@@ -91,7 +134,9 @@ public class Shooter extends SubsystemBase implements Logged {
         shooterAVoltage,
         shooterBVoltage,
         shooterASupplyVoltage,
-        shooterBSupplyVoltage);
+        shooterBSupplyVoltage,
+        shooterAError,
+        shooterBError);
     log("Upper Velocity", shooterAVelocity.getValue());
     log("Lower Velocity", shooterBVelocity.getValue());
     log("Upper Stator Current", shooterAStatorCurrent.getValue());
@@ -100,5 +145,17 @@ public class Shooter extends SubsystemBase implements Logged {
     log("Lower Voltage", shooterBVoltage.getValue());
     log("Upper Supply Voltage", shooterASupplyVoltage.getValue());
     log("Lower Supply Voltage", shooterBSupplyVoltage.getValue());
+    log("Upper Velocity Error", shooterAError.getValue());
+    log("Lower Velocity Error", shooterBError.getValue());
+
+    /* Check if running at stable speed and restart stableTime if not*/
+    double errorA = shooterAError.getValue();
+    double errorB = shooterBError.getValue();
+    double velocityA = shooterAVelocity.getValue();
+    double velocityB = shooterBVelocity.getValue();
+
+    if (errorA > 5 || errorB > 5 || Math.abs(velocityA - velocityB) > 5) {
+      stableTime.restart();
+    }
   }
 }

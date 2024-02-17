@@ -21,6 +21,8 @@ public final class Constants {
 
   public static final boolean apriltagsEnabled = false;
 
+  public static final boolean disableUnusedSignals = true;
+
   public static final AprilTagFieldLayout kOfficialField =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
@@ -77,7 +79,7 @@ public final class Constants {
     public static final double angleCurrentThresholdTime = 0.1;
     public static final boolean angleEnableCurrentLimit = true;
 
-    public static final int driveCurrentLimit = 35;
+    public static final int driveCurrentLimit = 50;
     public static final int driveCurrentThreshold = 60;
     public static final double driveCurrentThresholdTime = 0.1;
     public static final boolean driveEnableCurrentLimit = true;
@@ -167,16 +169,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int intakeMotorId = 43;
     public static final boolean isInverted = false;
-
-    // Feedforward
-    public static final double kS = 0;
-    public static final double kV = .123;
-    public static final double kA = 0;
-
-    // Feedback
-    public static final double kP = 0.2;
-    public static final double kI = 0;
-    public static final double kD = 0;
+    public static final int noteSensorId = 1;
   }
 
   public static final class ClimberConstants {

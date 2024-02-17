@@ -1,7 +1,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMUConfiguration;
+import com.ctre.phoenix.sensors.PigeonIMU_StatusFrame;
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -22,8 +25,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+
+import frc.lib.hardware.IMU;
+import frc.lib.hardware.Pigeon1IMU;
+import frc.lib.hardware.Pigeon2IMU;
+
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import java.util.List;
@@ -32,6 +41,7 @@ import java.util.function.DoubleSupplier;
 
 import javax.lang.model.util.ElementScanner14;
 
+import monologue.Annotations.Log;
 import monologue.Logged;
 import monologue.Annotations.Log;
 
@@ -46,14 +56,13 @@ public class Swerve extends SubsystemBase implements Logged {
   private SwerveDrivePoseEstimator poseEstimator;
   private List<PhotonPoseEstimator> cameras;
   private SwerveModule[] mSwerveMods;
-  private PigeonIMU gyro;
+  private IMU gyro;
   private Field2d field = new Field2d();
 
   public Swerve() {
     SmartDashboard.putData(field);
-    gyro = new PigeonIMU(Constants.Swerve.pigeonID);
-    gyro.configAllSettings(new PigeonIMUConfiguration());
-    gyro.setYaw(0);
+    gyro = createGyro();
+    gyro.setYaw(new Rotation2d());
 
     headingController = new ProfiledPIDController(
                           Constants.Swerve.headingkP,
@@ -114,6 +123,31 @@ public class Swerve extends SubsystemBase implements Logged {
     }
   }
 
+  public IMU createGyro() {
+    if (Constants.isPracticeBot) {
+      var gyro = new PigeonIMU(Constants.Swerve.pigeonID);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_1_General, 255);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_2_Gyro, 255);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_3_GeneralAccel, 255);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.RawStatus_4_Mag, 255);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.BiasedStatus_6_Accel, 255);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_6_SensorFusion, 255);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_9_SixDeg_YPR, 10);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_10_SixDeg_Quat, 255);
+      gyro.setStatusFramePeriod(PigeonIMU_StatusFrame.CondStatus_11_GyroAccum, 255);
+      return new Pigeon1IMU(gyro);
+    } else {
+      var gyro = new Pigeon2(Constants.Swerve.pigeonID);
+      gyro.getConfigurator().apply(new Pigeon2Configuration());
+      BaseStatusSignal.setUpdateFrequencyForAll(
+          100, gyro.getYaw(), gyro.getPitch(), gyro.getRoll());
+      if (Constants.disableUnusedSignals) {
+        gyro.optimizeBusUtilization();
+      }
+      return new Pigeon2IMU(gyro);
+    }
+  }
+
   public void drive(
       Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
     drive(
@@ -171,6 +205,7 @@ public class Swerve extends SubsystemBase implements Logged {
     poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
   }
 
+  @Log.NT
   public Rotation2d getHeading() {
     return getPose().getRotation();
   }
@@ -189,8 +224,9 @@ public class Swerve extends SubsystemBase implements Logged {
     storedGoalHeading = new Rotation2d();
   }
 
+  @Log.NT
   public Rotation2d getGyroYaw() {
-    return Rotation2d.fromDegrees(gyro.getYaw());
+    return gyro.getYaw();
   }
 
   public ChassisSpeeds getRobotRelativeChassisSpeeds() {
