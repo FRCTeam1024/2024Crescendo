@@ -3,11 +3,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FeedConstants;
 import frc.robot.Constants.IntakeConstants;
+import monologue.Annotations.IgnoreLogged;
+import monologue.Logged;
 
-public class EndEffector {
-  private final Intake intake;
-  private final Feed feed;
-  private final Shooter shooter;
+public class EndEffector implements Logged {
+  @IgnoreLogged private final Intake intake;
+  @IgnoreLogged private final Feed feed;
+  @IgnoreLogged private final Shooter shooter;
 
   public EndEffector(Intake intake, Feed feed, Shooter shooter) {
     this.intake = intake;
