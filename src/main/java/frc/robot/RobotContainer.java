@@ -40,7 +40,7 @@ public class RobotContainer implements Logged {
       new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
   private final JoystickButton headingControl =
       new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-  private final JoystickButton targetTrack = 
+  private final JoystickButton targetTrack =
       new JoystickButton(driver, XboxController.Button.kA.value);
 
   /* Subsystems */
@@ -101,13 +101,12 @@ public class RobotContainer implements Logged {
     zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
 
     headingControl.whileTrue(
-          swerve.teleopHeadingDriveCommand(
+        swerve.teleopHeadingDriveCommand(
             () -> -driver.getRawAxis(translationAxis),
             () -> -driver.getRawAxis(strafeAxis),
             () -> -driver.getRawAxis(rotationYAxis),
             () -> -driver.getRawAxis(rotationXAxis),
-            targetTrack
-            ));
+            targetTrack));
 
     /*Operator Buttons */
     SmartDashboard.putNumber("Shooter Speed (RPS)", 60);

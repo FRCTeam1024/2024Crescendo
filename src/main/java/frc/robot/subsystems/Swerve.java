@@ -7,17 +7,18 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -25,16 +26,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-
 import frc.lib.hardware.IMU;
 import frc.lib.hardware.Pigeon1IMU;
 import frc.lib.hardware.Pigeon2IMU;
-
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import java.util.List;
@@ -42,7 +36,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
-
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -61,19 +54,19 @@ public class Swerve extends SubsystemBase implements Logged {
     gyro = createGyro();
     gyro.setYaw(new Rotation2d());
 
-    headingController = new ProfiledPIDController(
-                          Constants.Swerve.headingkP,
-                          Constants.Swerve.headingkI,
-                          Constants.Swerve.headingkD,
-                          new TrapezoidProfile.Constraints(
-                            Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAngularAcceleration));
-    
+    headingController =
+        new ProfiledPIDController(
+            Constants.Swerve.headingkP,
+            Constants.Swerve.headingkI,
+            Constants.Swerve.headingkD,
+            new TrapezoidProfile.Constraints(
+                Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAngularAcceleration));
+
     headingController.enableContinuousInput(-Math.PI, Math.PI);
-    headingFeedforward = new SimpleMotorFeedforward(Constants.Swerve.headingkS,
-                                                    Constants.Swerve.headingkV,
-                                                    Constants.Swerve.headingkA);
+    headingFeedforward =
+        new SimpleMotorFeedforward(
+            Constants.Swerve.headingkS, Constants.Swerve.headingkV, Constants.Swerve.headingkA);
     storedGoalHeading = new Rotation2d();
-    
 
     mSwerveMods =
         new SwerveModule[] {
@@ -217,7 +210,7 @@ public class Swerve extends SubsystemBase implements Logged {
         getGyroYaw(),
         getModulePositions(),
         new Pose2d(getPose().getTranslation(), new Rotation2d()));
-    
+
     storedGoalHeading = new Rotation2d();
   }
 
@@ -238,22 +231,23 @@ public class Swerve extends SubsystemBase implements Logged {
 
   public Rotation2d getHeadingToTarget() {
     int targetID;
-    Pose2d targetPose; 
+    Pose2d targetPose;
     Boolean invert = false;
     var alliance = DriverStation.getAlliance();
-    if(alliance.isEmpty()) {
+    if (alliance.isEmpty()) {
       return storedGoalHeading;
-    } 
-    else if(alliance.get().equals(Alliance.Red)) {
+    } else if (alliance.get().equals(Alliance.Red)) {
       targetID = 4;
       invert = true;
-    }
-    else {
+    } else {
       targetID = 7;
     }
     targetPose = Constants.kOfficialField.getTagPose(targetID).get().toPose2d();
-    return getPose().minus(targetPose).getTranslation().getAngle()
-            .plus(new Rotation2d(Units.degreesToRadians(invert?180:0)));
+    return getPose()
+        .minus(targetPose)
+        .getTranslation()
+        .getAngle()
+        .plus(new Rotation2d(Units.degreesToRadians(invert ? 180 : 0)));
   }
 
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
@@ -261,7 +255,7 @@ public class Swerve extends SubsystemBase implements Logged {
         () -> {
           /* Reset goal heading */
           storedGoalHeading = getHeading();
-          
+
           /* Get Values, Deadband*/
           double translationVal = MathUtil.applyDeadband(x.getAsDouble(), Constants.stickDeadband);
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
@@ -276,7 +270,12 @@ public class Swerve extends SubsystemBase implements Logged {
         });
   }
 
-  public Command teleopHeadingDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier hx, DoubleSupplier hy, BooleanSupplier aim) {
+  public Command teleopHeadingDriveCommand(
+      DoubleSupplier x,
+      DoubleSupplier y,
+      DoubleSupplier hx,
+      DoubleSupplier hy,
+      BooleanSupplier aim) {
     return run(
         () -> {
           /* Get Values, Deadband Translation*/
@@ -289,32 +288,34 @@ public class Swerve extends SubsystemBase implements Logged {
           Rotation2d goalHeading = new Rotation2d(headingX, headingY);
 
           /* Polar Deadband Heading without scaling */
-          double r = Math.sqrt(headingX*headingX + headingY*headingY);
-          if(r<0.8) {
+          double r = Math.sqrt(headingX * headingX + headingY * headingY);
+          if (r < 0.8) {
             goalHeading = storedGoalHeading;
-          }
-          else {
+          } else {
             storedGoalHeading = goalHeading;
           }
 
           /* Override joystick and aim at goal if requested */
-          if(aim.getAsBoolean()){
+          if (aim.getAsBoolean()) {
             goalHeading = getHeadingToTarget();
             storedGoalHeading = goalHeading;
           }
 
           /*  Calculate rotation velocity using heading controller PID + feedforward */
           State setPoint = headingController.getSetpoint();
-          double rotationVelocity = headingFeedforward.calculate(setPoint.velocity) +
-                                    headingController.calculate(MathUtil.angleModulus(getHeading().getRadians()), 
-                                                                MathUtil.angleModulus(goalHeading.getRadians()));
-          
+          double rotationVelocity =
+              headingFeedforward.calculate(setPoint.velocity)
+                  + headingController.calculate(
+                      MathUtil.angleModulus(getHeading().getRadians()),
+                      MathUtil.angleModulus(goalHeading.getRadians()));
+
           /* Drive */
           drive(
               new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxModuleSpeed),
-              rotationVelocity,true,true);
-        }
-    );
+              rotationVelocity,
+              true,
+              true);
+        });
   }
 
   @Override

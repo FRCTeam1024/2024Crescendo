@@ -10,17 +10,15 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
-import pabeles.concurrency.ConcurrencyOps.NewInstance;
-
 import org.photonvision.PhotonCamera;
 
 public final class Constants {
@@ -123,7 +121,8 @@ public final class Constants {
     public static final double maxModuleSpeed = 4.5; // TODO: This must be tuned to specific robot
 
     /** Radians per Second */
-    public static final double maxAngularVelocity = 10.0; // TODO: This must be tuned to specific robot
+    public static final double maxAngularVelocity =
+        10.0; // TODO: This must be tuned to specific robot
 
     /** Radians per Second per Second */
     public static final double maxAngularAcceleration = 15;
@@ -179,10 +178,11 @@ public final class Constants {
   }
 
   public static final class CameraConstants {
-    public static final PhotonCamera frontCamera = 
-          new PhotonCamera(isPracticeBot ? "Arducam_OV9281_5" : "Arducam_OV9281_2");  //Need to correct comp bot
-    public static final Transform3d frontCamTransform = 
-          new Transform3d(
+    public static final PhotonCamera frontCamera =
+        new PhotonCamera(
+            isPracticeBot ? "Arducam_OV9281_5" : "Arducam_OV9281_2"); // Need to correct comp bot
+    public static final Transform3d frontCamTransform =
+        new Transform3d(
             new Translation3d(
                 Units.inchesToMeters(isPracticeBot ? -11.25 : -11.25),
                 Units.inchesToMeters(isPracticeBot ? 6.5 : 6.5),
@@ -192,10 +192,11 @@ public final class Constants {
                 Units.degreesToRadians(isPracticeBot ? 25 : 25),
                 Units.degreesToRadians(isPracticeBot ? 0 : 0)));
 
-    public static final PhotonCamera rearCamera = 
-          new PhotonCamera(isPracticeBot ? "Arducam_OV9281_4" : "Arducam_OV9281_1");  //Need to correct comp bot
-    public static final Transform3d rearCamTransform = 
-          new Transform3d(
+    public static final PhotonCamera rearCamera =
+        new PhotonCamera(
+            isPracticeBot ? "Arducam_OV9281_4" : "Arducam_OV9281_1"); // Need to correct comp bot
+    public static final Transform3d rearCamTransform =
+        new Transform3d(
             new Translation3d(
                 Units.inchesToMeters(isPracticeBot ? -13.25 : -13.25),
                 Units.inchesToMeters(isPracticeBot ? -6.5 : -6.5),
@@ -205,7 +206,7 @@ public final class Constants {
                 Units.degreesToRadians(isPracticeBot ? 18 : 18),
                 Units.degreesToRadians(isPracticeBot ? 180 : 180)));
   }
-  
+
   public static final class WristConstants {
     // ~100 degrees of range
 
