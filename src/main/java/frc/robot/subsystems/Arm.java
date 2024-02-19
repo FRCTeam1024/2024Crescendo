@@ -16,6 +16,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -55,7 +56,7 @@ public class Arm extends SubsystemBase implements Logged {
     quadEncoder.reset();
 
     // Wait for encoder to produce valid values
-    while (absoluteEncoder.getFrequency() < 963) {
+    while (absoluteEncoder.getFrequency() < 963 && RobotBase.isReal()) {
       Timer.delay(0.01);
     }
 
