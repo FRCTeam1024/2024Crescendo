@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Intake extends SubsystemBase implements Logged {
@@ -31,7 +32,8 @@ public class Intake extends SubsystemBase implements Logged {
     setOutput(0);
   }
 
-  public Boolean hasNote() {
+  @Log.NT
+  public boolean hasNote() {
     return !noteSensor.get();
   }
 

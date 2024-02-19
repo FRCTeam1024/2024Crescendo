@@ -106,8 +106,8 @@ public class Shooter extends SubsystemBase implements Logged {
    * @return TRUE if shooter is spinning at setpoint
    */
   @Log.NT(key = "Ready To Launch")
-  public Boolean readyToLaunch() {
-    return getVelocitySetpointRPS() > 0 && stableTime.hasElapsed(1);
+  public boolean readyToLaunch() {
+    return getVelocitySetpointRPS() > 0 && stableTime.hasElapsed(0.5);
   }
 
   public void stop() {
@@ -148,10 +148,11 @@ public class Shooter extends SubsystemBase implements Logged {
     log("Lower Velocity Error", shooterBError.getValue());
 
     /* Check if running at stable speed and restart stableTime if not*/
-    double errorA = shooterAError.getValue();
-    double errorB = shooterBError.getValue();
+    double setpoint = getVelocitySetpointRPS();
     double velocityA = shooterAVelocity.getValue();
     double velocityB = shooterBVelocity.getValue();
+    double errorA = Math.abs(velocityA - setpoint);
+    double errorB = Math.abs(velocityB - setpoint);
 
     if (errorA > 5 || errorB > 5 || Math.abs(velocityA - velocityB) > 5) {
       stableTime.restart();
