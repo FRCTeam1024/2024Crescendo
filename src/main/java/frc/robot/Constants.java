@@ -228,7 +228,7 @@ public final class Constants {
     public static final double kCOGZeroToMaxExtension = 0;
 
     public static final double kMinPosition = Units.degreesToRadians(0);
-    public static final double kMaxPosition = Units.degreesToRadians(90);
+    public static final double kMaxPosition = 2.28;
 
     // 3-3-4 maxplanetary, 72:64 gearing with wrist
     public static final double kMotorToWristRatio = 3.0 * 3.0 * 4.0 * (72 / 64);
@@ -243,7 +243,7 @@ public final class Constants {
     public static final double kA = 0.0;
     public static final double kG = 0.36;
 
-    public static final double kP = 10;
+    public static final double kP = 5;
     public static final double kI = 0.0;
     public static final double kD = 0;
   }

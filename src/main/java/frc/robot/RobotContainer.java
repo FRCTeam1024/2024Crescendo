@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -69,6 +70,7 @@ public class RobotContainer implements Logged {
     // Configure the button bindings
     configureButtonBindings();
     setupAutoChooser();
+    setupDashboard();
   }
 
   public void setupAutoChooser() {
@@ -107,8 +109,7 @@ public class RobotContainer implements Logged {
             ));
 
     /*Operator Buttons */
-    SmartDashboard.putNumber("Shooter Speed (RPS)", 0);
-    SmartDashboard.putNumber("Wrist Goal", wrist.getPosition());
+    SmartDashboard.putNumber("Shooter Speed (RPS)", 60);
     operator
         .rightTrigger()
         .whileTrue(
@@ -122,27 +123,26 @@ public class RobotContainer implements Logged {
                 .alongWith(feed.runFeedCommand(0.3))
                 .until(intake::hasNote));
     operator.leftBumper().whileTrue(intake.runIntakeCommand(-0.7));
-    operator.y().whileTrue(feed.runFeedCommand(1));
-    operator.a().whileTrue(feed.runFeedCommand(-0.3));
 
-    climber.setDefaultCommand(climber.climbCommand(() -> -operator.getLeftY()));
+    // Intake Position
+    operator.b().onTrue(arm.setGoalCommand(() -> -0.5).alongWith(wrist.setGoalCommand(() -> 0)));
 
+    // Stow
     operator
-        .b()
-        .onTrue(
-            wrist.setGoalCommand(
-                () ->
-                    Units.degreesToRadians(
-                        SmartDashboard.getNumber("Wrist Goal", wrist.getGoal()))));
+        .a()
+        .onTrue(arm.setGoalCommand(() -> -0.5).alongWith(wrist.setGoalCommand(() -> 2.279)));
+
+    // Fire
+    operator
+        .y()
+        .onTrue(feed.runFeedCommand(1.0).alongWith(intake.runIntakeCommand(1.0)).withTimeout(1));
+
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
-    operator.pov(90).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(270).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
-    operator
-        .b()
-        .onTrue(
-            arm.setGoalCommand(
-                () -> Units.degreesToRadians(SmartDashboard.getNumber("Arm Goal", arm.getGoal()))));
+    operator.pov(90).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(-5)));
+
+    climber.setDefaultCommand(climber.climbCommand(() -> -operator.getLeftY()));
 
     // operator.start().onTrue(wristSysID.fullTest(operator.back(), operator.start()));
     // spotless:off
@@ -156,6 +156,13 @@ public class RobotContainer implements Logged {
       wrist.setVoltage(g + output);
     }));
     */
+
+  }
+
+  public void setupDashboard() {
+    var tab = Shuffleboard.getTab("Driver");
+    tab.add(autoChooser);
+    tab.addBoolean("Ready to Shoot", shooter::readyToLaunch);
   }
 
   /**
