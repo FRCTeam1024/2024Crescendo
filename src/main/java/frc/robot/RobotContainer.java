@@ -43,13 +43,17 @@ public class RobotContainer implements Logged {
 
   /* Subsystems */
   private final Swerve swerve = new Swerve();
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
+
   private final Climber climber = new Climber();
+
+  private final Intake intake = new Intake();
   private final Feed feed = new Feed();
+  private final Shooter shooter = new Shooter();
+  private final EndEffector endEffector = new EndEffector(intake, feed, shooter);
+
   private final Wrist wrist = new Wrist();
   private final Arm arm = new Arm();
-  private final EndEffector endEffector = new EndEffector(intake, feed, shooter);
+  private final Superstructure superstructure = new Superstructure(arm, wrist);
 
   private final Autos autos = new Autos(swerve);
 
