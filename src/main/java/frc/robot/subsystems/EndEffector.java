@@ -5,9 +5,9 @@ import frc.robot.Constants.FeedConstants;
 import frc.robot.Constants.IntakeConstants;
 
 public class EndEffector {
-  private Intake intake;
-  private Feed feed;
-  private Shooter shooter;
+  private final Intake intake;
+  private final Feed feed;
+  private final Shooter shooter;
 
   public EndEffector(Intake intake, Feed feed, Shooter shooter) {
     this.intake = intake;

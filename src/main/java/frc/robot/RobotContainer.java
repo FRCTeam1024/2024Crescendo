@@ -10,9 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.commands.ArmSysID;
 import frc.robot.commands.Autos;
-import frc.robot.commands.WristSysID;
 import frc.robot.subsystems.*;
 import monologue.Logged;
 
@@ -52,9 +50,6 @@ public class RobotContainer implements Logged {
   private final Wrist wrist = new Wrist();
   private final Arm arm = new Arm();
   private final EndEffector endEffector = new EndEffector(intake, feed, shooter);
-
-  private final WristSysID wristSysID = new WristSysID(wrist);
-  private final ArmSysID armSysID = new ArmSysID(arm);
 
   private final Autos autos = new Autos(swerve);
 
