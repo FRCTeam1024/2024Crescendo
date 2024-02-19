@@ -292,6 +292,11 @@ public final class Constants {
     public static final int intakeMotorId = 43;
     public static final boolean isInverted = false;
     public static final int noteSensorId = 1;
+
+    // Output for intaking notes
+    public static final double intakingSetpoint = 0.7;
+    // Output for feeding to shooter
+    public static final double fireSetpoint = 1.0;
   }
 
   public static final class ClimberConstants {
@@ -307,6 +312,11 @@ public final class Constants {
     public static final double kFeedGearRatio = 1; // TODO: Fix
 
     public static final InvertedValue kFeedMotorInversionSetting = InvertedValue.Clockwise_Positive;
+
+    // Output for intaking notes
+    public static final double intakingSetpoint = 0.3;
+    // Output for feeding to shooter
+    public static final double fireSetpoint = 1.0;
   }
 
   public static final class ShooterConstants {

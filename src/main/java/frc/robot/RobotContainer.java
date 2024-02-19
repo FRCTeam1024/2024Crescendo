@@ -51,6 +51,7 @@ public class RobotContainer implements Logged {
   private final Feed feed = new Feed();
   private final Wrist wrist = new Wrist();
   private final Arm arm = new Arm();
+  private final EndEffector endEffector = new EndEffector(intake, feed, shooter);
 
   private final WristSysID wristSysID = new WristSysID(wrist);
   private final ArmSysID armSysID = new ArmSysID(arm);
@@ -115,13 +116,7 @@ public class RobotContainer implements Logged {
         .whileTrue(
             shooter.velocityCommand(() -> SmartDashboard.getNumber("Shooter Speed (RPS)", 0)));
     operator.rightBumper().whileTrue(shooter.velocityCommand(-10));
-    operator
-        .leftTrigger()
-        .whileTrue(
-            intake
-                .runIntakeCommand(0.7)
-                .alongWith(feed.runFeedCommand(0.3))
-                .until(intake::hasNote));
+    operator.leftTrigger().whileTrue(endEffector.intakeNote());
     operator.leftBumper().whileTrue(intake.runIntakeCommand(-0.7));
 
     // Intake Position
@@ -133,9 +128,7 @@ public class RobotContainer implements Logged {
         .onTrue(arm.setGoalCommand(() -> -0.5).alongWith(wrist.setGoalCommand(() -> 2.279)));
 
     // Fire
-    operator
-        .y()
-        .onTrue(feed.runFeedCommand(1.0).alongWith(intake.runIntakeCommand(1.0)).withTimeout(1));
+    operator.y().onTrue(endEffector.fireNote());
 
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
