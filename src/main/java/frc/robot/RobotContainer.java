@@ -125,7 +125,7 @@ public class RobotContainer implements Logged {
     operator.y().whileTrue(feed.runFeedCommand(1));
     operator.a().whileTrue(feed.runFeedCommand(-0.3));
 
-    climber.setDefaultCommand(climber.getClimbCommand(() -> -operator.getLeftY()));
+    climber.setDefaultCommand(climber.climbCommand(() -> -operator.getLeftY()));
 
     operator
         .b()

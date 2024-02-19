@@ -60,6 +60,11 @@ public final class Constants {
     public static final double headingkI = 0;
     public static final double headingkD = 0;
 
+    /* Heading Feedforward Values */
+    public static final double headingkS = 0;
+    public static final double headingkV = 1;
+    public static final double headingkA = 0;
+
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
     public static final SwerveDriveKinematics swerveKinematics =
@@ -175,7 +180,7 @@ public final class Constants {
 
   public static final class CameraConstants {
     public static final PhotonCamera frontCamera = 
-          new PhotonCamera(isPracticeBot ? "Arducam_OV9281_5" : "Arducam_OV92181_2");  //Need to correct comp bot
+          new PhotonCamera(isPracticeBot ? "Arducam_OV9281_5" : "Arducam_OV9281_2");  //Need to correct comp bot
     public static final Transform3d frontCamTransform = 
           new Transform3d(
             new Translation3d(
@@ -188,7 +193,7 @@ public final class Constants {
                 Units.degreesToRadians(isPracticeBot ? 0 : 0)));
 
     public static final PhotonCamera rearCamera = 
-          new PhotonCamera(isPracticeBot ? "Arducam_OV9281_4" : "Arducam_OV92181_1");  //Need to correct comp bot
+          new PhotonCamera(isPracticeBot ? "Arducam_OV9281_4" : "Arducam_OV9281_1");  //Need to correct comp bot
     public static final Transform3d rearCamTransform = 
           new Transform3d(
             new Translation3d(

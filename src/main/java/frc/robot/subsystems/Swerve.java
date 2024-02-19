@@ -27,7 +27,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 import frc.lib.hardware.IMU;
 import frc.lib.hardware.Pigeon1IMU;
@@ -40,14 +42,14 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
-import org.photonvision.PhotonCamera;
+
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class Swerve extends SubsystemBase implements Logged {
   private ProfiledPIDController headingController;
+  private SimpleMotorFeedforward headingFeedforward;
   private Rotation2d storedGoalHeading;
-  private Pose2d speakerPose;
   private SwerveDrivePoseEstimator poseEstimator;
   private List<PhotonPoseEstimator> cameras;
   private SwerveModule[] mSwerveMods;
@@ -67,7 +69,9 @@ public class Swerve extends SubsystemBase implements Logged {
                             Constants.Swerve.maxAngularVelocity, Constants.Swerve.maxAngularAcceleration));
     
     headingController.enableContinuousInput(-Math.PI, Math.PI);
-
+    headingFeedforward = new SimpleMotorFeedforward(Constants.Swerve.headingkS,
+                                                    Constants.Swerve.headingkV,
+                                                    Constants.Swerve.headingkA);
     storedGoalHeading = new Rotation2d();
     
 
@@ -299,8 +303,10 @@ public class Swerve extends SubsystemBase implements Logged {
             storedGoalHeading = goalHeading;
           }
 
-          /*  Calculate rotation velocity using heading controller */
-          double rotationVelocity = headingController.calculate(MathUtil.angleModulus(getHeading().getRadians()), 
+          /*  Calculate rotation velocity using heading controller PID + feedforward */
+          State setPoint = headingController.getSetpoint();
+          double rotationVelocity = headingFeedforward.calculate(setPoint.velocity) +
+                                    headingController.calculate(MathUtil.angleModulus(getHeading().getRadians()), 
                                                                 MathUtil.angleModulus(goalHeading.getRadians()));
           
           /* Drive */

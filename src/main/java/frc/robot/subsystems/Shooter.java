@@ -35,7 +35,6 @@ public class Shooter extends SubsystemBase implements Logged {
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0).withSlot(0);
   private final NeutralOut stopRequest = new NeutralOut();
 
-  private Boolean atSpeed = false;
   private Timer stableTime = new Timer();
 
   public Shooter() {
