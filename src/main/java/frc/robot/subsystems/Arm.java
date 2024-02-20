@@ -202,11 +202,11 @@ public class Arm extends SubsystemBase implements Logged {
    * @return the command
    */
   public Command continuousGoalCommand(DoubleSupplier goalSupplier) {
-    return run(
-        () -> {
+    return run(() -> {
           setGoal(goalSupplier.getAsDouble());
           updatePositionController();
-        });
+        })
+        .asProxy();
   }
 
   /**
