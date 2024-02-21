@@ -56,7 +56,7 @@ public class RobotContainer implements Logged {
   private final Arm arm = new Arm();
   private final Superstructure superstructure = new Superstructure(arm, wrist);
 
-  private final Autos autos = new Autos(swerve);
+  private final Autos autos = new Autos(swerve, superstructure, endEffector);
 
   private final SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -78,9 +78,9 @@ public class RobotContainer implements Logged {
     autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
     autoChooser.addOption("Circuit", autos.circuitAuto());
     autoChooser.addOption("NL Speaker", autos.runPathPlannerAuto("NL Speaker"));
-    autoChooser.addOption("LNE1", autos.runPathAuto("LNEnd Speaker"));
+    autoChooser.addOption("LNE1", autos.runPathAsAuto("LNEnd Speaker"));
     autoChooser.addOption("NL AMP", autos.runPathPlannerAuto("NL AMP"));
-    autoChooser.addOption("RN Start", autos.runPathAuto("RN Start"));
+    autoChooser.addOption("RN Start", autos.runPathAsAuto("RN Start"));
     autoChooser.addOption("3 Near", autos.runPathPlannerAuto("3 Near"));
     autoChooser.addOption("NM Speaker", autos.runPathPlannerAuto("NM Speaker"));
     autoChooser.addOption("NR Speaker", autos.runPathPlannerAuto("NR Speaker"));

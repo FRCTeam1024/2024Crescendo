@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.wpilibj2.command.Commands.*;
+import static edu.wpi.first.wpilibj2.command.Commands.parallel;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.FeedConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -28,5 +31,13 @@ public class EndEffector implements Logged {
     return feed.runFeedCommand(FeedConstants.fireSetpoint)
         .alongWith(intake.runIntakeCommand(IntakeConstants.fireSetpoint))
         .withTimeout(1.0);
+  }
+
+  public Command fireWhenReady() {
+    return waitUntil(shooter::readyToLaunch).andThen(fireNote());
+  }
+
+  public Command spinUpAndShoot(double shotSetpoint) {
+    return parallel(shooter.velocityCommand(() -> shotSetpoint), fireWhenReady());
   }
 }
