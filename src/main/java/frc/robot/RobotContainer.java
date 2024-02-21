@@ -114,7 +114,7 @@ public class RobotContainer implements Logged {
     SmartDashboard.putNumber("Shooter Speed (RPS)", 70);
     // Spin up shooter
     operator
-        .y()
+        .rightTrigger()
         .whileTrue(
             shooter.velocityCommand(() -> SmartDashboard.getNumber("Shooter Speed (RPS)", 0)));
     // Fire
