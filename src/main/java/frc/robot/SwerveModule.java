@@ -5,6 +5,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
@@ -28,6 +29,7 @@ public class SwerveModule {
 
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> driveMotorVelocity;
+  private final StatusSignal<Double> driveMotorVoltage;
 
   private final StatusSignal<Double> angleEncoderAbsolutePosition;
 
@@ -38,6 +40,7 @@ public class SwerveModule {
   /* drive motor control requests */
   private final DutyCycleOut driveDutyCycleRequest = new DutyCycleOut(0);
   private final VelocityVoltage driveVelocityRequest = new VelocityVoltage(0);
+  private final VoltageOut driveVoltage = new VoltageOut(0);
 
   /* angle motor control requests */
   private final PositionVoltage anglePositionRequest = new PositionVoltage(0);
@@ -64,6 +67,7 @@ public class SwerveModule {
     mDriveMotor.getConfigurator().setPosition(0.0);
     driveMotorPosition = mDriveMotor.getPosition();
     driveMotorVelocity = mDriveMotor.getVelocity();
+    driveMotorVoltage = mDriveMotor.getMotorVoltage();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50,
@@ -96,6 +100,13 @@ public class SwerveModule {
     mAngleMotor.setControl(anglePositionRequest.withPosition(angle.getRotations()));
   }
 
+  /**
+   * Sets the desired speed of the drive wheel.
+   *
+   * @param speedMetersPerSecond Desired speed of the drive wheel in meters per second.
+   * @param isOpenLoop Whether to use open loop or closed loop control. If this is true, the duty
+   *     cycle output will be ${@code speedMetersPerSecond / maxSpeed}.
+   */
   private void setSpeed(double speedMetersPerSecond, boolean isOpenLoop) {
     // Convert linear speed of wheel to motor speed
     var requestedVelocityRPS = wheelMeterToMotorRot(speedMetersPerSecond);
@@ -114,6 +125,18 @@ public class SwerveModule {
       driveVelocityRequest.FeedForward = driveFeedForward.calculate(speedMetersPerSecond);
       mDriveMotor.setControl(driveVelocityRequest);
     }
+  }
+
+  /**
+   * Commands the swerve module to an angle and drive voltage. Does <i>not</i> optimize the angle.
+   * This is used for system identification testing.
+   *
+   * @param angle the azimuth angle.
+   * @param voltage the voltage for the drive motor.
+   */
+  public void setAngleAndVoltage(Rotation2d angle, double voltage) {
+    setAngle(angle);
+    mDriveMotor.setControl(driveVoltage.withOutput(voltage));
   }
 
   public Rotation2d getCANcoder() {
@@ -144,6 +167,10 @@ public class SwerveModule {
     var trueDriveRotations = driveRotations - azimuthCompensationDistance;
 
     return new SwerveModulePosition(motorRotToWheelMeter(trueDriveRotations), getAngle());
+  }
+
+  public double getVoltage() {
+    return driveMotorVoltage.refresh().getValue();
   }
 
   public static double wheelMeterToMotorRot(double wheelMeters) {

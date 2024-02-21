@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.hardware.IMU;
@@ -154,6 +155,22 @@ public class Swerve extends SubsystemBase implements Logged {
 
   public void driveRobotRelative(ChassisSpeeds speeds) {
     drive(speeds, false, false);
+  }
+
+  public void driveVoltage(Rotation2d heading, double voltage) {
+    for (var mod : mSwerveMods) {
+      mod.setAngleAndVoltage(heading, voltage);
+    }
+  }
+
+  public void logSysID(SysIdRoutineLog sysidLog) {
+    for (var mod : mSwerveMods) {
+      sysidLog
+          .motor("Module-" + mod.moduleNumber)
+          .value("voltage", mod.getVoltage(), "Volt")
+          .value("position", mod.getPosition().distanceMeters, "Meter")
+          .value("velocity", mod.getState().speedMetersPerSecond, "Meter per Second");
+    }
   }
 
   /**
