@@ -130,15 +130,11 @@ public class RobotContainer implements Logged {
     operator.b().onTrue(superstructure.setGoalState(Superstructure.State.intake));
 
     // Stow
-    operator
-        .a()
-        .onTrue(superstructure.setGoalState(Superstructure.State.stow));
+    operator.a().onTrue(superstructure.setGoalState(Superstructure.State.stow));
 
     // Score amp
-    operator.x()
-        .onTrue(superstructure.setGoalState(Superstructure.State.scoreAmp));
+    operator.x().onTrue(superstructure.setGoalState(Superstructure.State.scoreAmp));
 
-    
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
     operator.pov(270).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(1)));
