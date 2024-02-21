@@ -82,20 +82,11 @@ public class Swerve extends SubsystemBase implements Logged {
             Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions(), new Pose2d());
     AutoBuilder.configureHolonomic(
         this::getPose,
-        (pose) -> {
-          setPose(pose);
-        },
+        this::setPose,
         this::getRobotRelativeChassisSpeeds,
         this::driveRobotRelative,
         Constants.AutoConstants.pathFollowerConfig,
-        () -> {
-          var result = DriverStation.getAlliance();
-          if (result.isEmpty()) {
-            System.out.println("Alliance was empty at auto start!");
-            return false;
-          }
-          return result.get().equals(Alliance.Red);
-        },
+        this::shouldFlipPath,
         this);
     if (Constants.apriltagsEnabled) {
       cameras =
@@ -333,6 +324,15 @@ public class Swerve extends SubsystemBase implements Logged {
               true,
               true);
         });
+  }
+
+  public boolean shouldFlipPath() {
+    var result = DriverStation.getAlliance();
+    if (result.isEmpty()) {
+      System.out.println("Alliance was empty at auto start!");
+      return false;
+    }
+    return result.get().equals(Alliance.Red);
   }
 
   @Override

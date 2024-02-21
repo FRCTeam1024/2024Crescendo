@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -69,6 +70,7 @@ public class RobotContainer implements Logged {
             () -> -driver.getRawAxis(rotationXAxis)));
 
     // Configure the button bindings
+    initializeNamedCommands();
     configureButtonBindings();
     setupAutoChooser();
     setupDashboard();
@@ -155,7 +157,10 @@ public class RobotContainer implements Logged {
       wrist.setVoltage(g + output);
     }));
     */
+  }
 
+  public void initializeNamedCommands() {
+    NamedCommands.registerCommand("runIntakeUntilNote", endEffector.intakeNote());
   }
 
   public void setupDashboard() {
