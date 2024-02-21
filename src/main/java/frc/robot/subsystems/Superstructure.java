@@ -3,17 +3,29 @@ package frc.robot.subsystems;
 import static edu.wpi.first.math.util.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.lib.math.TwoJointArmKinematics;
 import monologue.Annotations.IgnoreLogged;
+import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Superstructure implements Logged {
   @IgnoreLogged Arm arm;
   @IgnoreLogged Wrist wrist;
 
+  private final TwoJointArmKinematics kinematics = new TwoJointArmKinematics(Units.inchesToMeters(22.5), Units.inchesToMeters(13.65));
+
   public Superstructure(Arm arm, Wrist wrist) {
     this.arm = arm;
     this.wrist = wrist;
+  }
+
+  @Log
+  public Translation2d getEndEffectorPosition() {
+    return kinematics.getEndEffectorTranslation(Rotation2d.fromRadians(arm.getPosition()), Rotation2d.fromRadians(wrist.getTipPosition()));
   }
 
   /**

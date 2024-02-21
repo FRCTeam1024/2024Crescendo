@@ -223,7 +223,7 @@ public final class Constants {
      */
     public static final double kOffsetAtLowerHardStop = isPracticeBot ? 1.630 : 0;
 
-    public static final double kHardStopToMaxExtension = 0;
+    public static final double kHardStopToMaxExtension = -0.511786;
     public static final double kHardStopToCOG = 0;
 
     public static final double kCOGZeroToMaxExtension = 0;
