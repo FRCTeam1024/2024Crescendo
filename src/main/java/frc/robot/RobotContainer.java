@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -108,32 +109,43 @@ public class RobotContainer implements Logged {
             targetTrack));
 
     /*Operator Buttons */
-    SmartDashboard.putNumber("Shooter Speed (RPS)", 60);
+    SmartDashboard.putNumber("Shooter Speed (RPS)", 70);
+    // Spin up shooter
     operator
-        .rightTrigger()
+        .y()
         .whileTrue(
             shooter.velocityCommand(() -> SmartDashboard.getNumber("Shooter Speed (RPS)", 0)));
+    // Fire
+    operator.y().onTrue(endEffector.fireNote());
+    // Reverse shooter
     operator.rightBumper().whileTrue(shooter.velocityCommand(-10));
+    // Intake
     operator.leftTrigger().whileTrue(endEffector.intakeNote());
-    operator.leftBumper().whileTrue(intake.runIntakeCommand(-0.7));
+    // Reverse intake
+    operator
+        .leftBumper()
+        .whileTrue(intake.runIntakeCommand(-0.7).alongWith(feed.runFeedCommand(-0.7)));
 
-    // Intake Position
-    operator.b().onTrue(arm.setGoalCommand(() -> -0.5).alongWith(wrist.setGoalCommand(() -> 0)));
+    // Intake + Shoot Position
+    operator.b().onTrue(superstructure.setGoalState(Superstructure.State.intake));
 
     // Stow
     operator
         .a()
-        .onTrue(arm.setGoalCommand(() -> -0.5).alongWith(wrist.setGoalCommand(() -> 2.279)));
+        .onTrue(superstructure.setGoalState(Superstructure.State.stow));
 
-    // Fire
-    operator.y().onTrue(endEffector.fireNote());
+    // Score amp
+    operator.x()
+        .onTrue(superstructure.setGoalState(Superstructure.State.scoreAmp));
 
+    
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
-    operator.pov(270).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(5)));
-    operator.pov(90).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(-5)));
+    operator.pov(270).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(1)));
+    operator.pov(90).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(-1)));
 
-    climber.setDefaultCommand(climber.climbCommand(() -> -operator.getLeftY()));
+    climber.setDefaultCommand(
+        climber.climbCommand(() -> MathUtil.applyDeadband(-operator.getLeftY(), 0.04)));
 
     // operator.start().onTrue(wristSysID.fullTest(operator.back(), operator.start()));
     // spotless:off

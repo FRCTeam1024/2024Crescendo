@@ -42,15 +42,15 @@ public class Superstructure implements Logged {
    * @param wristPosition Arm wrist position in radians
    */
   public record State(double armPosition, double wristPosition) {
+
     public static final State stow = new State(-0.5, 2.279);
-    public static final State intake = new State(-0.5, 0);
-    public static final State scoreFromSubwoofer =
-        new State(degreesToRadians(-25), degreesToRadians(0));
+    public static final State intake = new State(stow.armPosition(), 0.087266);
+    public static final State scoreFromSubwoofer = new State(stow.armPosition(), 0.087266);
     public static final State scoreFromSpikeMark =
-        new State(degreesToRadians(-25), degreesToRadians(15));
+        new State(stow.armPosition(), degreesToRadians(15));
     public static final State scoreTrap = new State(degreesToRadians(60), degreesToRadians(10));
-    public static final State scoreAmp = new State(degreesToRadians(45), degreesToRadians(0));
-    public static final State scoreFromAmp = new State(degreesToRadians(-25), degreesToRadians(5));
+    public static final State scoreAmp = new State(0.808997, 0.506145);
+    public static final State scoreFromAmp = new State(stow.armPosition(), 0.314159);
     public static final State scoreOverDefense =
         new State(degreesToRadians(30), degreesToRadians(15));
   }
