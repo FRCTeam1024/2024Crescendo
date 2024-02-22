@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6555643152541364,
-        "y": 6.249236897354633
+        "x": 2.2311181338135144,
+        "y": 5.540252206657979
       },
       "isLocked": false,
       "linkedName": "Center Start"
     },
     {
       "anchor": {
-        "x": 2.327845382963493,
-        "y": 6.99655944766435
+        "x": 2.4671281948024646,
+        "y": 5.540252206657979
       },
       "prevControl": {
-        "x": 1.6561756759877153,
-        "y": 6.89394324243194
+        "x": 1.6985023025280435,
+        "y": 5.540252206657979
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center Note"
     }
   ],
   "rotationTargets": [],
@@ -48,5 +48,5 @@
     "rotation": 0.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

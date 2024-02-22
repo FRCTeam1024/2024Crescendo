@@ -14,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LNStart"
+            "pathName": "AMP_to_LN"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LNEnd Speaker"
+            "pathName": "LN_to_shoot"
           }
         }
       ]

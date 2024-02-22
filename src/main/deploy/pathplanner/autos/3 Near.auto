@@ -14,37 +14,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "N1 Start"
+            "pathName": "C_to_LN"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "N1 End"
+            "pathName": "LN_to_C"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "MNStart"
+            "pathName": "C_to_CN"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "MNEnd Speaker"
+            "pathName": "CN_to_C"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "N3 Start"
+            "pathName": "C_to_RN"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "N3 End"
+            "pathName": "RN_to_C"
           }
         }
       ]

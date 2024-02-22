@@ -23,21 +23,22 @@ public class Autos {
   }
 
   public Command driveStraight() {
-    return runPathAsAuto("3 Feet");
+    return runPathWithReset("3 Feet");
   }
 
   public Command circuitAuto() {
-    return runPathAsAuto("Circuit");
+    return runPathWithReset("Circuit");
   }
 
   public Command centerTwoNote() {
     return sequence(
         superstructure.setGoalState(Superstructure.State.intake),
         endEffector.spinUpAndShoot(70),
-        runPathAsAuto("MNStart"),
-        runPath("MNEnd Speaker"),
+        
+        runPathWithReset("C_to_CN"),
+        runPath("CN_to_C"),
         endEffector.spinUpAndShoot(70),
-        runPath("MNStart"));
+        runPath("C_to_Leave"));
   }
 
   public Command runPath(String pathName) {
@@ -45,7 +46,7 @@ public class Autos {
     return AutoBuilder.followPath(path);
   }
 
-  public Command runPathAsAuto(String pathName) {
+  public Command runPathWithReset(String pathName) {
     var path = PathPlannerPath.fromPathFile(pathName);
     return AutoBuilder.followPath(path)
         .beforeStarting(

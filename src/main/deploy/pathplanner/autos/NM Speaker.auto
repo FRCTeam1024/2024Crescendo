@@ -14,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MNStart"
+            "pathName": "C_to_CN"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "MNEnd Speaker"
+            "pathName": "CN_to_C"
           }
         }
       ]

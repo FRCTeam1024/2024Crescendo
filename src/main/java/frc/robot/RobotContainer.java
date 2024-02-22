@@ -75,21 +75,21 @@ public class RobotContainer implements Logged {
     setupAutoChooser();
     setupDashboard();
   }
-
+//PathNames are wrong
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
     autoChooser.addOption("Center Two Note", autos.centerTwoNote());
     autoChooser.addOption("Circuit", autos.circuitAuto());
-    autoChooser.addOption("NL Speaker", autos.runPathPlannerAuto("NL Speaker"));
-    autoChooser.addOption("LNE1", autos.runPathAsAuto("LNEnd Speaker"));
-    autoChooser.addOption("NL AMP", autos.runPathPlannerAuto("NL AMP"));
-    autoChooser.addOption("RN Start", autos.runPathAsAuto("RN Start"));
-    autoChooser.addOption("3 Near", autos.runPathPlannerAuto("3 Near"));
-    autoChooser.addOption("NM Speaker", autos.runPathPlannerAuto("NM Speaker"));
-    autoChooser.addOption("NR Speaker", autos.runPathPlannerAuto("NR Speaker"));
-    autoChooser.addOption("LN and F", autos.runPathPlannerAuto("LN and F"));
-    autoChooser.addOption("FR", autos.runPathPlannerAuto("FR"));
-    autoChooser.addOption("MN and F", autos.runPathPlannerAuto("MN and F"));
+    //autoChooser.addOption("NL Speaker", autos.runPathPlannerAuto("NL Speaker"));
+    //autoChooser.addOption("LNE1", autos.runPathWithReset("LNEnd Speaker"));
+    //autoChooser.addOption("NL AMP", autos.runPathPlannerAuto("NL AMP"));
+    autoChooser.addOption("AMP_to_LN", autos.runPathWithReset("AMP_to_LN"));
+    //autoChooser.addOption("3 Near", autos.runPathPlannerAuto("3 Near"));
+    //autoChooser.addOption("NM Speaker", autos.runPathPlannerAuto("NM Speaker"));
+    //autoChooser.addOption("NR Speaker", autos.runPathPlannerAuto("NR Speaker"));
+    //autoChooser.addOption("LN and F", autos.runPathPlannerAuto("LN and F"));
+    //autoChooser.addOption("FR", autos.runPathPlannerAuto("FR"));
+    //autoChooser.addOption("MN and F", autos.runPathPlannerAuto("MN and F"));
     SmartDashboard.putData(autoChooser);
   }
 

@@ -14,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LNStart"
+            "pathName": "AMP_to_LN"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LNEnd AMP"
+            "pathName": "LN_to_AMP"
           }
         }
       ]

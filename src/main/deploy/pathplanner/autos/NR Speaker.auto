@@ -14,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RN Start"
+            "pathName": "Source_to_RN"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "N3 End"
+            "pathName": "RN_to_C"
           }
         }
       ]
