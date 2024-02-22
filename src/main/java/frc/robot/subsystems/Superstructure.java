@@ -16,16 +16,36 @@ public class Superstructure implements Logged {
   @IgnoreLogged Arm arm;
   @IgnoreLogged Wrist wrist;
 
-  private final TwoJointArmKinematics kinematics = new TwoJointArmKinematics(Units.inchesToMeters(22.5), Units.inchesToMeters(13.65));
+  private final TwoJointArmKinematics kinematics =
+      new TwoJointArmKinematics(Units.inchesToMeters(22.5), Units.inchesToMeters(13.65));
 
   public Superstructure(Arm arm, Wrist wrist) {
     this.arm = arm;
     this.wrist = wrist;
   }
 
-  @Log
+  @Log.NT
   public Translation2d getEndEffectorPosition() {
-    return kinematics.getEndEffectorTranslation(Rotation2d.fromRadians(arm.getPosition()), Rotation2d.fromRadians(wrist.getTipPosition()));
+    return kinematics.getEndEffectorTranslation(
+        Rotation2d.fromRadians(arm.getPosition()), Rotation2d.fromRadians(wrist.getTipPosition()));
+  }
+
+  @Log.NT
+  public boolean outOfBounds() {
+    Translation2d robotToArmOrigin =
+        new Translation2d(Units.inchesToMeters(-9.5), Units.inchesToMeters(18.625));
+    double topBoundY = Units.feetToMeters(4);
+    double robotLength = Units.inchesToMeters(27.25);
+    double frameBoundXPos = (robotLength / 2) + Units.feetToMeters(1);
+    double frameBoundXNeg = -frameBoundXPos;
+
+    var endEffectorPosition = getEndEffectorPosition();
+    var endEffectorInRobotFrame = robotToArmOrigin.plus(endEffectorPosition);
+
+    boolean topbound = endEffectorInRobotFrame.getY() > topBoundY;
+    boolean frontBound = endEffectorInRobotFrame.getX() > frameBoundXPos;
+    boolean backBound = endEffectorInRobotFrame.getX() < frameBoundXNeg;
+    return topbound || frontBound || backBound;
   }
 
   /**
