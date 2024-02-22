@@ -18,6 +18,8 @@ public class Autos {
 
   public Autos(Swerve drivetrain, Superstructure superstructure, EndEffector endEffector) {
     this.drivetrain = drivetrain;
+    this.superstructure = superstructure;
+    this.endEffector = endEffector;
   }
 
   public Command driveStraight() {
@@ -32,10 +34,10 @@ public class Autos {
     return sequence(
         superstructure.setGoalState(Superstructure.State.intake),
         endEffector.spinUpAndShoot(70),
-        runPath("path from center to note"), // runs intake during path
-        runPath("go back"),
+        runPathAsAuto("MNStart"),
+        runPath("MNEnd Speaker"),
         endEffector.spinUpAndShoot(70),
-        runPath("leave"));
+        runPath("MNStart"));
   }
 
   public Command runPath(String pathName) {

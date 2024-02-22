@@ -78,6 +78,7 @@ public class RobotContainer implements Logged {
 
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
+    autoChooser.addOption("Center Two Note", autos.centerTwoNote());
     autoChooser.addOption("Circuit", autos.circuitAuto());
     autoChooser.addOption("NL Speaker", autos.runPathPlannerAuto("NL Speaker"));
     autoChooser.addOption("LNE1", autos.runPathAsAuto("LNEnd Speaker"));
