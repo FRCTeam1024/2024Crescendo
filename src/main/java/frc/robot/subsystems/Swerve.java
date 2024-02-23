@@ -238,25 +238,19 @@ public class Swerve extends SubsystemBase implements Logged {
   }
 
   @Log.NT
-  public Rotation2d getHeadingToTarget() {
+  public Rotation2d getHeadingToSpeaker() {
     int targetID;
     Pose2d targetPose;
-    Boolean invert = false;
     var alliance = DriverStation.getAlliance();
     if (alliance.isEmpty()) {
       return storedGoalHeading;
     } else if (alliance.get().equals(Alliance.Red)) {
       targetID = 4;
-      invert = true;
     } else {
       targetID = 7;
     }
     targetPose = Constants.kOfficialField.getTagPose(targetID).get().toPose2d();
-    return getPose()
-        .minus(targetPose)
-        .getTranslation()
-        .getAngle()
-         .plus(new Rotation2d(Units.degreesToRadians(invert ? 180 : 0)));
+    return getPose().getTranslation().minus(targetPose.getTranslation()).getAngle();
   }
 
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
@@ -273,8 +267,8 @@ public class Swerve extends SubsystemBase implements Logged {
           /* Invert translation controls if on Red side of field */
           var alliance = DriverStation.getAlliance();
           if(alliance.get().equals(Alliance.Red)){
-          translationVal *= -1;
-          strafeVal *= -1;
+            translationVal *= -1;
+            strafeVal *= -1;
           }
 
           /* Drive */
@@ -320,9 +314,9 @@ public class Swerve extends SubsystemBase implements Logged {
             storedGoalHeading = goalHeading;
           }
 
-          /* Override joystick and aim at goal if requested */
+          /* Override joystick and aim at speaker if requested */
           if (aim.getAsBoolean()) {
-            goalHeading = getHeadingToTarget();
+            goalHeading = getHeadingToSpeaker();
             storedGoalHeading = goalHeading;
           }
 
