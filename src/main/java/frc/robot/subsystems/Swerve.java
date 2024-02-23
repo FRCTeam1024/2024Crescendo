@@ -237,6 +237,7 @@ public class Swerve extends SubsystemBase implements Logged {
     }
   }
 
+  @Log.NT
   public Rotation2d getHeadingToTarget() {
     int targetID;
     Pose2d targetPose;
@@ -255,7 +256,7 @@ public class Swerve extends SubsystemBase implements Logged {
         .minus(targetPose)
         .getTranslation()
         .getAngle()
-        .plus(new Rotation2d(Units.degreesToRadians(invert ? 180 : 0)));
+         .plus(new Rotation2d(Units.degreesToRadians(invert ? 180 : 0)));
   }
 
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
@@ -268,6 +269,13 @@ public class Swerve extends SubsystemBase implements Logged {
           double translationVal = MathUtil.applyDeadband(x.getAsDouble(), Constants.stickDeadband);
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
           double rotationVal = MathUtil.applyDeadband(theta.getAsDouble(), Constants.stickDeadband);
+
+          /* Invert translation controls if on Red side of field */
+          var alliance = DriverStation.getAlliance();
+          if(alliance.get().equals(Alliance.Red)){
+          translationVal *= -1;
+          strafeVal *= -1;
+          }
 
           /* Drive */
           drive(
@@ -291,6 +299,15 @@ public class Swerve extends SubsystemBase implements Logged {
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
           double headingX = hx.getAsDouble();
           double headingY = hy.getAsDouble();
+
+          /* Invert translation controls if on Red side of field */
+          var alliance = DriverStation.getAlliance();
+          if(alliance.get().equals(Alliance.Red)){
+            translationVal *= -1;
+            strafeVal *= -1;
+            headingX *= -1;
+            headingY *= -1;
+          }
 
           /* Create a Rotation2D to represent desired heading */
           Rotation2d goalHeading = new Rotation2d(headingX, headingY);

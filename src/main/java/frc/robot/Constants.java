@@ -24,7 +24,7 @@ import org.photonvision.PhotonCamera;
 public final class Constants {
   public static final double stickDeadband = 0.04;
 
-  public static final boolean apriltagsEnabled = false;
+  public static final boolean apriltagsEnabled = true;
 
   public static final boolean disableUnusedSignals = true;
 
@@ -189,7 +189,7 @@ public final class Constants {
                 Units.inchesToMeters(isPracticeBot ? 19.25 : 19.25)),
             new Rotation3d(
                 Units.degreesToRadians(isPracticeBot ? 0 : 0),
-                Units.degreesToRadians(isPracticeBot ? 25 : 25),
+                Units.degreesToRadians(isPracticeBot ? -25 : -25),
                 Units.degreesToRadians(isPracticeBot ? 0 : 0)));
 
     public static final PhotonCamera rearCamera =
@@ -203,7 +203,7 @@ public final class Constants {
                 Units.inchesToMeters(isPracticeBot ? 20.875 : 20.875)),
             new Rotation3d(
                 Units.degreesToRadians(isPracticeBot ? 0 : 0),
-                Units.degreesToRadians(isPracticeBot ? 18 : 18),
+                Units.degreesToRadians(isPracticeBot ? -18 : -18),
                 Units.degreesToRadians(isPracticeBot ? 180 : 180)));
   }
 
@@ -315,7 +315,7 @@ public final class Constants {
     public static final InvertedValue kFeedMotorInversionSetting = InvertedValue.Clockwise_Positive;
 
     // Output for intaking notes
-    public static final double intakingSetpoint = 0.3;
+    public static final double intakingSetpoint = 0.6;
     // Output for feeding to shooter
     public static final double fireSetpoint = 1.0;
   }
