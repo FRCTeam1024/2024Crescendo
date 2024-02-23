@@ -57,5 +57,8 @@ public class Feed extends SubsystemBase implements Logged {
   @Override
   public void periodic() {
     BaseStatusSignal.refreshAll(feedMotorVelocity, feedMotorStatorCurrent, feedMotorVoltage);
+    log("Velocity", feedMotorVelocity.getValue());
+    log("Current", feedMotorStatorCurrent.getValue());
+    log("Voltage", feedMotorVoltage.getValue());
   }
 }

@@ -128,6 +128,10 @@ public class RobotContainer implements Logged {
     operator
         .leftBumper()
         .whileTrue(intake.runIntakeCommand(-0.7).alongWith(feed.runFeedCommand(-0.7)));
+    
+    // SLow Reverse intake
+    operator.start()
+            .whileTrue(feed.runFeedCommand(-0.1));
 
     // Intake + Shoot Position
     operator.b().onTrue(superstructure.setGoalState(Superstructure.State.intake));
