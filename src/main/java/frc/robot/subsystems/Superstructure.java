@@ -76,8 +76,8 @@ public class Superstructure implements Logged {
   public record State(double armPosition, double wristPosition) {
 
     public static final State stow = new State(-0.5, 2.279);
-    public static final State intake = new State(stow.armPosition(), 0.087266);
-    public static final State scoreFromSubwoofer = new State(stow.armPosition(), 0.087266);
+    public static final State intake = new State(stow.armPosition(), 0.087266 - Units.degreesToRadians(1));
+    public static final State scoreFromSubwoofer = new State(stow.armPosition(), 0.087266 + Units.degreesToRadians(1));
     public static final State scoreFromSpikeMark =
         new State(stow.armPosition(), degreesToRadians(15));
     public static final State scoreTrap = new State(0.6344640748005669, 2.007128156715125);

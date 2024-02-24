@@ -23,8 +23,8 @@ public class EndEffector implements Logged {
     return intake
         .runIntakeCommand(IntakeConstants.intakingSetpoint)
         .alongWith(feed.runFeedCommand(FeedConstants.intakingSetpoint))
-        .until(intake::hasNote)
-        .andThen(intake.runIntakeCommand(0.1));
+        .until(intake::hasNote);
+        //.andThen(intake.runIntakeCommand(0.1));
     // .finallyDo(feed.runFeedCommand(-0.1).withTimeout(0.5));
   }
 
