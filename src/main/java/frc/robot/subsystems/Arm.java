@@ -56,9 +56,15 @@ public class Arm extends SubsystemBase implements Logged {
     quadEncoder.reset();
 
     // Wait for encoder to produce valid values
-    while (absoluteEncoder.getFrequency() < 963 && RobotBase.isReal()) {
+    var timeout = new Timer();
+    timeout.start();
+    do {
+      if (timeout.hasElapsed(2)) {
+        DriverStation.reportError("Arm encoder not detected!", false);
+        break;
+      }
       Timer.delay(0.01);
-    }
+    } while (absoluteEncoder.getFrequency() < 950 && RobotBase.isReal());
 
     kInitializationOffset = getAbsolutePosition();
 
@@ -247,6 +253,6 @@ public class Arm extends SubsystemBase implements Logged {
     log("Setpoint Velocity", setpoint.velocity);
     log("Stator Current", armMotor.getStatorCurrent().getValue());
     log("Supply Voltage", armMotor.getSupplyVoltage().getValue());
-    log("encoder freq", absoluteEncoder.getFrequency());
+    log("Absolute Encoder Frequency", absoluteEncoder.getFrequency());
   }
 }

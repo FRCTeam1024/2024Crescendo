@@ -157,7 +157,7 @@ public final class Constants {
       public static final int angleMotorID = 2;
       public static final int canCoderID = 3;
       public static final Rotation2d angleOffset =
-          Rotation2d.fromDegrees(isPracticeBot ? -126.562500 : 0.0);
+          Rotation2d.fromDegrees(isPracticeBot ? -126.562500 : 56.162109);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -168,7 +168,7 @@ public final class Constants {
       public static final int angleMotorID = 12;
       public static final int canCoderID = 13;
       public static final Rotation2d angleOffset =
-          Rotation2d.fromDegrees(isPracticeBot ? -168.046875 : 0.0);
+          Rotation2d.fromDegrees(isPracticeBot ? -168.046875 : 130.693359);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -179,7 +179,7 @@ public final class Constants {
       public static final int angleMotorID = 22;
       public static final int canCoderID = 23;
       public static final Rotation2d angleOffset =
-          Rotation2d.fromDegrees(isPracticeBot ? -21.005859 : 0.0);
+          Rotation2d.fromDegrees(isPracticeBot ? -21.005859 : -121.201172);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -190,7 +190,7 @@ public final class Constants {
       public static final int angleMotorID = 32;
       public static final int canCoderID = 33;
       public static final Rotation2d angleOffset =
-          Rotation2d.fromDegrees(isPracticeBot ? 11.777344 : 0.0);
+          Rotation2d.fromDegrees(isPracticeBot ? 11.777344 : -160.400391);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -240,7 +240,7 @@ public final class Constants {
      * radians To find this, set the offset to 0 and read the measured position of the wrist when
      * the wrist is at 0
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? 1.630 : 0;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? 1.630 : 0.744;
 
     public static final double kHardStopToMaxExtension = -0.511786;
     public static final double kHardStopToCOG = 0;
@@ -280,7 +280,7 @@ public final class Constants {
      * radians. To find this, position the arm at the hard stop and use "Position No Offset" as the
      * new offset
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.316084 : 0;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.316084 : -0.443193;
 
     public static final double kHardStopPosition = -0.5;
     public static final double kPositionOffset = kOffsetAtLowerHardStop - kHardStopPosition;

@@ -54,10 +54,17 @@ public class Wrist extends SubsystemBase implements Logged {
     quadEncoder.setDistancePerPulse(2.0 * Math.PI / kQuadTicks);
     quadEncoder.setSamplesToAverage(127);
     quadEncoder.reset();
+
     // Wait for encoder to produce valid values
-    while (absoluteEncoder.getFrequency() < 963 && RobotBase.isReal()) {
+    var timeout = new Timer();
+    timeout.start();
+    do {
+      if (timeout.hasElapsed(2)) {
+        DriverStation.reportError("Wrist encoder not detected!", false);
+        break;
+      }
       Timer.delay(0.01);
-    }
+    } while (absoluteEncoder.getFrequency() < 950 && RobotBase.isReal());
 
     kInitializationOffset = getAbsolutePosition();
     setGoal(getPosition());
@@ -256,5 +263,6 @@ public class Wrist extends SubsystemBase implements Logged {
     log("Setpoint Velocity", setpoint.velocity);
     log("Stator Current", wristMotor.getStatorCurrent().getValue());
     log("Supply Voltage", wristMotor.getSupplyVoltage().getValue());
+    log("Absolute Encoder Frequency", absoluteEncoder.getFrequency());
   }
 }
