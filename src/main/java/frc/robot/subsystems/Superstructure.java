@@ -80,7 +80,7 @@ public class Superstructure implements Logged {
     public static final State scoreFromSubwoofer = new State(stow.armPosition(), 0.087266);
     public static final State scoreFromSpikeMark =
         new State(stow.armPosition(), degreesToRadians(15));
-    public static final State scoreTrap = new State(degreesToRadians(60), degreesToRadians(10));
+    public static final State scoreTrap = new State(0.6344640748005669, 2.007128156715125);
     public static final State scoreAmp = new State(0.808997, 0.506145);
     public static final State scoreFromAmp = new State(stow.armPosition(), 0.314159);
     public static final State scoreOverDefense =

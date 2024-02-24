@@ -145,6 +145,8 @@ public class RobotContainer implements Logged {
     // Score amp
     operator.x().onTrue(superstructure.setGoalState(Superstructure.State.scoreAmp));
 
+    operator.start().onTrue(superstructure.setGoalState(Superstructure.State.scoreTrap));
+
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
     operator.pov(270).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(1)));
