@@ -213,11 +213,18 @@ public class Swerve extends SubsystemBase implements Logged {
         getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
   }
 
-  public void zeroHeading() {
+  /*
+   * Resets the robots heading such that a heading of 0 represents the
+   * robot intake facing the red alliance wall if the robot is facing
+   * away from the driver.
+   * 
+   */
+  public void resetHeading() {
     poseEstimator.resetPosition(
         getGyroYaw(),
         getModulePositions(),
-        new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        new Pose2d(getPose().getTranslation(), 
+            DriverStation.getAlliance().get().equals(Alliance.Red) ? new Rotation2d().unaryMinus() : new Rotation2d()));
 
     storedGoalHeading = new Rotation2d();
   }

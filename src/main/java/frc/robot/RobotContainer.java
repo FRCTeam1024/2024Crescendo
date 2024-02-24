@@ -101,7 +101,7 @@ public class RobotContainer implements Logged {
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
-    zeroGyro.onTrue(new InstantCommand(() -> swerve.zeroHeading()));
+    zeroGyro.onTrue(new InstantCommand(() -> swerve.resetHeading()));
 
     headingControl.whileTrue(
         swerve.teleopHeadingDriveCommand(
