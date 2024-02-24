@@ -248,7 +248,7 @@ public final class Constants {
     public static final double kCOGZeroToMaxExtension = 0;
 
     public static final double kMinPosition = Units.degreesToRadians(0);
-    public static final double kMaxPosition = 2.28;
+    public static final double kMaxPosition = isPracticeBot ? 2.28 : 2.4429;
 
     // 3-3-4 maxplanetary, 72:64 gearing with wrist
     public static final double kMotorToWristRatio = 3.0 * 3.0 * 4.0 * (72 / 64);
@@ -256,16 +256,16 @@ public final class Constants {
 
     public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(240);
     public static final double kMaxAccelerationRadiansPerSecondSquared =
-        Units.degreesToRadians(720);
+        Units.degreesToRadians(800);
 
     public static final double kS = 0; // 0.25;
     public static final double kV = 0.75;
     public static final double kA = 0.0;
     public static final double kG = 0.36;
 
-    public static final double kP = 5;
+    public static final double kP = isPracticeBot ? 5 : 10;
     public static final double kI = 0.0;
-    public static final double kD = 0;
+    public static final double kD = isPracticeBot ? 0 : 0.05;
   }
 
   public static final class ArmConstants {
