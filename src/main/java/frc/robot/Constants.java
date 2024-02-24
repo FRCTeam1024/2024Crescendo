@@ -54,9 +54,9 @@ public final class Constants {
     public static final double wheelCircumference = Units.inchesToMeters(Math.PI * 4 * 0.931755098);
 
     /* Heading Control PID Values */
-    public static final double headingkP = 4;
+    public static final double headingkP = 2;
     public static final double headingkI = 0;
-    public static final double headingkD = 1;
+    public static final double headingkD = 0;
 
     /* Heading Feedforward Values */
     public static final double headingkS = 0;

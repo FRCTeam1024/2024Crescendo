@@ -36,6 +36,7 @@ import frc.lib.hardware.Pigeon2IMU;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.Optional;
@@ -56,8 +57,8 @@ public class Swerve extends SubsystemBase implements Logged {
   private SwerveModule[] mSwerveMods;
   private IMU gyro;
   private Field2d field = new Field2d();
-  private List<Pose2d> tagPoses;
-  private List<Integer> tagIds;
+  private List<Pose2d> tagPoses = new LinkedList<Pose2d>();
+  private List<Integer> tagIds = new LinkedList<Integer>();
 
   public Swerve() {
     SmartDashboard.putData(field);
@@ -412,13 +413,13 @@ public class Swerve extends SubsystemBase implements Logged {
 
             /* Calculate translation velocity using translation PID + feedforward */
             /* Stop if heading is within goal range  */
-            if (xDebounce.calculate(Math.abs(goalX - getPose().getX()) > Constants.Swerve.translateGoalRange)) {
+            if (Math.abs(goalX - getPose().getX()) > Constants.Swerve.translateGoalRange) {
               State xPoint = xController.getSetpoint();
               translationVal = 
                 translateFeedforward.calculate(xPoint.velocity)
                   + xController.calculate(getPose().getX(),goalX);
             }
-            if (yDebounce.calculate(Math.abs(goalY - getPose().getY()) > Constants.Swerve.translateGoalRange)) {
+            if (Math.abs(goalY - getPose().getY()) > Constants.Swerve.translateGoalRange) {
               State yPoint = yController.getSetpoint();
               strafeVal = 
                 translateFeedforward.calculate(yPoint.velocity)
@@ -433,7 +434,7 @@ public class Swerve extends SubsystemBase implements Logged {
           /*  Calculate rotation velocity using heading controller PID + feedforward */
           /*  Stop if heading is within goal range */
           double rotationVelocity = 0;
-          if (headingDebounce.calculate(goalHeading.minus(getHeading()).getRadians() > Constants.Swerve.headingGoalRange)) {
+          if (Math.abs(goalHeading.minus(getHeading()).getRadians()) > Constants.Swerve.headingGoalRange) {
             State setPoint = headingController.getSetpoint();
             rotationVelocity =
               headingFeedforward.calculate(setPoint.velocity)
