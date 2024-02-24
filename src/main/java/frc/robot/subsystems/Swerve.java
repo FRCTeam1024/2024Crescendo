@@ -13,13 +13,16 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -35,6 +38,7 @@ import frc.robot.SwerveModule;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import org.photonvision.PhotonPoseEstimator;
@@ -43,12 +47,17 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 public class Swerve extends SubsystemBase implements Logged {
   private ProfiledPIDController headingController;
   private SimpleMotorFeedforward headingFeedforward;
+  private ProfiledPIDController xController;
+  private ProfiledPIDController yController;
+  private SimpleMotorFeedforward translateFeedforward;
   private Rotation2d storedGoalHeading;
   private SwerveDrivePoseEstimator poseEstimator;
   private List<PhotonPoseEstimator> cameras;
   private SwerveModule[] mSwerveMods;
   private IMU gyro;
   private Field2d field = new Field2d();
+  private List<Pose2d> tagPoses;
+  private List<Integer> tagIds;
 
   public Swerve() {
     SmartDashboard.putData(field);
@@ -68,6 +77,32 @@ public class Swerve extends SubsystemBase implements Logged {
         new SimpleMotorFeedforward(
             Constants.Swerve.headingkS, Constants.Swerve.headingkV, Constants.Swerve.headingkA);
     storedGoalHeading = new Rotation2d();
+
+    xController = 
+        new ProfiledPIDController(
+            Constants.Swerve.translatekP,
+            Constants.Swerve.translatekI,
+            Constants.Swerve.translatekD,
+            new TrapezoidProfile.Constraints(
+                Constants.Swerve.maxModuleSpeed, Constants.Swerve.maxAcceleration));
+    
+    yController = 
+        new ProfiledPIDController(
+            Constants.Swerve.translatekP,
+            Constants.Swerve.translatekI,
+            Constants.Swerve.translatekD,
+            new TrapezoidProfile.Constraints(
+                Constants.Swerve.maxModuleSpeed, Constants.Swerve.maxAcceleration));
+
+    translateFeedforward = 
+        new SimpleMotorFeedforward(
+          Constants.Swerve.translatekS, Constants.Swerve.translatekV, Constants.Swerve.translatekA);
+    
+    List<AprilTag> tags = Constants.kOfficialField.getTags();
+    for(AprilTag t : tags) {
+      tagPoses.add(t.pose.toPose2d());
+      tagIds.add(t.ID);
+    }
 
     mSwerveMods =
         new SwerveModule[] {
@@ -260,6 +295,38 @@ public class Swerve extends SubsystemBase implements Logged {
     return getPose().getTranslation().minus(targetPose.getTranslation()).getAngle();
   }
 
+  public Optional<Pose2d> getSnapPose() {
+    Pose2d currentPose = getPose();
+    Pose2d targetPose = currentPose.nearest(tagPoses);
+    int targetID = tagIds.get(tagPoses.indexOf(targetPose));
+    
+    /* Ignore if the nearest target is more than a certain distance away */
+    if(targetPose.getTranslation().getDistance(currentPose.getTranslation()) > 2) {
+      return Optional.empty();
+    }
+    /* Ignore speaker tags */
+    else if(targetID == 3 || targetID == 4 || targetID == 7 || targetID == 8) {
+      return Optional.empty();
+    }
+    /* Set offset for amp */
+    else if(targetID == 5 || targetID == 6) {
+      return Optional.of(targetPose.transformBy(new Transform2d(.7,0, new Rotation2d(Math.PI))));
+    }
+    /* Set offset for pickup (source) */
+    else if(targetID == 1 || targetID == 2 || targetID == 9 || targetID ==10) {
+      return Optional.of(targetPose.transformBy(new Transform2d(.7,0, new Rotation2d(Math.PI))));
+    }
+    /* Set offset for stage */
+    else if(targetID >= 11 && targetID <= 16){
+      return Optional.of(targetPose.transformBy(new Transform2d(1.2,0, new Rotation2d(Math.PI))));
+    }
+    /* Return the nothing if there is some other unexpected value */
+    else {
+      return Optional.empty();
+    }
+    
+  }
+
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
     return run(
         () -> {
@@ -292,7 +359,8 @@ public class Swerve extends SubsystemBase implements Logged {
       DoubleSupplier y,
       DoubleSupplier hx,
       DoubleSupplier hy,
-      BooleanSupplier aim) {
+      BooleanSupplier aim,
+      BooleanSupplier snap) {
     return run(
         () -> {
           /* Get Values, Deadband Translation*/
@@ -300,6 +368,11 @@ public class Swerve extends SubsystemBase implements Logged {
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
           double headingX = hx.getAsDouble();
           double headingY = hy.getAsDouble();
+          Debouncer headingDebounce = new Debouncer(0.5);
+          Debouncer xDebounce = new Debouncer(0.5);
+          Debouncer yDebounce = new Debouncer(0.5);
+          /* check for a snap pose */
+          var snapPose = getSnapPose();
 
           /* Invert translation controls if on Red side of field */
           var alliance = DriverStation.getAlliance();
@@ -310,10 +383,14 @@ public class Swerve extends SubsystemBase implements Logged {
             headingY *= -1;
           }
 
+          /* Convert Translation joystick values to module speeds */
+          translationVal *= Constants.Swerve.maxModuleSpeed;
+          strafeVal *= Constants.Swerve.maxModuleSpeed;
+  
           /* Create a Rotation2D to represent desired heading */
           Rotation2d goalHeading = new Rotation2d(headingX, headingY);
 
-          /* Polar Deadband Heading without scaling */
+          /* Polar Deadband Joystick Heading without scaling */
           double r = Math.sqrt(headingX * headingX + headingY * headingY);
           if (r < 0.8) {
             goalHeading = storedGoalHeading;
@@ -321,16 +398,42 @@ public class Swerve extends SubsystemBase implements Logged {
             storedGoalHeading = goalHeading;
           }
 
-          /* Override joystick and aim at speaker if requested */
+          /* Override right joystick and aim at speaker if requested */
           if (aim.getAsBoolean()) {
             goalHeading = getHeadingToSpeaker();
             storedGoalHeading = goalHeading;
           }
+          /* Override both joysticks and snap to target if requested and near a valid target */
+          else if (snap.getAsBoolean() && !snapPose.isEmpty()) {
+            goalHeading = snapPose.get().getRotation();
+            storedGoalHeading = goalHeading;
+            double goalX = snapPose.get().getX();
+            double goalY = snapPose.get().getY();
+
+            /* Calculate translation velocity using translation PID + feedforward */
+            /* Stop if heading is within goal range  */
+            if (xDebounce.calculate(Math.abs(goalX - getPose().getX()) > Constants.Swerve.translateGoalRange)) {
+              State xPoint = xController.getSetpoint();
+              translationVal = 
+                translateFeedforward.calculate(xPoint.velocity)
+                  + xController.calculate(getPose().getX(),goalX);
+            }
+            if (yDebounce.calculate(Math.abs(goalY - getPose().getY()) > Constants.Swerve.translateGoalRange)) {
+              State yPoint = yController.getSetpoint();
+              strafeVal = 
+                translateFeedforward.calculate(yPoint.velocity)
+                  + yController.calculate(getPose().getY(),goalY);
+            }
+
+
+          }
+
+
 
           /*  Calculate rotation velocity using heading controller PID + feedforward */
-          /*  Deadband if heading is within goal range */
+          /*  Stop if heading is within goal range */
           double rotationVelocity = 0;
-          if (goalHeading.minus(getHeading()).getRadians() > Constants.Swerve.headingGoalRange) {
+          if (headingDebounce.calculate(goalHeading.minus(getHeading()).getRadians() > Constants.Swerve.headingGoalRange)) {
             State setPoint = headingController.getSetpoint();
             rotationVelocity =
               headingFeedforward.calculate(setPoint.velocity)
@@ -339,9 +442,12 @@ public class Swerve extends SubsystemBase implements Logged {
                       MathUtil.angleModulus(goalHeading.getRadians()));
           }
 
+
+
+
           /* Drive */
           drive(
-              new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxModuleSpeed),
+              new Translation2d(translationVal, strafeVal),
               rotationVelocity,
               true,
               true);

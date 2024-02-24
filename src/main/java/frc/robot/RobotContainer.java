@@ -42,6 +42,8 @@ public class RobotContainer implements Logged {
       new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton targetTrack =
       new JoystickButton(driver, XboxController.Button.kA.value);
+  private final JoystickButton snapToTag = 
+      new JoystickButton(driver, XboxController.Button.kX.value);
 
   /* Subsystems */
   private final Swerve swerve = new Swerve();
@@ -109,7 +111,8 @@ public class RobotContainer implements Logged {
             () -> -driver.getRawAxis(strafeAxis),
             () -> -driver.getRawAxis(rotationYAxis),
             () -> -driver.getRawAxis(rotationXAxis),
-            targetTrack));
+            targetTrack,
+            snapToTag));
 
     /*Operator Buttons */
     SmartDashboard.putNumber("Shooter Speed (RPS)", 70);

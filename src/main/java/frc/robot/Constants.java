@@ -66,6 +66,19 @@ public final class Constants {
     /* Heading Goal Range */
     public static final double headingGoalRange = Units.degreesToRadians(1);
 
+    /* Translate Control PID Values */
+    public static final double translatekP = 4;
+    public static final double translatekI = 0;
+    public static final double translatekD = 0;
+
+    /* Translate Feedforward Values */
+    public static final double translatekS = 0;
+    public static final double translatekV = 1;
+    public static final double translatekA = 0;
+
+    /* Heading Goal Range */
+    public static final double translateGoalRange = 0.025;
+
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
     public static final SwerveDriveKinematics swerveKinematics =
@@ -122,6 +135,9 @@ public final class Constants {
     /* Swerve Profiling Values */
     /** Meters per Second */
     public static final double maxModuleSpeed = 4.5;
+
+    /** Meters per Second per Second */
+    public static final double maxAcceleration = 6;
 
     /** Radians per Second */
     public static final double maxAngularVelocity =
