@@ -42,7 +42,7 @@ public class RobotContainer implements Logged {
       new JoystickButton(driver, XboxController.Button.kRightBumper.value);
   private final JoystickButton targetTrack =
       new JoystickButton(driver, XboxController.Button.kA.value);
-  private final JoystickButton snapToTag = 
+  private final JoystickButton snapToTag =
       new JoystickButton(driver, XboxController.Button.kX.value);
 
   /* Subsystems */
@@ -77,21 +77,22 @@ public class RobotContainer implements Logged {
     setupAutoChooser();
     setupDashboard();
   }
-//PathNames are wrong
+
+  // PathNames are wrong
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
     autoChooser.addOption("Center Two Note", autos.centerTwoNote());
     autoChooser.addOption("Circuit", autos.circuitAuto());
-    //autoChooser.addOption("NL Speaker", autos.runPathPlannerAuto("NL Speaker"));
-    //autoChooser.addOption("LNE1", autos.runPathWithReset("LNEnd Speaker"));
-    //autoChooser.addOption("NL AMP", autos.runPathPlannerAuto("NL AMP"));
+    // autoChooser.addOption("NL Speaker", autos.runPathPlannerAuto("NL Speaker"));
+    // autoChooser.addOption("LNE1", autos.runPathWithReset("LNEnd Speaker"));
+    // autoChooser.addOption("NL AMP", autos.runPathPlannerAuto("NL AMP"));
     autoChooser.addOption("AMP_to_LN", autos.runPathWithReset("AMP_to_LN"));
-    //autoChooser.addOption("3 Near", autos.runPathPlannerAuto("3 Near"));
-    //autoChooser.addOption("NM Speaker", autos.runPathPlannerAuto("NM Speaker"));
-    //autoChooser.addOption("NR Speaker", autos.runPathPlannerAuto("NR Speaker"));
-    //autoChooser.addOption("LN and F", autos.runPathPlannerAuto("LN and F"));
-    //autoChooser.addOption("FR", autos.runPathPlannerAuto("FR"));
-    //autoChooser.addOption("MN and F", autos.runPathPlannerAuto("MN and F"));
+    // autoChooser.addOption("3 Near", autos.runPathPlannerAuto("3 Near"));
+    // autoChooser.addOption("NM Speaker", autos.runPathPlannerAuto("NM Speaker"));
+    // autoChooser.addOption("NR Speaker", autos.runPathPlannerAuto("NR Speaker"));
+    // autoChooser.addOption("LN and F", autos.runPathPlannerAuto("LN and F"));
+    // autoChooser.addOption("FR", autos.runPathPlannerAuto("FR"));
+    // autoChooser.addOption("MN and F", autos.runPathPlannerAuto("MN and F"));
     SmartDashboard.putData(autoChooser);
   }
 
@@ -131,10 +132,9 @@ public class RobotContainer implements Logged {
     operator
         .leftBumper()
         .whileTrue(intake.runIntakeCommand(-0.7).alongWith(feed.runFeedCommand(-0.7)));
-    
+
     // SLow Reverse intake
-    operator.start()
-            .whileTrue(feed.runFeedCommand(-0.1));
+    operator.start().whileTrue(feed.runFeedCommand(-0.1));
 
     // Intake + Shoot Position
     operator.b().onTrue(superstructure.setGoalState(Superstructure.State.intake));

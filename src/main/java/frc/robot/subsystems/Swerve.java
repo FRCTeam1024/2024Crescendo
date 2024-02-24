@@ -6,23 +6,22 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -35,11 +34,11 @@ import frc.lib.hardware.Pigeon1IMU;
 import frc.lib.hardware.Pigeon2IMU;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
-import java.util.List;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.Optional;
 import monologue.Annotations.Log;
 import monologue.Logged;
 import org.photonvision.PhotonPoseEstimator;
@@ -79,15 +78,7 @@ public class Swerve extends SubsystemBase implements Logged {
             Constants.Swerve.headingkS, Constants.Swerve.headingkV, Constants.Swerve.headingkA);
     storedGoalHeading = new Rotation2d();
 
-    xController = 
-        new ProfiledPIDController(
-            Constants.Swerve.translatekP,
-            Constants.Swerve.translatekI,
-            Constants.Swerve.translatekD,
-            new TrapezoidProfile.Constraints(
-                Constants.Swerve.maxModuleSpeed, Constants.Swerve.maxAcceleration));
-    
-    yController = 
+    xController =
         new ProfiledPIDController(
             Constants.Swerve.translatekP,
             Constants.Swerve.translatekI,
@@ -95,12 +86,22 @@ public class Swerve extends SubsystemBase implements Logged {
             new TrapezoidProfile.Constraints(
                 Constants.Swerve.maxModuleSpeed, Constants.Swerve.maxAcceleration));
 
-    translateFeedforward = 
+    yController =
+        new ProfiledPIDController(
+            Constants.Swerve.translatekP,
+            Constants.Swerve.translatekI,
+            Constants.Swerve.translatekD,
+            new TrapezoidProfile.Constraints(
+                Constants.Swerve.maxModuleSpeed, Constants.Swerve.maxAcceleration));
+
+    translateFeedforward =
         new SimpleMotorFeedforward(
-          Constants.Swerve.translatekS, Constants.Swerve.translatekV, Constants.Swerve.translatekA);
-    
+            Constants.Swerve.translatekS,
+            Constants.Swerve.translatekV,
+            Constants.Swerve.translatekA);
+
     List<AprilTag> tags = Constants.kOfficialField.getTags();
-    for(AprilTag t : tags) {
+    for (AprilTag t : tags) {
       tagPoses.add(t.pose.toPose2d());
       tagIds.add(t.ID);
     }
@@ -253,14 +254,17 @@ public class Swerve extends SubsystemBase implements Logged {
    * Resets the robots heading such that a heading of 0 represents the
    * robot intake facing the red alliance wall if the robot is facing
    * away from the driver.
-   * 
+   *
    */
   public void resetHeading() {
     poseEstimator.resetPosition(
         getGyroYaw(),
         getModulePositions(),
-        new Pose2d(getPose().getTranslation(), 
-            DriverStation.getAlliance().get().equals(Alliance.Red) ? new Rotation2d().unaryMinus() : new Rotation2d()));
+        new Pose2d(
+            getPose().getTranslation(),
+            DriverStation.getAlliance().get().equals(Alliance.Red)
+                ? new Rotation2d().unaryMinus()
+                : new Rotation2d()));
 
     storedGoalHeading = new Rotation2d();
   }
@@ -300,32 +304,31 @@ public class Swerve extends SubsystemBase implements Logged {
     Pose2d currentPose = getPose();
     Pose2d targetPose = currentPose.nearest(tagPoses);
     int targetID = tagIds.get(tagPoses.indexOf(targetPose));
-    
+
     /* Ignore if the nearest target is more than a certain distance away */
-    if(targetPose.getTranslation().getDistance(currentPose.getTranslation()) > 2) {
+    if (targetPose.getTranslation().getDistance(currentPose.getTranslation()) > 2) {
       return Optional.empty();
     }
     /* Ignore speaker tags */
-    else if(targetID == 3 || targetID == 4 || targetID == 7 || targetID == 8) {
+    else if (targetID == 3 || targetID == 4 || targetID == 7 || targetID == 8) {
       return Optional.empty();
     }
     /* Set offset for amp */
-    else if(targetID == 5 || targetID == 6) {
-      return Optional.of(targetPose.transformBy(new Transform2d(.7,0, new Rotation2d(Math.PI))));
+    else if (targetID == 5 || targetID == 6) {
+      return Optional.of(targetPose.transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
     }
     /* Set offset for pickup (source) */
-    else if(targetID == 1 || targetID == 2 || targetID == 9 || targetID ==10) {
-      return Optional.of(targetPose.transformBy(new Transform2d(.7,0, new Rotation2d(Math.PI))));
+    else if (targetID == 1 || targetID == 2 || targetID == 9 || targetID == 10) {
+      return Optional.of(targetPose.transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
     }
     /* Set offset for stage */
-    else if(targetID >= 11 && targetID <= 16){
-      return Optional.of(targetPose.transformBy(new Transform2d(1.2,0, new Rotation2d(Math.PI))));
+    else if (targetID >= 11 && targetID <= 16) {
+      return Optional.of(targetPose.transformBy(new Transform2d(1.2, 0, new Rotation2d(Math.PI))));
     }
     /* Return the nothing if there is some other unexpected value */
     else {
       return Optional.empty();
     }
-    
   }
 
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
@@ -341,7 +344,7 @@ public class Swerve extends SubsystemBase implements Logged {
 
           /* Invert translation controls if on Red side of field */
           var alliance = DriverStation.getAlliance();
-          if(alliance.get().equals(Alliance.Red)){
+          if (alliance.get().equals(Alliance.Red)) {
             translationVal *= -1;
             strafeVal *= -1;
           }
@@ -377,7 +380,7 @@ public class Swerve extends SubsystemBase implements Logged {
 
           /* Invert translation controls if on Red side of field */
           var alliance = DriverStation.getAlliance();
-          if(alliance.get().equals(Alliance.Red)){
+          if (alliance.get().equals(Alliance.Red)) {
             translationVal *= -1;
             strafeVal *= -1;
             headingX *= -1;
@@ -387,7 +390,7 @@ public class Swerve extends SubsystemBase implements Logged {
           /* Convert Translation joystick values to module speeds */
           translationVal *= Constants.Swerve.maxModuleSpeed;
           strafeVal *= Constants.Swerve.maxModuleSpeed;
-  
+
           /* Create a Rotation2D to represent desired heading */
           Rotation2d goalHeading = new Rotation2d(headingX, headingY);
 
@@ -415,43 +418,33 @@ public class Swerve extends SubsystemBase implements Logged {
             /* Stop if heading is within goal range  */
             if (Math.abs(goalX - getPose().getX()) > Constants.Swerve.translateGoalRange) {
               State xPoint = xController.getSetpoint();
-              translationVal = 
-                translateFeedforward.calculate(xPoint.velocity)
-                  + xController.calculate(getPose().getX(),goalX);
+              translationVal =
+                  translateFeedforward.calculate(xPoint.velocity)
+                      + xController.calculate(getPose().getX(), goalX);
             }
             if (Math.abs(goalY - getPose().getY()) > Constants.Swerve.translateGoalRange) {
               State yPoint = yController.getSetpoint();
-              strafeVal = 
-                translateFeedforward.calculate(yPoint.velocity)
-                  + yController.calculate(getPose().getY(),goalY);
+              strafeVal =
+                  translateFeedforward.calculate(yPoint.velocity)
+                      + yController.calculate(getPose().getY(), goalY);
             }
-
-
           }
-
-
 
           /*  Calculate rotation velocity using heading controller PID + feedforward */
           /*  Stop if heading is within goal range */
           double rotationVelocity = 0;
-          if (Math.abs(goalHeading.minus(getHeading()).getRadians()) > Constants.Swerve.headingGoalRange) {
+          if (Math.abs(goalHeading.minus(getHeading()).getRadians())
+              > Constants.Swerve.headingGoalRange) {
             State setPoint = headingController.getSetpoint();
             rotationVelocity =
-              headingFeedforward.calculate(setPoint.velocity)
-                  + headingController.calculate(
-                      MathUtil.angleModulus(getHeading().getRadians()),
-                      MathUtil.angleModulus(goalHeading.getRadians()));
+                headingFeedforward.calculate(setPoint.velocity)
+                    + headingController.calculate(
+                        MathUtil.angleModulus(getHeading().getRadians()),
+                        MathUtil.angleModulus(goalHeading.getRadians()));
           }
 
-
-
-
           /* Drive */
-          drive(
-              new Translation2d(translationVal, strafeVal),
-              rotationVelocity,
-              true,
-              true);
+          drive(new Translation2d(translationVal, strafeVal), rotationVelocity, true, true);
         });
   }
 

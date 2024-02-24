@@ -34,7 +34,6 @@ public class Autos {
     return sequence(
         superstructure.setGoalState(Superstructure.State.intake),
         endEffector.spinUpAndShoot(70),
-        
         runPathWithReset("C_to_CN"),
         runPath("CN_to_C"),
         endEffector.spinUpAndShoot(70),
