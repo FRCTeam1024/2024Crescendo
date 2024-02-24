@@ -30,7 +30,7 @@ public class EndEffector implements Logged {
 
   public Command fireNote() {
     return feed.runFeedCommand(FeedConstants.fireSetpoint)
-        //.alongWith(intake.runIntakeCommand(IntakeConstants.fireSetpoint))
+        .alongWith(intake.runIntakeCommand(IntakeConstants.fireSetpoint))
         .withTimeout(1.0);
   }
 
