@@ -195,7 +195,7 @@ public class Swerve extends SubsystemBase implements Logged {
     for (var mod : mSwerveMods) {
       sysidLog
           .motor("Module-" + mod.moduleNumber)
-          .value("voltage", mod.getVoltage(), "Volt")
+          .value("voltage", mod.getDriveVoltage(), "Volt")
           .value("position", mod.getPosition().distanceMeters, "Meter")
           .value("velocity", mod.getState().speedMetersPerSecond, "Meter per Second");
     }
@@ -207,6 +207,8 @@ public class Swerve extends SubsystemBase implements Logged {
    * @param desiredStates the desired states of the swerve modules
    */
   public void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
+    log("Requested Module States", desiredStates);
+    log("Closed Loop", !isOpenLoop);
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxModuleSpeed);
 
     for (SwerveModule mod : mSwerveMods) {
@@ -214,7 +216,7 @@ public class Swerve extends SubsystemBase implements Logged {
     }
   }
 
-  @Log.NT
+  @Log.NT(key = "Module States")
   public SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (SwerveModule mod : mSwerveMods) {
@@ -332,8 +334,7 @@ public class Swerve extends SubsystemBase implements Logged {
   }
 
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
-    return run(
-        () -> {
+    return run(() -> {
           /* Reset goal heading */
           storedGoalHeading = getHeading();
 
@@ -355,7 +356,8 @@ public class Swerve extends SubsystemBase implements Logged {
               rotationVal * Constants.Swerve.maxAngularVelocity,
               true,
               true);
-        }).withName("teleopDriveCommand");
+        })
+        .withName("teleopDriveCommand");
   }
 
   public Command teleopHeadingDriveCommand(
@@ -365,8 +367,7 @@ public class Swerve extends SubsystemBase implements Logged {
       DoubleSupplier hy,
       BooleanSupplier aim,
       BooleanSupplier snap) {
-    return run(
-        () -> {
+    return run(() -> {
           /* Get Values, Deadband Translation*/
           double translationVal = MathUtil.applyDeadband(x.getAsDouble(), Constants.stickDeadband);
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
@@ -444,12 +445,9 @@ public class Swerve extends SubsystemBase implements Logged {
           }
 
           /* Drive */
-          drive(
-              new Translation2d(translationVal, strafeVal),
-              rotationVelocity,
-              true,
-              true);
-        }).withName("teleopHeadingDriveCommand");
+          drive(new Translation2d(translationVal, strafeVal), rotationVelocity, true, true);
+        })
+        .withName("teleopHeadingDriveCommand");
   }
 
   public boolean shouldFlipPath() {
@@ -475,9 +473,8 @@ public class Swerve extends SubsystemBase implements Logged {
     }
     var pose = getPose();
     field.setRobotPose(pose);
-    SmartDashboard.putNumberArray(
-        "Pose", new double[] {pose.getX(), pose.getY(), pose.getRotation().getRadians()});
     for (SwerveModule mod : mSwerveMods) {
+      mod.updateLog();
       SmartDashboard.putNumber(
           "Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
       SmartDashboard.putNumber(

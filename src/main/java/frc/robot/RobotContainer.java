@@ -127,7 +127,10 @@ public class RobotContainer implements Logged {
     // Reverse shooter
     operator.rightBumper().whileTrue(shooter.velocityCommand(-10));
     // Intake
-    operator.leftTrigger().whileTrue(endEffector.intakeNote()).onFalse(feed.runFeedCommand(-0.1).withTimeout(0.5));
+    operator
+        .leftTrigger()
+        .whileTrue(endEffector.intakeNote())
+        .onFalse(feed.runFeedCommand(-0.1).withTimeout(0.5));
     // Reverse intake
     operator
         .leftBumper()

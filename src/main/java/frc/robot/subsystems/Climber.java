@@ -4,10 +4,12 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.function.DoubleSupplier;
+import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Climber extends SubsystemBase implements Logged {
@@ -15,6 +17,7 @@ public class Climber extends SubsystemBase implements Logged {
       new CANSparkMax(Constants.ClimberConstants.ClimberMotorAId, MotorType.kBrushless);
   private final CANSparkMax climberMotorB =
       new CANSparkMax(Constants.ClimberConstants.ClimberMotorBId, MotorType.kBrushless);
+  private final RelativeEncoder encoder = climberMotorA.getEncoder();
 
   public Climber() {
     // Motor A
@@ -40,8 +43,19 @@ public class Climber extends SubsystemBase implements Logged {
     setOutput(0);
   }
 
+  @Log.NT
+  public double getPosition() {
+    return encoder.getPosition();
+  }
+
   public Command climbCommand(DoubleSupplier outputSupplier) {
     return runEnd(() -> setOutput(outputSupplier.getAsDouble()), () -> stop());
+  }
+
+  @Override
+  public void periodic() {
+    log("Motor A Temperature", climberMotorA.getMotorTemperature());
+    log("Motor B Temperature", climberMotorB.getMotorTemperature());
   }
 
   private static void configurePeriodicFrames(CANSparkMax sparkMax) {

@@ -15,10 +15,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.lib.math.Conversions;
 import frc.lib.util.SwerveModuleConstants;
+import monologue.Annotations.Log;
+import monologue.Logged;
 
-public class SwerveModule {
+public class SwerveModule implements Logged {
   public final int moduleNumber;
-  private final Rotation2d angleOffset;
+  @Log.Once private final Rotation2d angleOffset;
 
   private final TalonFX mAngleMotor;
   private final TalonFX mDriveMotor;
@@ -26,10 +28,12 @@ public class SwerveModule {
 
   private final StatusSignal<Double> angleMotorPosition;
   private final StatusSignal<Double> angleMotorVelocity;
+  private final StatusSignal<Double> angleMotorTemperature;
 
   private final StatusSignal<Double> driveMotorPosition;
   private final StatusSignal<Double> driveMotorVelocity;
   private final StatusSignal<Double> driveMotorVoltage;
+  private final StatusSignal<Double> driveMotorTemperature;
 
   private final StatusSignal<Double> angleEncoderAbsolutePosition;
 
@@ -59,6 +63,7 @@ public class SwerveModule {
     mAngleMotor.getConfigurator().apply(Robot.ctreConfigs.swerveAngleFXConfig);
     angleMotorPosition = mAngleMotor.getPosition();
     angleMotorVelocity = mAngleMotor.getVelocity();
+    angleMotorTemperature = mAngleMotor.getDeviceTemp();
     resetToAbsolute();
 
     /* Drive Motor Config */
@@ -68,6 +73,7 @@ public class SwerveModule {
     driveMotorPosition = mDriveMotor.getPosition();
     driveMotorVelocity = mDriveMotor.getVelocity();
     driveMotorVoltage = mDriveMotor.getMotorVoltage();
+    driveMotorTemperature = mDriveMotor.getDeviceTemp();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
         50,
@@ -76,6 +82,7 @@ public class SwerveModule {
         driveMotorPosition,
         driveMotorVelocity,
         angleEncoderAbsolutePosition);
+    BaseStatusSignal.setUpdateFrequencyForAll(4, angleMotorTemperature, driveMotorTemperature);
     if (Constants.disableUnusedSignals) {
       mAngleMotor.optimizeBusUtilization();
       mDriveMotor.optimizeBusUtilization();
@@ -169,8 +176,14 @@ public class SwerveModule {
     return new SwerveModulePosition(motorRotToWheelMeter(trueDriveRotations), getAngle());
   }
 
-  public double getVoltage() {
+  @Log.NT
+  public double getDriveVoltage() {
     return driveMotorVoltage.refresh().getValue();
+  }
+
+  public void updateLog() {
+    log("Azimuth Motor Temperature", angleMotorTemperature.refresh().getValue());
+    log("Drive Motor Temperature", driveMotorTemperature.refresh().getValue());
   }
 
   public static double wheelMeterToMotorRot(double wheelMeters) {

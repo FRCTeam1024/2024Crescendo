@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,6 +15,8 @@ import monologue.Logged;
 
 public class Intake extends SubsystemBase implements Logged {
   private final CANSparkMax intakeMotor = new CANSparkMax(intakeMotorId, MotorType.kBrushless);
+  private final RelativeEncoder encoder = intakeMotor.getEncoder();
+
   private final DigitalInput noteSensor = new DigitalInput(noteSensorId);
 
   public Intake() {
@@ -35,6 +38,21 @@ public class Intake extends SubsystemBase implements Logged {
   @Log.NT
   public boolean hasNote() {
     return !noteSensor.get();
+  }
+
+  @Log.NT(key = "Velocity")
+  public double getVelocity() {
+    return encoder.getVelocity();
+  }
+
+  @Log.NT(key = "Current")
+  public double getCurrent() {
+    return intakeMotor.getOutputCurrent();
+  }
+
+  @Log.NT(key = "Voltage")
+  public double getAppliedVoltage() {
+    return intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
   }
 
   public Command runIntakeCommand(double output) {
