@@ -355,7 +355,7 @@ public class Swerve extends SubsystemBase implements Logged {
               rotationVal * Constants.Swerve.maxAngularVelocity,
               true,
               true);
-        });
+        }).withName("teleopDriveCommand");
   }
 
   public Command teleopHeadingDriveCommand(
@@ -444,8 +444,12 @@ public class Swerve extends SubsystemBase implements Logged {
           }
 
           /* Drive */
-          drive(new Translation2d(translationVal, strafeVal), rotationVelocity, true, true);
-        });
+          drive(
+              new Translation2d(translationVal, strafeVal),
+              rotationVelocity,
+              true,
+              true);
+        }).withName("teleopHeadingDriveCommand");
   }
 
   public boolean shouldFlipPath() {
@@ -485,5 +489,7 @@ public class Swerve extends SubsystemBase implements Logged {
     }
     log("heading setpoint", headingController.getSetpoint().position);
     log("heading", getHeading().getRadians());
+    var currentCommand = getCurrentCommand();
+    log("Current Command", currentCommand == null ? "None" : currentCommand.getName());
   }
 }

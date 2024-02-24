@@ -24,7 +24,8 @@ public class EndEffector implements Logged {
         .runIntakeCommand(IntakeConstants.intakingSetpoint)
         .alongWith(feed.runFeedCommand(FeedConstants.intakingSetpoint))
         .until(intake::hasNote)
-        .andThen(feed.runFeedCommand(-0.1).withTimeout(0.5));
+        .andThen(intake.runIntakeCommand(0.1));
+        //.finallyDo(feed.runFeedCommand(-0.1).withTimeout(0.5));
   }
 
   public Command fireNote() {
