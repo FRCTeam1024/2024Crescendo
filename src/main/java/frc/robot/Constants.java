@@ -63,6 +63,9 @@ public final class Constants {
     public static final double headingkV = 1;
     public static final double headingkA = 0;
 
+    /* Heading Goal Range */
+    public static final double headingGoalRange = Units.degreesToRadians(1);
+
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
     public static final SwerveDriveKinematics swerveKinematics =

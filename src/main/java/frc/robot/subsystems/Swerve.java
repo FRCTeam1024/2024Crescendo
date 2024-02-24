@@ -328,12 +328,16 @@ public class Swerve extends SubsystemBase implements Logged {
           }
 
           /*  Calculate rotation velocity using heading controller PID + feedforward */
-          State setPoint = headingController.getSetpoint();
-          double rotationVelocity =
+          /*  Deadband if heading is within goal range */
+          double rotationVelocity = 0;
+          if (goalHeading.minus(getHeading()).getRadians() > Constants.Swerve.headingGoalRange) {
+            State setPoint = headingController.getSetpoint();
+            rotationVelocity =
               headingFeedforward.calculate(setPoint.velocity)
                   + headingController.calculate(
                       MathUtil.angleModulus(getHeading().getRadians()),
                       MathUtil.angleModulus(goalHeading.getRadians()));
+          }
 
           /* Drive */
           drive(
