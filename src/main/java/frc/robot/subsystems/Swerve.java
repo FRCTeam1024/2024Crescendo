@@ -56,8 +56,7 @@ public class Swerve extends SubsystemBase implements Logged {
   private SwerveModule[] mSwerveMods;
   private IMU gyro;
   private Field2d field = new Field2d();
-  private List<Pose2d> tagPoses = new LinkedList<Pose2d>();
-  private List<Integer> tagIds = new LinkedList<Integer>();
+  private List<Pose2d> targetPoses = new LinkedList<Pose2d>();
 
   public Swerve() {
     SmartDashboard.putData(field);
@@ -102,8 +101,22 @@ public class Swerve extends SubsystemBase implements Logged {
 
     List<AprilTag> tags = Constants.kOfficialField.getTags();
     for (AprilTag t : tags) {
-      tagPoses.add(t.pose.toPose2d());
-      tagIds.add(t.ID);
+      targetPoses.add(t.pose.toPose2d());
+      if (t.ID == 5 || t.ID == 6) {
+        targetPoses.add(t.pose.toPose2d().transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
+      }
+      /* Set offset for pickup (source) */
+      else if (t.ID == 1 || t.ID == 2 || t.ID == 9 || t.ID == 10) {
+        targetPoses.add(t.pose.toPose2d().transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
+      }
+      /* Set offset for stage */
+      else if (t.ID >= 11 && t.ID <= 16) {
+        targetPoses.add(t.pose.toPose2d().transformBy(new Transform2d(1.2, 0, new Rotation2d(Math.PI))));
+      }
+      /* Ignore speaker tags for now */
+      else if (t.ID == 3 || t.ID == 4 || t.ID == 7 || t.ID == 8) {
+        //Don't add anything so we wont snap here
+      }
     }
 
     mSwerveMods =
@@ -304,33 +317,16 @@ public class Swerve extends SubsystemBase implements Logged {
 
   public Optional<Pose2d> getSnapPose() {
     Pose2d currentPose = getPose();
-    Pose2d targetPose = currentPose.nearest(tagPoses);
-    int targetID = tagIds.get(tagPoses.indexOf(targetPose));
+    Pose2d targetPose = currentPose.nearest(targetPoses);
 
     /* Ignore if the nearest target is more than a certain distance away */
-    if (targetPose.getTranslation().getDistance(currentPose.getTranslation()) > 2) {
+    if (targetPose.getTranslation().getDistance(currentPose.getTranslation()) > 1.5) {
       return Optional.empty();
     }
-    /* Ignore speaker tags */
-    else if (targetID == 3 || targetID == 4 || targetID == 7 || targetID == 8) {
-      return Optional.empty();
-    }
-    /* Set offset for amp */
-    else if (targetID == 5 || targetID == 6) {
-      return Optional.of(targetPose.transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
-    }
-    /* Set offset for pickup (source) */
-    else if (targetID == 1 || targetID == 2 || targetID == 9 || targetID == 10) {
-      return Optional.of(targetPose.transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
-    }
-    /* Set offset for stage */
-    else if (targetID >= 11 && targetID <= 16) {
-      return Optional.of(targetPose.transformBy(new Transform2d(1.2, 0, new Rotation2d(Math.PI))));
-    }
-    /* Return the nothing if there is some other unexpected value */
     else {
-      return Optional.empty();
+      return Optional.of(targetPose);
     }
+   
   }
 
   public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
@@ -373,9 +369,9 @@ public class Swerve extends SubsystemBase implements Logged {
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
           double headingX = hx.getAsDouble();
           double headingY = hy.getAsDouble();
-          Debouncer headingDebounce = new Debouncer(0.5);
-          Debouncer xDebounce = new Debouncer(0.5);
-          Debouncer yDebounce = new Debouncer(0.5);
+          Debouncer headingDebounce = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+          Debouncer xDebounce = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
+          Debouncer yDebounce = new Debouncer(0.5, Debouncer.DebounceType.kFalling);
           /* check for a snap pose */
           var snapPose = getSnapPose();
 
@@ -418,17 +414,15 @@ public class Swerve extends SubsystemBase implements Logged {
             /* Calculate translation velocity using translation PID + feedforward */
             /* Stop if heading is within goal range  */
             if (Math.abs(goalX - getPose().getX()) > Constants.Swerve.translateGoalRange) {
-              State xPoint = xController.getSetpoint();
-              translationVal =
-                  translateFeedforward.calculate(xPoint.velocity)
-                      + xController.calculate(getPose().getX(), goalX);
+              translationVal = xController.calculate(getPose().getX(), goalX);
+              translationVal += translateFeedforward.calculate(xController.getSetpoint().velocity);
             }
+            else translationVal = 0;
             if (Math.abs(goalY - getPose().getY()) > Constants.Swerve.translateGoalRange) {
-              State yPoint = yController.getSetpoint();
-              strafeVal =
-                  translateFeedforward.calculate(yPoint.velocity)
-                      + yController.calculate(getPose().getY(), goalY);
+              strafeVal = yController.calculate(getPose().getY(), goalY);
+              strafeVal += translateFeedforward.calculate(yController.getSetpoint().velocity);
             }
+            else strafeVal = 0;
           }
 
           /*  Calculate rotation velocity using heading controller PID + feedforward */
@@ -436,12 +430,10 @@ public class Swerve extends SubsystemBase implements Logged {
           double rotationVelocity = 0;
           if (Math.abs(goalHeading.minus(getHeading()).getRadians())
               > Constants.Swerve.headingGoalRange) {
-            State setPoint = headingController.getSetpoint();
-            rotationVelocity =
-                headingFeedforward.calculate(setPoint.velocity)
-                    + headingController.calculate(
+            rotationVelocity = headingController.calculate(
                         MathUtil.angleModulus(getHeading().getRadians()),
                         MathUtil.angleModulus(goalHeading.getRadians()));
+            rotationVelocity += headingFeedforward.calculate(headingController.getSetpoint().velocity);
           }
 
           /* Drive */
