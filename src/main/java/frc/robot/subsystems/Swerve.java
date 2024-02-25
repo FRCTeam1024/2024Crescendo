@@ -329,7 +329,7 @@ public class Swerve extends SubsystemBase implements Logged {
    
   }
 
-  public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta) {
+  public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta, BooleanSupplier rCent) {
     return run(() -> {
           /* Reset goal heading */
           storedGoalHeading = getHeading();
@@ -338,10 +338,11 @@ public class Swerve extends SubsystemBase implements Logged {
           double translationVal = MathUtil.applyDeadband(x.getAsDouble(), Constants.stickDeadband);
           double strafeVal = MathUtil.applyDeadband(y.getAsDouble(), Constants.stickDeadband);
           double rotationVal = MathUtil.applyDeadband(theta.getAsDouble(), Constants.stickDeadband);
+          Boolean robotCentric = rCent.getAsBoolean();
 
           /* Invert translation controls if on Red side of field */
           var alliance = DriverStation.getAlliance();
-          if (alliance.get().equals(Alliance.Red)) {
+          if (alliance.get().equals(Alliance.Red) && !robotCentric) {
             translationVal *= -1;
             strafeVal *= -1;
           }
@@ -350,7 +351,7 @@ public class Swerve extends SubsystemBase implements Logged {
           drive(
               new Translation2d(translationVal, strafeVal).times(Constants.Swerve.maxModuleSpeed),
               rotationVal * Constants.Swerve.maxAngularVelocity,
-              true,
+              !robotCentric,
               true);
         })
         .withName("teleopDriveCommand");

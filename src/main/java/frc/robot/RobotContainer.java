@@ -69,7 +69,8 @@ public class RobotContainer implements Logged {
         swerve.teleopDriveCommand(
             () -> -driver.getRawAxis(translationAxis),
             () -> -driver.getRawAxis(strafeAxis),
-            () -> -driver.getRawAxis(rotationXAxis)));
+            () -> -driver.getRawAxis(rotationXAxis),
+            robotCentric));
 
     // Configure the button bindings
     initializeNamedCommands();
