@@ -28,6 +28,8 @@ public final class Constants {
 
   public static final boolean disableUnusedSignals = true;
 
+  public static final boolean enableDriverCam = false;
+
   public static final AprilTagFieldLayout kOfficialField =
       AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
