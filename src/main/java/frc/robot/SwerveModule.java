@@ -81,6 +81,7 @@ public class SwerveModule implements Logged {
         angleMotorVelocity,
         driveMotorPosition,
         driveMotorVelocity,
+        driveMotorVoltage,
         angleEncoderAbsolutePosition);
     BaseStatusSignal.setUpdateFrequencyForAll(4, angleMotorTemperature, driveMotorTemperature);
     if (Constants.disableUnusedSignals) {
