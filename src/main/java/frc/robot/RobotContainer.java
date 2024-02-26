@@ -133,7 +133,7 @@ public class RobotContainer implements Logged {
         .leftTrigger()
         .onTrue(superstructure.setGoalState(Superstructure.State.intake))
         .whileTrue(endEffector.intakeNote())
-        .onFalse(feed.runFeedCommand(-0.1).withTimeout(0.5));
+        .onFalse(endEffector.backOffNote());
     // Reverse intake
     operator
         .leftBumper()
