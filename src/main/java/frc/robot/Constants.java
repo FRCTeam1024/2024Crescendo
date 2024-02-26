@@ -53,7 +53,7 @@ public final class Constants {
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
     // 4 inches * correction factor obtained via measured distance
-    public static final double wheelCircumference = Units.inchesToMeters(Math.PI * 4 * 0.931755098);
+    public static final double wheelCircumference = Units.inchesToMeters(Math.PI * 4);
 
     /* Heading Control PID Values */
     public static final double headingkP = 2;
