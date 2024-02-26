@@ -24,7 +24,7 @@ public class EndEffector implements Logged {
         .runIntakeCommand(IntakeConstants.intakingSetpoint)
         .alongWith(feed.runFeedCommand(FeedConstants.intakingSetpoint))
         .until(intake::hasNote);
-        //.andThen(intake.runIntakeCommand(0.1));
+    // .andThen(intake.runIntakeCommand(0.1));
     // .finallyDo(feed.runFeedCommand(-0.1).withTimeout(0.5));
   }
 
@@ -40,6 +40,6 @@ public class EndEffector implements Logged {
 
   public Command spinUpAndShoot(double shotSetpoint) {
     return race(
-        shooter.velocityCommand(() -> shotSetpoint), waitSeconds(2).andThen(fireWhenReady()));
+        shooter.velocityCommand(() -> shotSetpoint), waitSeconds(1).andThen(fireWhenReady()));
   }
 }
