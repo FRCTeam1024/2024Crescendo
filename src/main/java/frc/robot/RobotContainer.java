@@ -175,7 +175,7 @@ public class RobotContainer implements Logged {
   }
 
   public void initializeNamedCommands() {
-    NamedCommands.registerCommand("runIntakeUntilNote", endEffector.intakeNote());
+    NamedCommands.registerCommand("runIntakeUntilNote", endEffector.intakeNoteAndIndex());
   }
 
   public void setupDashboard() {
