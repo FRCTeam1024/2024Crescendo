@@ -58,6 +58,39 @@ public class Superstructure implements Logged {
     return directToGoal(goalState);
   }
 
+  private double nearestAlwaysSafeWristState(double curState) {
+    double upperSafeState = Superstructure.State.stow.wristPosition;
+    double lowerSafeState = Superstructure.State.intake.wristPosition;
+
+    if (Math.abs(curState - upperSafeState) < Math.abs(curState - lowerSafeState)) {
+      return upperSafeState;
+    } else {
+      return lowerSafeState;
+    }
+  }
+
+  private boolean goesThroughPotentialUnsafeState(
+      double curState, double goalState, double upperUnsafeBound, double lowerUnsafeBound) {
+    // To be safe, both the starting state and the end state must be on the same side of the bounds
+    // and outside of the bounds
+    return !((curState > upperUnsafeBound && goalState > upperUnsafeBound)
+        || (curState < lowerUnsafeBound && goalState < lowerUnsafeBound));
+  }
+
+  /**
+   * Moves the wrist to the nearest always known-safe wrist state before moving the arm to the goal
+   * state, then moving the wrist.
+   *
+   * @param goalState The goal state
+   * @return command
+   */
+  private Command safeWristFirst(State goalState) {
+    return wrist
+        .setGoalCommand(() -> nearestAlwaysSafeWristState(wrist.getPosition()))
+        .andThen(arm.setGoalCommand(() -> goalState.armPosition))
+        .andThen(wrist.setGoalCommand(() -> goalState.armPosition));
+  }
+
   /**
    * Naiive "direct to goal" command - this ignores any global kinematic/range constraints.
    *
@@ -76,8 +109,10 @@ public class Superstructure implements Logged {
   public record State(double armPosition, double wristPosition) {
 
     public static final State stow = new State(-0.5, 2.279);
-    public static final State intake = new State(stow.armPosition(), 0.087266 - Units.degreesToRadians(1));
-    public static final State scoreFromSubwoofer = new State(stow.armPosition(), 0.087266 + Units.degreesToRadians(1));
+    public static final State intake =
+        new State(stow.armPosition(), 0.087266 - Units.degreesToRadians(1));
+    public static final State scoreFromSubwoofer =
+        new State(stow.armPosition(), 0.087266 + Units.degreesToRadians(1));
     public static final State scoreFromSpikeMark =
         new State(stow.armPosition(), degreesToRadians(15));
     public static final State scoreTrap = new State(0.6344640748005669, 2.007128156715125);
@@ -85,5 +120,9 @@ public class Superstructure implements Logged {
     public static final State scoreFromAmp = new State(stow.armPosition(), 0.314159);
     public static final State scoreOverDefense =
         new State(degreesToRadians(30), degreesToRadians(15));
+  }
+
+  private static boolean isBetween(double value, double upper, double lower) {
+    return value < upper && value > lower;
   }
 }
