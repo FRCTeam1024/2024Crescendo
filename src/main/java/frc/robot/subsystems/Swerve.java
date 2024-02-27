@@ -33,7 +33,7 @@ import frc.lib.hardware.Pigeon1IMU;
 import frc.lib.hardware.Pigeon2IMU;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
@@ -55,7 +55,7 @@ public class Swerve extends SubsystemBase implements Logged {
   private SwerveModule[] mSwerveMods;
   private IMU gyro;
   private Field2d field = new Field2d();
-  private List<Pose2d> targetPoses = new LinkedList<Pose2d>();
+  private List<Pose2d> targetPoses = new ArrayList<Pose2d>();
 
   public Swerve() {
     SmartDashboard.putData(field);
