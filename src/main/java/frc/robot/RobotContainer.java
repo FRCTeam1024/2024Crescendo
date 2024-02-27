@@ -1,6 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.wpilibj2.command.Commands.run;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.startEnd;
 
@@ -8,15 +7,13 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Autos;
@@ -121,6 +118,13 @@ public class RobotContainer implements Logged {
     // Spin up shooter
     operator
         .rightTrigger()
+        .and(shooter::readyToLaunch)
+        .whileTrue(
+            startEnd(
+                () -> operator.getHID().setRumble(RumbleType.kBothRumble, 1),
+                () -> operator.getHID().setRumble(RumbleType.kBothRumble, 0)));
+    operator
+        .rightTrigger()
         .onTrue(superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer))
         .whileTrue(
             shooter.velocityCommand(80));
@@ -132,8 +136,14 @@ public class RobotContainer implements Logged {
     operator
         .leftTrigger()
         .onTrue(superstructure.setGoalState(Superstructure.State.intake))
-        .whileTrue(endEffector.intakeNote())
-        .onFalse(endEffector.backOffNote());
+        .whileTrue(
+            endEffector
+                .intakeNote()
+                .andThen(runOnce(() -> operator.getHID().setRumble(RumbleType.kBothRumble, 1))))
+        .onFalse(
+            endEffector
+                .backOffNote()
+                .alongWith(runOnce(() -> operator.getHID().setRumble(RumbleType.kBothRumble, 0))));
     // Reverse intake
     operator
         .leftBumper()
