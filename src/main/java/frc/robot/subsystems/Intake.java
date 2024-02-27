@@ -35,7 +35,7 @@ public class Intake extends SubsystemBase implements Logged {
   }
 
   public void setOutput(double output) {
-    intakeMotor.setVoltage(output*12);
+    intakeMotor.setVoltage(output * 12);
   }
 
   public void stop() {

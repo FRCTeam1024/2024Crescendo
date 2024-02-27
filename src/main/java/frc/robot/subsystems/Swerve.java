@@ -102,19 +102,22 @@ public class Swerve extends SubsystemBase implements Logged {
     for (AprilTag t : tags) {
       targetPoses.add(t.pose.toPose2d());
       if (t.ID == 5 || t.ID == 6) {
-        targetPoses.add(t.pose.toPose2d().transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
+        targetPoses.add(
+            t.pose.toPose2d().transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
       }
       /* Set offset for pickup (source) */
       else if (t.ID == 1 || t.ID == 2 || t.ID == 9 || t.ID == 10) {
-        targetPoses.add(t.pose.toPose2d().transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
+        targetPoses.add(
+            t.pose.toPose2d().transformBy(new Transform2d(.7, 0, new Rotation2d(Math.PI))));
       }
       /* Set offset for stage */
       else if (t.ID >= 11 && t.ID <= 16) {
-        targetPoses.add(t.pose.toPose2d().transformBy(new Transform2d(1.2, 0, new Rotation2d(Math.PI))));
+        targetPoses.add(
+            t.pose.toPose2d().transformBy(new Transform2d(1.2, 0, new Rotation2d(Math.PI))));
       }
       /* Ignore speaker tags for now */
       else if (t.ID == 3 || t.ID == 4 || t.ID == 7 || t.ID == 8) {
-        //Don't add anything so we wont snap here
+        // Don't add anything so we wont snap here
       }
     }
 
@@ -321,14 +324,13 @@ public class Swerve extends SubsystemBase implements Logged {
     /* Ignore if the nearest target is more than a certain distance away */
     if (targetPose.getTranslation().getDistance(currentPose.getTranslation()) > 1.5) {
       return Optional.empty();
-    }
-    else {
+    } else {
       return Optional.of(targetPose);
     }
-   
   }
 
-  public Command teleopDriveCommand(DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta, BooleanSupplier rCent) {
+  public Command teleopDriveCommand(
+      DoubleSupplier x, DoubleSupplier y, DoubleSupplier theta, BooleanSupplier rCent) {
     return run(() -> {
           /* Reset goal heading */
           storedGoalHeading = getHeading();
@@ -416,13 +418,15 @@ public class Swerve extends SubsystemBase implements Logged {
             if (Math.abs(goalX - getPose().getX()) > Constants.Swerve.translateGoalRange) {
               translationVal = xController.calculate(getPose().getX(), goalX);
               translationVal += translateFeedforward.calculate(xController.getSetpoint().velocity);
+            } else {
+              translationVal = 0;
             }
-            else translationVal = 0;
             if (Math.abs(goalY - getPose().getY()) > Constants.Swerve.translateGoalRange) {
               strafeVal = yController.calculate(getPose().getY(), goalY);
               strafeVal += translateFeedforward.calculate(yController.getSetpoint().velocity);
+            } else {
+              strafeVal = 0;
             }
-            else strafeVal = 0;
           }
 
           /*  Calculate rotation velocity using heading controller PID + feedforward */
@@ -430,10 +434,12 @@ public class Swerve extends SubsystemBase implements Logged {
           double rotationVelocity = 0;
           if (Math.abs(goalHeading.minus(getHeading()).getRadians())
               > Constants.Swerve.headingGoalRange) {
-            rotationVelocity = headingController.calculate(
-                        MathUtil.angleModulus(getHeading().getRadians()),
-                        MathUtil.angleModulus(goalHeading.getRadians()));
-            rotationVelocity += headingFeedforward.calculate(headingController.getSetpoint().velocity);
+            rotationVelocity =
+                headingController.calculate(
+                    MathUtil.angleModulus(getHeading().getRadians()),
+                    MathUtil.angleModulus(goalHeading.getRadians()));
+            rotationVelocity +=
+                headingFeedforward.calculate(headingController.getSetpoint().velocity);
           }
 
           /* Drive */

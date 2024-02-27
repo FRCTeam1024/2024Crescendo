@@ -33,9 +33,7 @@ public class Autos {
     return runPathWithReset("Circuit");
   }
 
-  /**
-   *shoots preload, intake center note and shoot, and leave/stow
-   */
+  /** shoots preload, intake center note and shoot, and leave/stow */
   public Command centerTwoNote() {
     return sequence(
         firePreload(),
@@ -44,13 +42,10 @@ public class Autos {
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("CN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
-        parallel(
-        superstructure.setGoalState(Superstructure.State.stow),
-        runPath("C_to_Leave")));
+        parallel(superstructure.setGoalState(Superstructure.State.stow), runPath("C_to_Leave")));
   }
-/**
- * fire preload, intake and shoot center note, and leave/stow
- */
+
+  /** fire preload, intake and shoot center note, and leave/stow */
   public Command SourceTwoNote() {
     return sequence(
         firePreload(),
@@ -60,25 +55,22 @@ public class Autos {
         runPath("SourceN_to_SourceShoot"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         parallel(
-        superstructure.setGoalState(Superstructure.State.stow),
-        runPath("SourceShoot_to_Leave")));
-  }
-/**
- * shoot preload, intake SourceNote and leave/stow.
- */
-  public Command SourceNoteLeave() {
-    return sequence(
-        firePreload(), 
-         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("Source_to_SourceN"), 
-        parallel(
-        superstructure.setGoalState(Superstructure.State.stow),
-        runPath("SourceShoot_to_Leave")));
+            superstructure.setGoalState(Superstructure.State.stow),
+            runPath("SourceShoot_to_Leave")));
   }
 
-  /**
-   * shoots, goes to AMPNote, set shoot position, shoot and Leave/stow.
-   */
+  /** shoot preload, intake SourceNote and leave/stow. */
+  public Command SourceNoteLeave() {
+    return sequence(
+        firePreload(),
+        superstructure.setGoalState(Superstructure.State.intake),
+        runPathWithReset("Source_to_SourceN"),
+        parallel(
+            superstructure.setGoalState(Superstructure.State.stow),
+            runPath("SourceShoot_to_Leave")));
+  }
+
+  /** shoots, goes to AMPNote, set shoot position, shoot and Leave/stow. */
   public Command AMPTwoNote() {
     return sequence(
         firePreload(),
@@ -90,9 +82,8 @@ public class Autos {
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("AMPShoot_to_Leave")));
   }
-/**
- * Shoot preload, set intake and pickup while leaving/stow.
- */
+
+  /** Shoot preload, set intake and pickup while leaving/stow. */
   public Command AMPNoteLeave() {
     return sequence(
         firePreload(),
@@ -100,9 +91,8 @@ public class Autos {
         runPath("AMP_to_Leave"),
         superstructure.setGoalState(Superstructure.State.stow));
   }
-/**
- * Shoot preload, set intake and pickup while leaving then stow.
- */
+
+  /** Shoot preload, set intake and pickup while leaving then stow. */
   public Command centerNoteLeave() {
     return sequence(
         firePreload(),
@@ -110,9 +100,8 @@ public class Autos {
         runPathWithReset("C_to_CN1"),
         superstructure.setGoalState(Superstructure.State.stow));
   }
-/**
- * shoot preload, pickup and shoot all notes near, and leave/stow.
- */
+
+  /** shoot preload, pickup and shoot all notes near, and leave/stow. */
   public Command allNear() {
     return sequence(
         firePreload(),
@@ -128,12 +117,10 @@ public class Autos {
         endEffector.spinUpAndShoot(autoShooterSpeed),
         superstructure.setGoalState(Superstructure.State.intake),
         runPath("C_to_RN"),
-         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
+        superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("RN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
-        parallel(
-        runPath("C_to_Leave"),
-        superstructure.setGoalState(Superstructure.State.stow)));
+        parallel(runPath("C_to_Leave"), superstructure.setGoalState(Superstructure.State.stow)));
   }
 
   public Command firePreload() {
