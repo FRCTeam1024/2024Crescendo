@@ -117,13 +117,12 @@ public class RobotContainer implements Logged {
             snapToTag));
 
     /*Operator Buttons */
-    SmartDashboard.putNumber("Shooter Speed (RPS)", 80);
     // Spin up shooter
     operator
         .rightTrigger()
         .onTrue(superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer))
         .whileTrue(
-            shooter.velocityCommand(() -> SmartDashboard.getNumber("Shooter Speed (RPS)", 0)));
+            shooter.velocityCommand(80));
     // Fire
     operator.y().onTrue(endEffector.fireNote());
     // Reverse shooter
