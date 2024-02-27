@@ -48,6 +48,11 @@ public class Superstructure implements Logged {
     return topbound || frontBound || backBound;
   }
 
+  @Log.NT(key = "Wrist Angle To Arm")
+  private double wristAngleToArm() {
+    return wrist.getPosition() - arm.getPosition();
+  }
+
   /**
    * Returns a command that sets the goal state of the superstructure
    *
