@@ -1,6 +1,5 @@
 package frc.robot;
 
-import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.startEnd;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -116,6 +115,7 @@ public class RobotContainer implements Logged {
 
     /*Operator Buttons */
     // Spin up shooter
+    // Rumble when ready to shoot
     operator
         .rightTrigger()
         .and(shooter::readyToLaunch)
@@ -126,24 +126,23 @@ public class RobotContainer implements Logged {
     operator
         .rightTrigger()
         .onTrue(superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer))
-        .whileTrue(
-            shooter.velocityCommand(80));
+        .whileTrue(shooter.velocityCommand(80));
     // Fire
     operator.y().onTrue(endEffector.fireNote());
     // Reverse shooter
     operator.rightBumper().whileTrue(shooter.velocityCommand(-10));
-    // Intake
+    // Intake - rumble when note detected
     operator
         .leftTrigger()
         .onTrue(superstructure.setGoalState(Superstructure.State.intake))
         .whileTrue(
             endEffector
                 .intakeNote()
-                .andThen(runOnce(() -> operator.getHID().setRumble(RumbleType.kBothRumble, 1))))
-        .onFalse(
-            endEffector
-                .backOffNote()
-                .alongWith(runOnce(() -> operator.getHID().setRumble(RumbleType.kBothRumble, 0))));
+                .andThen(
+                    startEnd(
+                        () -> operator.getHID().setRumble(RumbleType.kBothRumble, 1),
+                        () -> operator.getHID().setRumble(RumbleType.kBothRumble, 0))))
+        .onFalse(endEffector.backOffNote());
     // Reverse intake
     operator
         .leftBumper()
@@ -170,19 +169,6 @@ public class RobotContainer implements Logged {
 
     climber.setDefaultCommand(
         climber.climbCommand(() -> MathUtil.applyDeadband(-operator.getLeftY(), 0.04)));
-
-    // operator.start().onTrue(wristSysID.fullTest(operator.back(), operator.start()));
-    // spotless:off
-    // arm.setDefaultCommand(arm.run(() -> arm.setVoltage((-operator.getLeftY()*3) + (0.6 * Math.cos(arm.getPosition())))));
-    // spotless:on
-    /*
-    wrist.setDefaultCommand(wrist.run(() -> {
-      var output = -operator.getLeftY() * 3;
-      var s = Math.signum(output) * 0.22;
-      var g = 0.36 * Math.cos(wrist.getCOGPosition());
-      wrist.setVoltage(g + output);
-    }));
-    */
   }
 
   public void initializeNamedCommands() {
