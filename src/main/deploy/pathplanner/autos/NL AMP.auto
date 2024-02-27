@@ -14,13 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "AMP_to_LN"
+            "pathName": "AMP_to_AMPN"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LN_to_AMP"
+            "pathName": "AMPN_to_AMPShoot"
           }
         }
       ]

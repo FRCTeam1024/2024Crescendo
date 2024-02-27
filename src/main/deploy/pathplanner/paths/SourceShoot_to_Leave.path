@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 0.7612792476769783,
+        "y": 4.3575412269307945
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0,
-        "y": 0.0
+        "x": 1.1406187741285434,
+        "y": 3.9883262635978074
       },
-      "isLocked": true,
-      "linkedName": null
+      "isLocked": false,
+      "linkedName": "ShootRN"
     },
     {
       "anchor": {
-        "x": 0.9,
-        "y": 0.0
+        "x": 2.58016364373961,
+        "y": 3.0
       },
       "prevControl": {
-        "x": -0.10000000000000009,
-        "y": 0.0
+        "x": 2.1521908446660496,
+        "y": 3.291799635731973
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
-  "previewStartingState": null,
+  "folder": "NearSource",
+  "previewStartingState": {
+    "rotation": -60.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

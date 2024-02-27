@@ -3,8 +3,10 @@
   "robotLength": 0.84,
   "holonomicMode": true,
   "pathFolders": [
-    "Near",
-    "Far"
+    "Far",
+    "NearAll",
+    "NearSource",
+    "NearAMP"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

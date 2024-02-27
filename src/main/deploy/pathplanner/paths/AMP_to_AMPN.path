@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.338386953626686,
-        "y": 5.540252206657979
+        "x": 0.7,
+        "y": 6.69
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6835505530447938,
-        "y": 4.821938770031106
+        "x": 1.4518717189093144,
+        "y": 6.99346460304295
       },
       "isLocked": false,
-      "linkedName": "Center Start"
+      "linkedName": "AMPShoot"
     },
     {
       "anchor": {
-        "x": 2.2998591451728356,
-        "y": 4.113976955226638
+        "x": 2.5,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 1.684161913778373,
-        "y": 4.104648209296419
+        "x": 1.7162303370885619,
+        "y": 7.0223181669134656
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AMPNote"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -61,9 +67,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "NearAll",
+  "folder": "NearAMP",
   "previewStartingState": {
-    "rotation": 0.0,
+    "rotation": 60.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

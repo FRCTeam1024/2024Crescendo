@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5685915732021036,
-        "y": 6.8961980577989594
+        "x": 1.4518717189093144,
+        "y": 6.99346460304295
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AMPShoot"
     },
     {
       "anchor": {
-        "x": 2.4399011268331336,
-        "y": 7.000326399702681
+        "x": 3.0,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 1.6812220739300043,
-        "y": 6.877071148452842
+        "x": 2.216230337088562,
+        "y": 7.0223181669134656
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,7 +43,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Near",
+  "folder": "NearAMP",
   "previewStartingState": {
     "rotation": 60.0,
     "velocity": 0

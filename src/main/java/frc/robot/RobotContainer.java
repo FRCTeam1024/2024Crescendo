@@ -1,15 +1,22 @@
 package frc.robot;
 
+import static edu.wpi.first.wpilibj2.command.Commands.run;
+import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
+import static edu.wpi.first.wpilibj2.command.Commands.startEnd;
+
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.Autos;
@@ -83,17 +90,11 @@ public class RobotContainer implements Logged {
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
     autoChooser.addOption("Center Two Note", autos.centerTwoNote());
+    autoChooser.addOption("Amp Two Note", autos.AMPTwoNote());
+    autoChooser.addOption("SourceNoteLeave", autos.SourceNoteLeave());
+    autoChooser.addOption("SourceTwoNote", autos.SourceTwoNote());
     autoChooser.addOption("Circuit", autos.circuitAuto());
-    // autoChooser.addOption("NL Speaker", autos.runPathPlannerAuto("NL Speaker"));
-    // autoChooser.addOption("LNE1", autos.runPathWithReset("LNEnd Speaker"));
-    // autoChooser.addOption("NL AMP", autos.runPathPlannerAuto("NL AMP"));
     autoChooser.addOption("AMP_to_LN", autos.runPathWithReset("AMP_to_LN"));
-    // autoChooser.addOption("3 Near", autos.runPathPlannerAuto("3 Near"));
-    // autoChooser.addOption("NM Speaker", autos.runPathPlannerAuto("NM Speaker"));
-    // autoChooser.addOption("NR Speaker", autos.runPathPlannerAuto("NR Speaker"));
-    // autoChooser.addOption("LN and F", autos.runPathPlannerAuto("LN and F"));
-    // autoChooser.addOption("FR", autos.runPathPlannerAuto("FR"));
-    // autoChooser.addOption("MN and F", autos.runPathPlannerAuto("MN and F"));
     SmartDashboard.putData(autoChooser);
   }
 

@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 2.430151368616278,
-        "y": 4.124147725730131
+        "x": 2.4537171349224214,
+        "y": 4.1
       },
       "prevControl": {
-        "x": 1.8159166009543433,
-        "y": 4.094898451079563
+        "x": 1.8394823672604868,
+        "y": 4.0707507253494315
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SourceNote"
     }
   ],
   "rotationTargets": [
@@ -36,7 +36,25 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.4,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "runIntakeUntilNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -49,7 +67,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Near",
+  "folder": "NearSource",
   "previewStartingState": {
     "rotation": -60.0,
     "velocity": 0

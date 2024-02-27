@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 2.5,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0,
-        "y": 0.0
+        "x": 1.9856330564791453,
+        "y": 7.030862016611251
       },
-      "isLocked": true,
-      "linkedName": null
+      "isLocked": false,
+      "linkedName": "AMPNote"
     },
     {
       "anchor": {
-        "x": 0.9,
-        "y": 0.0
+        "x": 0.7,
+        "y": 6.69
       },
       "prevControl": {
-        "x": -0.10000000000000009,
-        "y": 0.0
+        "x": 1.023898919835754,
+        "y": 7.071277839238143
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AMPShoot"
     }
   ],
   "rotationTargets": [],
@@ -39,11 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 60.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "NearAMP",
   "previewStartingState": null,
   "useDefaultConstraints": true
 }
