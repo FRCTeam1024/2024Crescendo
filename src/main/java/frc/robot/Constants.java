@@ -224,7 +224,7 @@ public final class Constants {
                 Units.inchesToMeters(isPracticeBot ? 20.875 : 20.875)),
             new Rotation3d(
                 Units.degreesToRadians(isPracticeBot ? 0 : 0),
-                Units.degreesToRadians(isPracticeBot ? -18 : -18),
+                Units.degreesToRadians(isPracticeBot ? -18 : -24),
                 Units.degreesToRadians(isPracticeBot ? 180 : 180)));
   }
 
