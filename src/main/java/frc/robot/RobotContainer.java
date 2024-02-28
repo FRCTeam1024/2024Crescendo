@@ -154,7 +154,7 @@ public class RobotContainer implements Logged {
     operator.start().whileTrue(feed.runFeedCommand(-0.1));
 
     // Intake + Shoot Position
-    operator.b().onTrue(superstructure.setGoalState(Superstructure.State.intake));
+    operator.b().onTrue(superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer));
 
     // Stow
     operator.a().onTrue(superstructure.setGoalState(Superstructure.State.stow));
