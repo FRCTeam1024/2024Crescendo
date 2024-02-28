@@ -119,6 +119,7 @@ public class SwerveModule implements Logged {
     // Convert linear speed of wheel to motor speed
     var requestedVelocityRPS = wheelMeterToMotorRot(speedMetersPerSecond);
     // Calculate motor velocity required to hold wheel still at the current azimuth velocity
+    // Don't compensate if requested velocity is 0 - just stop the motor
     double compensationVelocity = 0;
     if (speedMetersPerSecond != 0) {
       compensationVelocity =

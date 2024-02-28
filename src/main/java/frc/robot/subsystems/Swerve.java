@@ -222,9 +222,9 @@ public class Swerve extends SubsystemBase implements Logged {
    * @param desiredStates the desired states of the swerve modules
    */
   public void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
-    log("Requested Module States", desiredStates);
     log("Closed Loop", !isOpenLoop);
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.maxModuleSpeed);
+    log("Requested Module States", desiredStates);
 
     for (SwerveModule mod : mSwerveMods) {
       mod.setDesiredState(desiredStates[mod.moduleNumber], isOpenLoop);
