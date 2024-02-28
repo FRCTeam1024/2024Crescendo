@@ -13,6 +13,8 @@ import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Superstructure implements Logged {
+  public static final double scoringPositionThreshold = Units.degreesToRadians(25);
+
   @IgnoreLogged Arm arm;
   @IgnoreLogged Wrist wrist;
 
@@ -61,6 +63,10 @@ public class Superstructure implements Logged {
    */
   public Command setGoalState(State goalState) {
     return directToGoal(goalState);
+  }
+
+  public boolean isInFiringPosition() {
+    return wrist.getPosition() < scoringPositionThreshold;
   }
 
   private double nearestAlwaysSafeWristState(double curState) {
