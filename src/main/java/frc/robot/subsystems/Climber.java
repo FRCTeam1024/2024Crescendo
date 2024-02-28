@@ -22,13 +22,13 @@ public class Climber extends SubsystemBase implements Logged {
   public Climber() {
     // Motor A
     climberMotorA.restoreFactoryDefaults();
-    climberMotorA.setIdleMode(IdleMode.kCoast);
+    climberMotorA.setIdleMode(IdleMode.kBrake);
     climberMotorA.setInverted(false);
     configurePeriodicFrames(climberMotorA);
     climberMotorA.burnFlash();
     // Motor B
     climberMotorB.restoreFactoryDefaults();
-    climberMotorB.setIdleMode(IdleMode.kCoast);
+    climberMotorB.setIdleMode(IdleMode.kBrake);
     climberMotorB.setInverted(true);
     configurePeriodicFrames(climberMotorB);
     climberMotorB.burnFlash();
