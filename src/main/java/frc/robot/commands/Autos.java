@@ -142,8 +142,9 @@ public class Autos {
               var startingPose = path.getPreviewStartingHolonomicPose();
               if (drivetrain.shouldFlipPath()) {
                 startingPose = GeometryUtil.flipFieldPose(startingPose);
+              } else {
               }
-              drivetrain.setPose(path.getPreviewStartingHolonomicPose());
+              drivetrain.setPose(startingPose);
             })
         .andThen(AutoBuilder.followPath(path));
   }
