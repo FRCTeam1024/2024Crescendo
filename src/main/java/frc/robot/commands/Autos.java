@@ -40,9 +40,7 @@ public class Autos {
         firePreload(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("C_to_CN"),
-        parallel(
-            superstructure.setGoalState(Superstructure.State.stow),
-            runPath("CN_to_C")),
+        parallel(superstructure.setGoalState(Superstructure.State.stow), runPath("CN_to_C")),
         superstructure.setGoalState(Superstructure.State.intake),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         parallel(superstructure.setGoalState(Superstructure.State.stow), runPath("C_to_Leave")));

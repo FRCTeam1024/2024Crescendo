@@ -15,6 +15,12 @@ import monologue.Logged;
 public class Superstructure implements Logged {
   public static final double scoringPositionThreshold = Units.degreesToRadians(25);
 
+  public static final double wristLowerUnsafeBound = 0.26;
+  public static final double wristUpperUnsafeBound = 1.02;
+
+  public static final double armLowerUnsafeBound = -0.48;
+  public static final double armUpperUnsafeBound = 0.19;
+
   @IgnoreLogged Arm arm;
   @IgnoreLogged Wrist wrist;
 
@@ -62,7 +68,7 @@ public class Superstructure implements Logged {
    * @return the command
    */
   public Command setGoalState(State goalState) {
-    return directToGoal(goalState);
+    return safeWristFirst(goalState);
   }
 
   public boolean isInFiringPosition() {
@@ -99,7 +105,7 @@ public class Superstructure implements Logged {
     return wrist
         .setGoalCommand(() -> nearestAlwaysSafeWristState(wrist.getPosition()))
         .andThen(arm.setGoalCommand(() -> goalState.armPosition))
-        .andThen(wrist.setGoalCommand(() -> goalState.armPosition));
+        .andThen(wrist.setGoalCommand(() -> goalState.wristPosition));
   }
 
   /**
