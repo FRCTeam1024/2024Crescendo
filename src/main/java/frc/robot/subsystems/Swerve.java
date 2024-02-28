@@ -451,7 +451,7 @@ public class Swerve extends SubsystemBase implements Logged {
   public boolean shouldFlipPath() {
     var result = DriverStation.getAlliance();
     if (result.isEmpty()) {
-      System.out.println("Alliance was empty at auto start!");
+      DriverStation.reportWarning("Alliance was empty at auto start!", false);
       return false;
     }
     return result.get().equals(Alliance.Red);

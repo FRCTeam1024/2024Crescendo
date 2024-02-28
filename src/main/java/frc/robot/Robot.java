@@ -66,12 +66,11 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    userCodeTimer.restart();
+    userCodeTimer.reset();
     CommandScheduler.getInstance().run();
     Monologue.updateAll();
-    userCodeTimer.stop();
-    m_robotContainer.log("Loop Time", loopTimer.get());
     m_robotContainer.log("User Code Time", userCodeTimer.get());
+    m_robotContainer.log("Loop Time", loopTimer.get());
     loopTimer.reset();
   }
 
