@@ -338,7 +338,7 @@ public final class Constants {
     // Output for intaking notes
     public static final double intakingSetpoint = 0.6;
     // Output for feeding to shooter
-    public static final double fireSetpoint = 1.0;
+    public static final double fireSetpoint = 0.5;
   }
 
   public static final class ShooterConstants {
