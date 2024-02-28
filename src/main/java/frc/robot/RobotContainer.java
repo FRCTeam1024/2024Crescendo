@@ -90,7 +90,6 @@ public class RobotContainer implements Logged {
     autoChooser.addOption("SourceNoteLeave", autos.SourceNoteLeave());
     autoChooser.addOption("SourceTwoNote", autos.SourceTwoNote());
     autoChooser.addOption("Circuit", autos.circuitAuto());
-    autoChooser.addOption("AMP_to_LN", autos.runPathWithReset("AMP_to_LN"));
     SmartDashboard.putData(autoChooser);
   }
 
