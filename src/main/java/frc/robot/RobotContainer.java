@@ -192,6 +192,7 @@ public class RobotContainer implements Logged {
       setupCamera();
       driverTab.add(driverCam);
     }
+    Shuffleboard.selectTab("Driver");
   }
 
   public void setupCamera() {

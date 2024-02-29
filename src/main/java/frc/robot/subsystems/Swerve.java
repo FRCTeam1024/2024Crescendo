@@ -23,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -153,6 +154,12 @@ public class Swerve extends SubsystemBase implements Logged {
                   PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
                   Constants.CameraConstants.rearCamera,
                   Constants.CameraConstants.rearCamTransform));
+    }
+    for (var mod : mSwerveMods) {
+      Shuffleboard.getTab("Offsets")
+          .addNumber("Mod " + mod.moduleNumber + " No Offset", () -> mod.getCANcoder().getDegrees())
+          .withSize(1, 1)
+          .withPosition(mod.moduleNumber % 2, mod.moduleNumber / 2);
     }
   }
 
@@ -471,17 +478,6 @@ public class Swerve extends SubsystemBase implements Logged {
     }
     var pose = getPose();
     field.setRobotPose(pose);
-    for (SwerveModule mod : mSwerveMods) {
-      mod.updateLog();
-      SmartDashboard.putNumber(
-          "Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
-      SmartDashboard.putNumber(
-          "Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
-      SmartDashboard.putNumber(
-          "Mod " + mod.moduleNumber + " Distance", mod.getPosition().distanceMeters);
-      SmartDashboard.putNumber(
-          "Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
-    }
     log("heading setpoint", headingController.getSetpoint().position);
     log("heading", getHeading().getRadians());
     var currentCommand = getCurrentCommand();

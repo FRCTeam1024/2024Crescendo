@@ -18,8 +18,10 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.StatusDashboard;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
@@ -44,6 +46,8 @@ public class Arm extends SubsystemBase implements Logged {
 
   private final double kInitializationOffset;
 
+  private boolean initializedProperly = true;
+
   public Arm() {
     var armConfig = new TalonFXConfiguration();
     armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -55,21 +59,28 @@ public class Arm extends SubsystemBase implements Logged {
     quadEncoder.setSamplesToAverage(80);
     quadEncoder.reset();
 
+    absoluteEncoder.setConnectedFrequencyThreshold(950);
+
     // Wait for encoder to produce valid values
     var timeout = new Timer();
     timeout.start();
     do {
       if (timeout.hasElapsed(2)) {
         DriverStation.reportError("Arm encoder not detected!", false);
+        initializedProperly = false;
         break;
       }
       Timer.delay(0.01);
     } while (absoluteEncoder.getFrequency() < 950 && RobotBase.isReal());
+    log("EncoderInitTime", timeout.get());
 
     kInitializationOffset = getAbsolutePosition();
 
     setGoal(getPosition());
     setDefaultCommand(holdPositionCommand());
+    StatusDashboard.addStatusIndicator("Arm Initialized", initializedProperly);
+    StatusDashboard.addStatusIndicator("Arm Encoder", absoluteEncoder::isConnected);
+    Shuffleboard.getTab("Offsets").addNumber("Arm", this::getAbsolutePositionNoOffset);
   }
 
   /**
