@@ -15,8 +15,11 @@ import monologue.Logged;
 public class Superstructure implements Logged {
   public static final double scoringPositionThreshold = Units.degreesToRadians(25);
 
-  public static final double wristLowerUnsafeBound = 0.26;
-  public static final double wristUpperUnsafeBound = 1.02;
+  public static final double wristLowerUnsafeBound = 0.26 - Units.degreesToRadians(5);
+  public static final double wristUpperUnsafeBound = 1.02 + Units.degreesToRadians(5);
+
+  public static final double wristLowerSafeState = wristLowerUnsafeBound;
+  public static final double wristUpperSafeState = wristUpperUnsafeBound;
 
   public static final double armLowerUnsafeBound = -0.48;
   public static final double armUpperUnsafeBound = 0.19;
@@ -71,18 +74,19 @@ public class Superstructure implements Logged {
     return safeWristFirst(goalState);
   }
 
+  public State getState() {
+    return new State(arm.getPosition(), wrist.getPosition());
+  }
+
   public boolean isInFiringPosition() {
     return wrist.getPosition() < scoringPositionThreshold;
   }
 
   private double nearestAlwaysSafeWristState(double curState) {
-    double upperSafeState = Superstructure.State.stow.wristPosition;
-    double lowerSafeState = Superstructure.State.intake.wristPosition;
-
-    if (Math.abs(curState - upperSafeState) < Math.abs(curState - lowerSafeState)) {
-      return upperSafeState;
+    if (Math.abs(curState - wristUpperSafeState) < Math.abs(curState - wristLowerSafeState)) {
+      return wristUpperSafeState;
     } else {
-      return lowerSafeState;
+      return wristLowerSafeState;
     }
   }
 
@@ -92,6 +96,52 @@ public class Superstructure implements Logged {
     // and outside of the bounds
     return !((curState > upperUnsafeBound && goalState > upperUnsafeBound)
         || (curState < lowerUnsafeBound && goalState < lowerUnsafeBound));
+  }
+
+  /**
+   * Returns a safe intermediate wrist state given a goal
+   *
+   * @param goal the goal to move to from the current state
+   * @return safe intermediate wrist state
+   */
+  private double getSafeWristState(State goal) {
+    var curState = getState();
+    // If the wrist movement never goes through an unsafe state, go direct to goal
+    if (!goesThroughPotentialUnsafeState(
+        curState.wristPosition, goal.wristPosition, wristLowerUnsafeBound, wristUpperUnsafeBound)) {
+      return goal.wristPosition;
+    }
+    // Wrist must pass through potential unsafe state
+    // If we're outside of the arm no-go zone, we can move the wrist wherever
+    if (!isBetween(curState.armPosition, armLowerUnsafeBound, armUpperUnsafeBound)) {
+      // If the goal is safe, wrist can go directly to goal
+      if (!isBetween(goal.wristPosition, wristLowerUnsafeBound, wristUpperUnsafeBound)) {
+        return goal.wristPosition;
+      } else {
+        // We can move the wrist anywhere currently, but the goal is unsafe- move to the most
+        // optimal safe position
+        var upperSafePositionDistance =
+            Math.abs(curState.wristPosition - wristUpperSafeState)
+                + Math.abs(wristUpperSafeState - goal.wristPosition);
+        var lowerSafePositionDistance =
+            Math.abs(curState.wristPosition - wristLowerSafeState)
+                + Math.abs(wristLowerSafeState - goal.wristPosition);
+        if (upperSafePositionDistance < lowerSafePositionDistance) {
+          return wristLowerSafeState;
+        } else {
+          return wristUpperSafeState;
+        }
+      }
+    } else {
+      // We are inside the arm no-go zone, and the wrist movement is potentially unsafe
+      // If the wrist is currently safe, keep it there
+      if (!isBetween(curState.wristPosition, wristLowerUnsafeBound, wristUpperUnsafeBound)) {
+        return curState.wristPosition;
+      } else {
+        // This is bad. We don't have a guarantee that the wrist is safe currently.
+        return nearestAlwaysSafeWristState(wristLowerSafeState);
+      }
+    }
   }
 
   /**
@@ -140,7 +190,7 @@ public class Superstructure implements Logged {
     public static final State climb = new State(1.158062789394613, 1.0122905035569956);
   }
 
-  private static boolean isBetween(double value, double upper, double lower) {
+  private static boolean isBetween(double value, double lower, double upper) {
     return value < upper && value > lower;
   }
 }
