@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.hardware.IMU;
 import frc.lib.hardware.Pigeon1IMU;
 import frc.lib.hardware.Pigeon2IMU;
+import frc.robot.AprilTagVision;
 import frc.robot.Constants;
 import frc.robot.SwerveModule;
 import java.util.ArrayList;
@@ -41,8 +42,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
-import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 public class Swerve extends SubsystemBase implements Logged {
   private ProfiledPIDController headingController;
@@ -52,7 +51,7 @@ public class Swerve extends SubsystemBase implements Logged {
   private SimpleMotorFeedforward translateFeedforward;
   private Rotation2d storedGoalHeading;
   private SwerveDrivePoseEstimator poseEstimator;
-  private List<PhotonPoseEstimator> cameras;
+  private AprilTagVision vision;
   private SwerveModule[] mSwerveMods;
   private IMU gyro;
   private Field2d field = new Field2d();
@@ -141,20 +140,7 @@ public class Swerve extends SubsystemBase implements Logged {
         Constants.AutoConstants.pathFollowerConfig,
         this::shouldFlipPath,
         this);
-    if (Constants.apriltagsEnabled) {
-      cameras =
-          List.of(
-              new PhotonPoseEstimator(
-                  Constants.kOfficialField,
-                  PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                  Constants.CameraConstants.frontCamera,
-                  Constants.CameraConstants.frontCamTransform),
-              new PhotonPoseEstimator(
-                  Constants.kOfficialField,
-                  PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
-                  Constants.CameraConstants.rearCamera,
-                  Constants.CameraConstants.rearCamTransform));
-    }
+    vision = new AprilTagVision();
     for (var mod : mSwerveMods) {
       Shuffleboard.getTab("Offsets")
           .addNumber("Mod " + mod.moduleNumber + " No Offset", () -> mod.getCANcoder().getDegrees())
@@ -466,18 +452,19 @@ public class Swerve extends SubsystemBase implements Logged {
 
   @Override
   public void periodic() {
-    poseEstimator.update(getGyroYaw(), getModulePositions());
-    if (Constants.apriltagsEnabled) {
-      for (var camera : cameras) {
-        var result = camera.update();
-        if (result.isPresent()) {
-          poseEstimator.addVisionMeasurement(
-              result.get().estimatedPose.toPose2d(), result.get().timestampSeconds);
-        }
-      }
+    for (var mod : mSwerveMods) {
+      mod.updateLog();
     }
-    var pose = getPose();
-    field.setRobotPose(pose);
+    poseEstimator.update(getGyroYaw(), getModulePositions());
+    vision.processVisionUpdates(
+        (estimatedPose) -> {
+          if (Constants.apriltagsEnabled) {
+            poseEstimator.addVisionMeasurement(
+                estimatedPose.estimatedPose.toPose2d(), estimatedPose.timestampSeconds);
+          }
+        },
+        getPose());
+    field.setRobotPose(getPose());
     log("heading setpoint", headingController.getSetpoint().position);
     log("heading", getHeading().getRadians());
     var currentCommand = getCurrentCommand();

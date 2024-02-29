@@ -199,9 +199,9 @@ public final class Constants {
   }
 
   public static final class CameraConstants {
-    public static final PhotonCamera frontCamera =
-        new PhotonCamera(
-            isPracticeBot ? "Arducam_OV9281_5" : "Arducam_OV9281_1"); // Need to correct comp bot
+    public static final String frontCameraName =
+        isPracticeBot ? "Arducam_OV9281_5" : "Arducam_OV9281_1";
+    public static final PhotonCamera frontCamera = new PhotonCamera(frontCameraName);
     public static final Transform3d frontCamTransform =
         new Transform3d(
             new Translation3d(
@@ -213,9 +213,9 @@ public final class Constants {
                 Units.degreesToRadians(isPracticeBot ? -25 : -25),
                 Units.degreesToRadians(isPracticeBot ? 0 : 0)));
 
-    public static final PhotonCamera rearCamera =
-        new PhotonCamera(
-            isPracticeBot ? "Arducam_OV9281_4" : "Arducam_OV9281_3"); // Need to correct comp bot
+    public static final String rearCameraName =
+        isPracticeBot ? "Arducam_OV9281_4" : "Arducam_OV9281_3";
+    public static final PhotonCamera rearCamera = new PhotonCamera(rearCameraName);
     public static final Transform3d rearCamTransform =
         new Transform3d(
             new Translation3d(
