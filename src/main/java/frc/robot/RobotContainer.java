@@ -88,7 +88,6 @@ public class RobotContainer implements Logged {
     setupDashboard();
   }
 
-  // PathNames are wrong
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
     autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
@@ -96,6 +95,7 @@ public class RobotContainer implements Logged {
     autoChooser.addOption("Amp Two Note", autos.AMPTwoNote());
     autoChooser.addOption("SourceNoteLeave", autos.SourceNoteLeave());
     autoChooser.addOption("SourceTwoNote", autos.SourceTwoNote());
+    autoChooser.addOption("AllNotesNear", autos.allNear());
     autoChooser.addOption("Circuit", autos.circuitAuto());
   }
 
