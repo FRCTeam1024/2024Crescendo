@@ -37,6 +37,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    Timer initTimer = new Timer();
+    initTimer.start();
     loopTimer.start();
     DriverStation.silenceJoystickConnectionWarning(true);
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -44,6 +46,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     Monologue.setupMonologue(m_robotContainer, "Robot", false, true);
     DriverStation.startDataLog(DataLogManager.getLog(), true);
+    m_robotContainer.log("InitTime", initTimer.get());
   }
 
   /**

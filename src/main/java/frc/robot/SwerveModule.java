@@ -187,6 +187,7 @@ public class SwerveModule implements Logged {
   }
 
   public void updateLog() {
+    log("Azimuth Motor Velocity", angleMotorVelocity.refresh().getValue());
     log("Azimuth Motor Temperature", angleMotorTemperature.refresh().getValue());
     log("Drive Motor Temperature", driveMotorTemperature.refresh().getValue());
   }
