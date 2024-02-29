@@ -3,14 +3,17 @@ package frc.robot;
 import static edu.wpi.first.wpilibj2.command.Commands.startEnd;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,6 +29,10 @@ import monologue.Logged;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer implements Logged {
+  private final ShuffleboardTab driverTab = Shuffleboard.getTab("Driver");
+  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private UsbCamera driverCam;
+
   /* Controllers */
   private final XboxController driver = new XboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -64,8 +71,6 @@ public class RobotContainer implements Logged {
 
   private final Autos autos = new Autos(swerve, superstructure, endEffector);
 
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     swerve.setDefaultCommand(
@@ -90,7 +95,6 @@ public class RobotContainer implements Logged {
     autoChooser.addOption("SourceNoteLeave", autos.SourceNoteLeave());
     autoChooser.addOption("SourceTwoNote", autos.SourceTwoNote());
     autoChooser.addOption("Circuit", autos.circuitAuto());
-    SmartDashboard.putData(autoChooser);
   }
 
   /**
@@ -178,9 +182,23 @@ public class RobotContainer implements Logged {
   }
 
   public void setupDashboard() {
-    var tab = Shuffleboard.getTab("Driver");
-    tab.add(autoChooser);
-    tab.addBoolean("Ready to Shoot", shooter::readyToLaunch);
+    driverTab.add(autoChooser).withPosition(0, 0).withSize(2, 1);
+    driverTab
+        .addBoolean("Ready to Shoot", shooter::readyToLaunch)
+        .withPosition(2, 0)
+        .withSize(2, 1);
+    driverTab.addBoolean("Has Note", intake::hasNote).withPosition(4, 0).withSize(2, 1);
+    if (Constants.enableDriverCam) {
+      setupCamera();
+      driverTab.add(driverCam);
+    }
+  }
+
+  public void setupCamera() {
+    driverCam = CameraServer.startAutomaticCapture();
+    driverCam.setPixelFormat(PixelFormat.kMJPEG);
+    driverCam.setResolution(160, 120);
+    driverCam.setFPS(15);
   }
 
   /**

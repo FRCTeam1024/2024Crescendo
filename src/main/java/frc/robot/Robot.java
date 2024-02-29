@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -45,12 +44,6 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     Monologue.setupMonologue(m_robotContainer, "Robot", false, true);
     DriverStation.startDataLog(DataLogManager.getLog(), true);
-
-    if (Constants.enableDriverCam) {
-      driverCam = CameraServer.startAutomaticCapture();
-      driverCam.setResolution(160, 120);
-      driverCam.setFPS(15);
-    }
   }
 
   /**
