@@ -79,7 +79,7 @@ public class Wrist extends SubsystemBase implements Logged {
     setDefaultCommand(holdPositionCommand());
     StatusDashboard.addStatusIndicator("Wrist Initialized", initializedProperly);
     StatusDashboard.addStatusIndicator("Wrist Encoder", absoluteEncoder::isConnected);
-    Shuffleboard.getTab("Offsets").addNumber("Wrist", this::getAbsolutePositionNoOffset);
+    Shuffleboard.getTab("Offsets").addNumber("Wrist", this::getAbsolutePositionNoOffset).withPosition(3, 0);
   }
 
   /**
