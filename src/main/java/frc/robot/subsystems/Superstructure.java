@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.math.util.Units.*;
 import static edu.wpi.first.wpilibj2.command.Commands.*;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -23,6 +24,8 @@ public class Superstructure implements Logged {
 
   public static final double armLowerUnsafeBound = -0.48;
   public static final double armUpperUnsafeBound = 0.19;
+
+  public static final double armTooHighPosition = 0.75;
 
   @IgnoreLogged Arm arm;
   @IgnoreLogged Wrist wrist;
@@ -71,11 +74,11 @@ public class Superstructure implements Logged {
    * @return the command
    */
   public Command setGoalState(State goalState) {
-    return safeWristFirst(goalState);
+    return optimizedSafeWristFirst(goalState);
   }
 
   public State getState() {
-    return new State(arm.getPosition(), wrist.getPosition());
+    return new State(arm.getSetpoint().position, wrist.getSetpoint().position);
   }
 
   public boolean isInFiringPosition() {
@@ -91,11 +94,24 @@ public class Superstructure implements Logged {
   }
 
   private boolean goesThroughPotentialUnsafeState(
-      double curState, double goalState, double upperUnsafeBound, double lowerUnsafeBound) {
+      double curState, double goalState, double lowerUnsafeBound, double upperUnsafeBound) {
+    if (upperUnsafeBound < lowerUnsafeBound) {
+      throw new IllegalArgumentException("upperUnsafeBound must be greater than lowerUnsafeBound");
+    }
     // To be safe, both the starting state and the end state must be on the same side of the bounds
     // and outside of the bounds
     return !((curState > upperUnsafeBound && goalState > upperUnsafeBound)
         || (curState < lowerUnsafeBound && goalState < lowerUnsafeBound));
+  }
+
+  private double getSafeWristState(State curState, State goal) {
+    final double maxWristWhenArmHigh = wristUpperSafeState;
+    double safeState = getSafeWristStateHorizontal(curState, goal);
+    // if current or goal is too high, clamp under threshold
+    if (curState.armPosition() > armTooHighPosition || goal.armPosition() > armTooHighPosition) {
+      safeState = MathUtil.clamp(safeState, State.intake.wristPosition, maxWristWhenArmHigh);
+    }
+    return safeState;
   }
 
   /**
@@ -104,14 +120,18 @@ public class Superstructure implements Logged {
    * @param goal the goal to move to from the current state
    * @return safe intermediate wrist state
    */
-  private double getSafeWristState(State goal) {
-    var curState = getState();
-    // If the wrist movement never goes through an unsafe state, go direct to goal
+  private double getSafeWristStateHorizontal(State curState, State goal) {
+    // If the wrist movement never goes through an unsafe state, current position is safe
     if (!goesThroughPotentialUnsafeState(
         curState.wristPosition, goal.wristPosition, wristLowerUnsafeBound, wristUpperUnsafeBound)) {
-      return goal.wristPosition;
+      return curState.wristPosition;
     }
-    // Wrist must pass through potential unsafe state
+    // If the arm movement never goes through an unsafe state, current position is safe
+    if (!goesThroughPotentialUnsafeState(
+        curState.armPosition, goal.armPosition, armLowerUnsafeBound, armUpperUnsafeBound)) {
+      return curState.wristPosition;
+    }
+    // Wrist or arm must pass through potential unsafe state
     // If we're outside of the arm no-go zone, we can move the wrist wherever
     if (!isBetween(curState.armPosition, armLowerUnsafeBound, armUpperUnsafeBound)) {
       // If the goal is safe, wrist can go directly to goal
@@ -158,6 +178,13 @@ public class Superstructure implements Logged {
         .andThen(wrist.setGoalCommand(() -> goalState.wristPosition));
   }
 
+  private Command optimizedSafeWristFirst(State goalState) {
+    return wrist
+        .setGoalCommand(() -> getSafeWristState(getState(), goalState))
+        .andThen(arm.setGoalCommand(goalState::armPosition))
+        .andThen(wrist.setGoalCommand(goalState::wristPosition));
+  }
+
   /**
    * Naiive "direct to goal" command - this ignores any global kinematic/range constraints.
    *
@@ -191,6 +218,9 @@ public class Superstructure implements Logged {
   }
 
   private static boolean isBetween(double value, double lower, double upper) {
+    if (upper < lower) {
+      throw new IllegalArgumentException("Upper must be greater than lower");
+    }
     return value < upper && value > lower;
   }
 }
