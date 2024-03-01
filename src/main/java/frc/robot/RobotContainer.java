@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.*;
 import monologue.Logged;
@@ -55,6 +56,9 @@ public class RobotContainer implements Logged {
       new JoystickButton(driver, XboxController.Button.kA.value);
   private final JoystickButton snapToTag =
       new JoystickButton(driver, XboxController.Button.kX.value);
+  private final Trigger climbTrigger = operator.axisLessThan(5, -0.9);
+  private final Trigger trapTrigger = operator.axisLessThan(5, 0.9);
+  private final Trigger trapScore = new Trigger(() -> driver.getRightTriggerAxis() > 0.5);
 
   /* Subsystems */
   private final Swerve swerve = new Swerve();
@@ -135,6 +139,8 @@ public class RobotContainer implements Logged {
         .rightTrigger()
         .and(superstructure::isInFiringPosition)
         .whileTrue(shooter.velocityCommand(80));
+
+    trapScore.whileTrue(shooter.velocityCommand(40));
     // Fire
     operator.y().onTrue(endEffector.fireNote());
     // Reverse shooter
@@ -157,7 +163,7 @@ public class RobotContainer implements Logged {
         .whileTrue(intake.runIntakeCommand(-0.7).alongWith(feed.runFeedCommand(-0.7)));
 
     // SLow Reverse intake
-    operator.start().whileTrue(feed.runFeedCommand(-0.1));
+    operator.start().whileTrue(feed.runFeedCommand(-0.3).alongWith(intake.runIntakeCommand(-0.2)));
 
     // Intake + Shoot Position
     operator.b().onTrue(superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer));
@@ -168,7 +174,8 @@ public class RobotContainer implements Logged {
     // Score amp
     operator.x().onTrue(superstructure.setGoalState(Superstructure.State.scoreAmp));
 
-    operator.start().onTrue(superstructure.setGoalState(Superstructure.State.scoreTrap));
+    trapTrigger.onTrue(superstructure.setGoalState(Superstructure.State.scoreTrap));
+    climbTrigger.onTrue(superstructure.setGoalState(Superstructure.State.climb));
 
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
