@@ -17,7 +17,7 @@ public class Superstructure implements Logged {
   public static final double scoringPositionThreshold = Units.degreesToRadians(25);
 
   public static final double wristLowerUnsafeBound = 0.26 - Units.degreesToRadians(5);
-  public static final double wristUpperUnsafeBound = 1.02 + Units.degreesToRadians(5);
+  public static final double wristUpperUnsafeBound = 1.15 + Units.degreesToRadians(5);
 
   public static final double wristLowerSafeState = wristLowerUnsafeBound;
   public static final double wristUpperSafeState = wristUpperUnsafeBound;
