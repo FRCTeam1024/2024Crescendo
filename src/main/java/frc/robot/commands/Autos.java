@@ -33,7 +33,17 @@ public class Autos {
   public Command circuitAuto() {
     return runPathWithReset("Circuit");
   }
-
+  public Command shootStay() {
+        return firePreload();
+  }
+  /*public Command shootLeave() {
+        return sequence(
+        firePreload(),
+        superstructure.setGoalState(Superstructure.State.stow),
+        runPath("Sourceshoot_to_Leave");
+        )
+  }
+*/
   /** shoots preload, intake center note and shoot, and leave/stow */
   public Command centerTwoNote() {
     return sequence(

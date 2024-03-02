@@ -95,6 +95,7 @@ public class RobotContainer implements Logged {
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
     //autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
+    autoChooser.addOption("Shoot Stay", autos.shootStay());
     autoChooser.addOption("Center Two Note", autos.centerTwoNote());
     autoChooser.addOption("Amp Two Note", autos.AMPTwoNote());
     autoChooser.addOption("SourceNoteLeave", autos.SourceNoteLeave());
