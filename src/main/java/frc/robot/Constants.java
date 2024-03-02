@@ -107,7 +107,7 @@ public final class Constants {
     public static final double angleCurrentThresholdTime = 0.1;
     public static final boolean angleEnableCurrentLimit = true;
 
-    public static final int driveCurrentLimit = 50;
+    public static final int driveCurrentLimit = 40;
     public static final int driveCurrentThreshold = 60;
     public static final double driveCurrentThresholdTime = 0.1;
     public static final boolean driveEnableCurrentLimit = true;
@@ -336,7 +336,7 @@ public final class Constants {
     public static final InvertedValue kFeedMotorInversionSetting = InvertedValue.Clockwise_Positive;
 
     // Output for intaking notes
-    public static final double intakingSetpoint = 0.6;
+    public static final double intakingSetpoint = 0.5;
     // Output for feeding to shooter
     public static final double fireSetpoint = 0.5;
   }

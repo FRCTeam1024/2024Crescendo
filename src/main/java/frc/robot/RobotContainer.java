@@ -94,13 +94,13 @@ public class RobotContainer implements Logged {
 
   public void setupAutoChooser() {
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
-    autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
+    //autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
     autoChooser.addOption("Center Two Note", autos.centerTwoNote());
     autoChooser.addOption("Amp Two Note", autos.AMPTwoNote());
     autoChooser.addOption("SourceNoteLeave", autos.SourceNoteLeave());
     autoChooser.addOption("SourceTwoNote", autos.SourceTwoNote());
     autoChooser.addOption("AllNotesNear", autos.allNear());
-    autoChooser.addOption("Circuit", autos.circuitAuto());
+    //autoChooser.addOption("Circuit", autos.circuitAuto());
   }
 
   /**
@@ -140,7 +140,7 @@ public class RobotContainer implements Logged {
         .and(superstructure::isInFiringPosition)
         .whileTrue(shooter.velocityCommand(80));
 
-    trapScore.whileTrue(shooter.velocityCommand(40));
+    //trapScore.whileTrue(shooter.velocityCommand(40));
     // Fire
     operator.y().onTrue(endEffector.fireNote());
     // Reverse shooter

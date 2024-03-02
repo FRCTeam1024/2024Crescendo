@@ -7,8 +7,11 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalGlitchFilter;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,13 +23,10 @@ public class Intake extends SubsystemBase implements Logged {
   private final RelativeEncoder encoder = intakeMotor.getEncoder();
 
   private final DigitalInput noteSensor = new DigitalInput(noteSensorId);
-  private final DigitalGlitchFilter filter = new DigitalGlitchFilter();
+  private final Debouncer filter = new Debouncer(.02);
 
   public Intake() {
-    if (RobotBase.isReal()) {
-      filter.setPeriodNanoSeconds(20 * 1000 * 1000);
-      filter.add(noteSensor);
-    }
+
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.setInverted(isInverted);
     intakeMotor.setIdleMode(IdleMode.kCoast);
@@ -44,6 +44,11 @@ public class Intake extends SubsystemBase implements Logged {
 
   @Log.NT
   public boolean hasNote() {
+    return filter.calculate(!noteSensor.get());
+  }
+
+  @Log.NT
+  public boolean unfilteredHasNote() {
     return !noteSensor.get();
   }
 
