@@ -242,7 +242,7 @@ public final class Constants {
      * radians To find this, set the offset to 0 and read the measured position of the wrist when
      * the wrist is at 0
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -2.732 : 0.744;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -2.732 : 0.811;
 
     public static final double kHardStopToMaxExtension = -0.511786;
     public static final double kHardStopToCOG = 0;
@@ -363,6 +363,12 @@ public final class Constants {
     public static final double kP = 0.2;
     public static final double kI = 0;
     public static final double kD = 0;
+
+    //shooter limit
+    public static final int shooterCurrentLimit = 40;
+    public static final int shooterCurrentThreshold = 60;
+    public static final double shooterCurrentThresholdTime = 0.1;
+    public static final boolean shooterEnableCurrentLimit = true;
   }
 
   public static final class AutoConstants {

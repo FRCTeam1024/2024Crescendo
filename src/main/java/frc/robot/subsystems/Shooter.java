@@ -43,6 +43,14 @@ public class Shooter extends SubsystemBase implements Logged {
     shooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     shooterConfig.Feedback.SensorToMechanismRatio = kShooterGearRatio;
 
+    shooterConfig.CurrentLimits.SupplyCurrentLimitEnable =
+    Constants.ShooterConstants.shooterEnableCurrentLimit;
+    shooterConfig.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.shooterCurrentLimit;
+    shooterConfig.CurrentLimits.SupplyCurrentThreshold =
+    Constants.ShooterConstants.shooterCurrentThreshold;
+    shooterConfig.CurrentLimits.SupplyTimeThreshold =
+    Constants.ShooterConstants.shooterCurrentThresholdTime;
+
     shooterConfig.Slot0.kS = kS;
     shooterConfig.Slot0.kV = kV;
     shooterConfig.Slot0.kA = kA;
