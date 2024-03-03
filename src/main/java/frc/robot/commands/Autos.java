@@ -36,14 +36,23 @@ public class Autos {
   public Command shootStay() {
         return firePreload();
   }
-  /*public Command shootLeave() {
+  public Command shootOutsideLeave() {
         return sequence(
         firePreload(),
         superstructure.setGoalState(Superstructure.State.stow),
-        runPath("Sourceshoot_to_Leave");
-        )
+        runPath("Sourceshoot_to_OutsideLeave"));
+        
   }
-*/
+  public Command shootFarPickup() {
+        return sequence(
+        firePreload(),
+        superstructure.setGoalState(Superstructure.State.intake),
+        runPathWithReset("Sourceshoot_to_FarPickup"),
+        superstructure.setGoalState(Superstructure.State.stow),
+        runPath("FarBackup"));
+        
+  }
+
   /** shoots preload, intake center note and shoot, and leave/stow */
   public Command centerTwoNote() {
     return sequence(
