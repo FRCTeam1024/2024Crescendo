@@ -336,7 +336,7 @@ public final class Constants {
     public static final InvertedValue kFeedMotorInversionSetting = InvertedValue.Clockwise_Positive;
 
     // Output for intaking notes
-    public static final double intakingSetpoint = 0.5;
+    public static final double intakingSetpoint = 0.3;
     // Output for feeding to shooter
     public static final double fireSetpoint = 0.5;
   }
