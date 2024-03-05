@@ -9,6 +9,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.GeometryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Swerve;
@@ -36,18 +37,20 @@ public class Autos {
   public Command shootStay() {
         return firePreload();
   }
+  /**shoot and leave away from other near notes*/
   public Command shootOutsideLeave() {
         return sequence(
         firePreload(),
         superstructure.setGoalState(Superstructure.State.stow),
-        runPath("Sourceshoot_to_OutsideLeave"));
+        runPath("SourceShoot_to_OutsideLeave"));
         
   }
+  /**shoots, goes to far note to pickup and backs up*/
   public Command shootFarPickup() {
         return sequence(
         firePreload(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("Sourceshoot_to_FarPickup"),
+        runPathWithReset("SourceShoot_to_FarPickup"),
         superstructure.setGoalState(Superstructure.State.stow),
         runPath("FarBackup"));
         
@@ -98,6 +101,7 @@ public class Autos {
         runPathWithReset("AMP_to_AMPN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("AMPN_to_AMPShoot"),
+        new WaitCommand(.5),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("AMPShoot_to_Leave")));
