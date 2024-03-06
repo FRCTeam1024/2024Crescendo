@@ -276,7 +276,7 @@ public class Swerve extends SubsystemBase implements Logged {
 
   /*
    * Resets the robots heading such that a heading of 0 represents the
-   * robot intake facing the red alliance wall if the robot is facing
+   * robot intake facing the opponent alliance wall if the robot is facing
    * away from the driver.
    *
    */
@@ -287,7 +287,7 @@ public class Swerve extends SubsystemBase implements Logged {
         new Pose2d(
             getPose().getTranslation(),
             DriverStation.getAlliance().get().equals(Alliance.Red)
-                ? new Rotation2d().unaryMinus()
+                ? Rotation2d.fromDegrees(180)
                 : new Rotation2d()));
 
     storedGoalHeading = new Rotation2d();
