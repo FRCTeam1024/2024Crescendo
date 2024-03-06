@@ -364,7 +364,7 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;
 
-    //shooter limit
+    // shooter limit
     public static final int shooterCurrentLimit = 40;
     public static final int shooterCurrentThreshold = 60;
     public static final double shooterCurrentThresholdTime = 0.1;

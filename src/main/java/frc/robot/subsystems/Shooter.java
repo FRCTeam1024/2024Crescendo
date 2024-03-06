@@ -44,12 +44,12 @@ public class Shooter extends SubsystemBase implements Logged {
     shooterConfig.Feedback.SensorToMechanismRatio = kShooterGearRatio;
 
     shooterConfig.CurrentLimits.SupplyCurrentLimitEnable =
-    Constants.ShooterConstants.shooterEnableCurrentLimit;
+        Constants.ShooterConstants.shooterEnableCurrentLimit;
     shooterConfig.CurrentLimits.SupplyCurrentLimit = Constants.ShooterConstants.shooterCurrentLimit;
     shooterConfig.CurrentLimits.SupplyCurrentThreshold =
-    Constants.ShooterConstants.shooterCurrentThreshold;
+        Constants.ShooterConstants.shooterCurrentThreshold;
     shooterConfig.CurrentLimits.SupplyTimeThreshold =
-    Constants.ShooterConstants.shooterCurrentThresholdTime;
+        Constants.ShooterConstants.shooterCurrentThresholdTime;
 
     shooterConfig.Slot0.kS = kS;
     shooterConfig.Slot0.kV = kV;

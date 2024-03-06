@@ -34,26 +34,27 @@ public class Autos {
   public Command circuitAuto() {
     return runPathWithReset("Circuit");
   }
+
   public Command shootStay() {
-        return firePreload();
+    return firePreload();
   }
-  /**shoot and leave away from other near notes*/
+
+  /** shoot and leave away from other near notes */
   public Command shootOutsideLeave() {
-        return sequence(
+    return sequence(
         firePreload(),
         superstructure.setGoalState(Superstructure.State.stow),
         runPath("SourceShoot_to_OutsideLeave"));
-        
   }
-  /**shoots, goes to far note to pickup and backs up*/
+
+  /** shoots, goes to far note to pickup and backs up */
   public Command shootFarPickup() {
-        return sequence(
+    return sequence(
         firePreload(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("SourceShoot_to_FarPickup"),
         superstructure.setGoalState(Superstructure.State.stow),
         runPath("FarBackup"));
-        
   }
 
   /** shoots preload, intake center note and shoot, and leave/stow */
