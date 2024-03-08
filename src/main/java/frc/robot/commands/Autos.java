@@ -53,6 +53,7 @@ public class Autos {
         firePreload(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("SourceShoot_to_FarPickup"),
+        endEffector.intakeNoteAndIndex(),
         superstructure.setGoalState(Superstructure.State.stow),
         runPath("FarBackup"));
   }
