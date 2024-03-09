@@ -8,27 +8,33 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.3010015071908505,
-        "y": 7.269412749916735
+        "x": 7.004913859451779,
+        "y": 7.396596647829888
       },
       "isLocked": false,
       "linkedName": "FarAMPNote"
     },
     {
       "anchor": {
-        "x": 5.245005981961875,
-        "y": 6.726042503963363
+        "x": 0.73,
+        "y": 6.64
       },
       "prevControl": {
-        "x": 5.8471189572075035,
-        "y": 6.887585009517068
+        "x": 1.1411307033140385,
+        "y": 7.1908498704215456
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "AMPShoot"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 60.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -39,13 +45,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 60.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Far",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

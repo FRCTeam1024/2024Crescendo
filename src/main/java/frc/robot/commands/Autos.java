@@ -53,8 +53,7 @@ public class Autos {
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         parallel(runPathWithReset("SourceShoot_to_FarNote1"), endEffector.intakeNoteAndIndex()),
-        parallel(
-            superstructure.setGoalState(Superstructure.State.stow), runPath("FarSourceShoot1")),
+        parallel(superstructure.setGoalState(Superstructure.State.stow), runPath("FarSourceShoot1")),
         fireNoteFromSubwoofer());
   }
 
@@ -64,8 +63,9 @@ public class Autos {
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         parallel(runPathWithReset("Source_to_FarNote2"), endEffector.intakeNoteAndIndex()),
+        parallel(
         superstructure.setGoalState(Superstructure.State.stow),
-        runPath("FarSourceShoot2"),
+        runPath("FarSourceShoot2")),
         fireNoteFromSubwoofer());
   }
 
@@ -78,8 +78,25 @@ public class Autos {
         runPath("CN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         parallel(runPathWithReset("Center_to_FarNote3"), endEffector.intakeNoteAndIndex()),
-        superstructure.setGoalState(Superstructure.State.stow),
-        runPath("FarNote3_to_Center"),
+        parallel(superstructure.setGoalState(Superstructure.State.stow),runPath("FarNote3_to_Center")),
+        fireNoteFromSubwoofer());
+  }
+   /** shoots, goes to far note4 to pickup and goes to subwoofer to shoot */
+  public Command FarNote4() {
+    return sequence(
+        fireNoteFromSubwoofer(),
+        superstructure.setGoalState(Superstructure.State.intake),
+        parallel(runPathWithReset("AMP_to_AMPNote4"), endEffector.intakeNoteAndIndex()),
+        parallel(superstructure.setGoalState(Superstructure.State.stow),runPath("AMPNote4_to_AMP")),
+        fireNoteFromSubwoofer());
+  }
+  /** shoots, goes to far note5 to pickup and goes to subwoofer to shoot */
+  public Command FarNote5() {
+    return sequence(
+        fireNoteFromSubwoofer(),
+        superstructure.setGoalState(Superstructure.State.intake),
+        parallel(runPathWithReset("Center_to_AMPNote5"), endEffector.intakeNoteAndIndex()),
+        parallel(superstructure.setGoalState(Superstructure.State.stow),runPath("AMPNote5_to_AMP")),
         fireNoteFromSubwoofer());
   }
 

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7,
-        "y": 6.69
+        "x": 0.73,
+        "y": 6.64
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3959836112891395,
-        "y": 7.416269573147391
+        "x": 2.4259836112891398,
+        "y": 7.36626957314739
       },
       "isLocked": false,
       "linkedName": "AMPShoot"

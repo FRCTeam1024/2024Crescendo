@@ -100,6 +100,8 @@ public class RobotContainer implements Logged {
     autoChooser.addOption("FarSourceNote1", autos.FarNote1());
     autoChooser.addOption("FarSourceNote2", autos.FarNote2());
     autoChooser.addOption("CenterNear and FarNote", autos.FarNote3());
+     autoChooser.addOption("FarAMPNote4", autos.FarNote4());
+    autoChooser.addOption("FarAMPNote5", autos.FarNote5());
     autoChooser.addOption("Center Two Note", autos.centerTwoNote());
     autoChooser.addOption("Amp Two Note", autos.AMPTwoNote());
     autoChooser.addOption("SourceNoteLeave", autos.SourceNoteLeave());
