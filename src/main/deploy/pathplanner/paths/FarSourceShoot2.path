@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.888428800113415,
-        "y": 4.097305368134887
+        "x": 7.903114482436479,
+        "y": 2.437823265628643
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.3010015071908505,
-        "y": 4.053248321165694
+        "x": 7.345058554160043,
+        "y": 2.2322237131057445
       },
       "isLocked": false,
-      "linkedName": "FarCNote"
+      "linkedName": "FarCSNote"
     },
     {
       "anchor": {
-        "x": 4.892549606208337,
-        "y": 4.097305368134887
+        "x": 3.589517354473306,
+        "y": 1.5842501860442317
       },
       "prevControl": {
-        "x": 5.4359198521617085,
-        "y": 4.082619685811823
+        "x": 5.130035838122082,
+        "y": 1.0024276188033905
+      },
+      "nextControl": {
+        "x": 2.0489988708245312,
+        "y": 2.166072753285074
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.73,
+        "y": 4.44
+      },
+      "prevControl": {
+        "x": 1.0573952979986165,
+        "y": 3.918901431888078
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootRN"
     }
   ],
   "rotationTargets": [],
@@ -39,7 +55,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -60.0,
     "rotateFast": false
   },
   "reversed": false,

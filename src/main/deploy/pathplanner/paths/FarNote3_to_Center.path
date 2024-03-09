@@ -4,28 +4,44 @@
     {
       "anchor": {
         "x": 7.888428800113415,
-        "y": 0.7636554807993345
+        "y": 4.097305368134887
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.315415232433858,
-        "y": 0.740267171914454
+        "x": 7.159223942508036,
+        "y": 4.0634988538147505
       },
       "isLocked": false,
-      "linkedName": "Far1note"
+      "linkedName": "FarCNote"
     },
     {
       "anchor": {
-        "x": 4.995893296629898,
-        "y": 1.1928037531288744
+        "x": 4.672264371362375,
+        "y": 4.640675614088259
       },
       "prevControl": {
-        "x": 5.440271165442615,
-        "y": 1.1343329809166744
+        "x": 5.276640929221708,
+        "y": 3.6520052989980676
+      },
+      "nextControl": {
+        "x": 4.205971815792278,
+        "y": 5.403461003171794
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.338386953626686,
+        "y": 5.540252206657979
+      },
+      "prevControl": {
+        "x": 1.9126811185953203,
+        "y": 5.493438956802725
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Center Start"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +61,7 @@
   "reversed": false,
   "folder": "Far",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 0.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

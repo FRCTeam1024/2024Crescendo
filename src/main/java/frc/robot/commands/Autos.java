@@ -36,32 +36,57 @@ public class Autos {
   }
 
   public Command shootStay() {
-    return firePreload();
+    return fireNoteFromSubwoofer();
   }
 
   /** shoot and leave away from other near notes */
   public Command shootOutsideLeave() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.stow),
         runPath("SourceShoot_to_OutsideLeave"));
   }
 
-  /** shoots, goes to far note to pickup and backs up */
-  public Command shootFarPickup() {
+  /** shoots, goes to far note1 to pickup and goes to subwoofer to shoot */
+  public Command FarNote1() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("SourceShoot_to_FarPickup"),
-        endEffector.intakeNoteAndIndex(),
+        parallel(runPathWithReset("SourceShoot_to_FarNote1"), endEffector.intakeNoteAndIndex()),
+        parallel(
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarSourceShoot1")),
+        fireNoteFromSubwoofer());
+  }
+
+  /** shoots, goes to far note2 to pickup and goes to subwoofer to shoot */
+  public Command FarNote2() {
+    return sequence(
+        fireNoteFromSubwoofer(),
+        superstructure.setGoalState(Superstructure.State.intake),
+        parallel(runPathWithReset("Source_to_FarNote2"), endEffector.intakeNoteAndIndex()),
         superstructure.setGoalState(Superstructure.State.stow),
-        runPath("FarBackup"));
+        runPath("FarSourceShoot2"),
+        fireNoteFromSubwoofer());
+  }
+
+  /** shoots, goes to far note3(center) to pickup and goes to subwoofer to shoot */
+  public Command FarNote3() {
+    return sequence(
+        fireNoteFromSubwoofer(),
+        superstructure.setGoalState(Superstructure.State.intake),
+        parallel(runPathWithReset("C_to_CN"), endEffector.intakeNoteAndIndex()),
+        runPath("CN_to_C"),
+        endEffector.spinUpAndShoot(autoShooterSpeed),
+        parallel(runPathWithReset("Center_to_FarNote3"), endEffector.intakeNoteAndIndex()),
+        superstructure.setGoalState(Superstructure.State.stow),
+        runPath("FarNote3_to_Center"),
+        fireNoteFromSubwoofer());
   }
 
   /** shoots preload, intake center note and shoot, and leave/stow */
   public Command centerTwoNote() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("C_to_CN"),
         parallel(superstructure.setGoalState(Superstructure.State.stow), runPath("CN_to_C")),
@@ -73,7 +98,7 @@ public class Autos {
   /** fire preload, intake and shoot center note, and leave/stow */
   public Command SourceTwoNote() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("Source_to_SourceN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
@@ -87,7 +112,7 @@ public class Autos {
   /** shoot preload, intake SourceNote and leave/stow. */
   public Command SourceNoteLeave() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("Source_to_SourceN"),
         parallel(
@@ -98,7 +123,7 @@ public class Autos {
   /** shoots, goes to AMPNote, set shoot position, shoot and Leave/stow. */
   public Command AMPTwoNote() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("AMP_to_AMPN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
@@ -112,7 +137,7 @@ public class Autos {
   /** Shoot preload, set intake and pickup while leaving/stow. */
   public Command AMPNoteLeave() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPath("AMP_to_Leave"),
         superstructure.setGoalState(Superstructure.State.stow));
@@ -121,7 +146,7 @@ public class Autos {
   /** Shoot preload, set intake and pickup while leaving then stow. */
   public Command centerNoteLeave() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("C_to_CN1"),
         superstructure.setGoalState(Superstructure.State.stow));
@@ -130,7 +155,7 @@ public class Autos {
   /** shoot preload, pickup and shoot all notes near, and leave/stow. */
   public Command allNear() {
     return sequence(
-        firePreload(),
+        fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         runPathWithReset("C_to_LN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
@@ -149,7 +174,7 @@ public class Autos {
         parallel(runPath("C_to_Leave"), superstructure.setGoalState(Superstructure.State.stow)));
   }
 
-  public Command firePreload() {
+  public Command fireNoteFromSubwoofer() {
     return sequence(
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         endEffector.spinUpAndShoot(autoShooterSpeed));

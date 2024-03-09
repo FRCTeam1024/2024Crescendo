@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7418259386281802,
-        "y": 4.445081117650386
+        "x": 0.7046435911053639,
+        "y": 4.403168079063431
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7142401298345182,
-        "y": 1.8912451608379708
-      },
-      "isLocked": false,
-      "linkedName": "ShootRN"
-    },
-    {
-      "anchor": {
-        "x": 3.265158439148787,
-        "y": 1.052473899819595
-      },
-      "prevControl": {
-        "x": 2.451846757550378,
-        "y": 1.207959956595761
-      },
-      "nextControl": {
-        "x": 4.0603609412347055,
-        "y": 0.9004498920678761
+        "x": 1.04490083756554,
+        "y": 1.9531957489675267
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.888428800113415,
-        "y": 0.7636554807993345
+        "x": 5.289063028931068,
+        "y": 1.7182248317985018
       },
       "prevControl": {
-        "x": 6.450047803693303,
-        "y": 0.7987379441266529
+        "x": 3.8498661612707847,
+        "y": 1.688853467152373
+      },
+      "nextControl": {
+        "x": 6.449083330992503,
+        "y": 1.7418987155140417
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.903114482436479,
+        "y": 2.437823265628643
+      },
+      "prevControl": {
+        "x": 7.296745996972235,
+        "y": 2.512453233070396
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Far1note"
+      "linkedName": "FarCSNote"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 1.6,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -59,14 +59,7 @@
       "command": {
         "type": "sequential",
         "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "runIntakeUntilNote"
-              }
-            }
-          ]
+          "commands": []
         }
       }
     }
@@ -79,7 +72,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
