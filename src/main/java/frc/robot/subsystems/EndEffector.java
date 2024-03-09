@@ -19,6 +19,10 @@ public class EndEffector implements Logged {
     this.shooter = shooter;
   }
 
+  public boolean hasNote() {
+    return intake.hasNote();
+  }
+
   public Command intakeNote() {
     return intake
         .runIntakeCommand(IntakeConstants.intakingSetpoint)

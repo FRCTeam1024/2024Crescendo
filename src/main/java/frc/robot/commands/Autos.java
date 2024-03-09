@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import static edu.wpi.first.wpilibj2.command.Commands.deadline;
 import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import static edu.wpi.first.wpilibj2.command.Commands.runOnce;
 import static edu.wpi.first.wpilibj2.command.Commands.sequence;
@@ -9,6 +10,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.GeometryUtil;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.EndEffector;
 import frc.robot.subsystems.Superstructure;
@@ -53,7 +55,8 @@ public class Autos {
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         parallel(runPathWithReset("SourceShoot_to_FarNote1"), endEffector.intakeNoteAndIndex()),
-        parallel(superstructure.setGoalState(Superstructure.State.stow), runPath("FarSourceShoot1")),
+        parallel(
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarSourceShoot1")),
         fireNoteFromSubwoofer());
   }
 
@@ -64,8 +67,7 @@ public class Autos {
         superstructure.setGoalState(Superstructure.State.intake),
         parallel(runPathWithReset("Source_to_FarNote2"), endEffector.intakeNoteAndIndex()),
         parallel(
-        superstructure.setGoalState(Superstructure.State.stow),
-        runPath("FarSourceShoot2")),
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarSourceShoot2")),
         fireNoteFromSubwoofer());
   }
 
@@ -78,25 +80,30 @@ public class Autos {
         runPath("CN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         parallel(runPathWithReset("Center_to_FarNote3"), endEffector.intakeNoteAndIndex()),
-        parallel(superstructure.setGoalState(Superstructure.State.stow),runPath("FarNote3_to_Center")),
+        parallel(
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote3_to_Center")),
         fireNoteFromSubwoofer());
   }
-   /** shoots, goes to far note4 to pickup and goes to subwoofer to shoot */
+
+  /** shoots, goes to far note4 to pickup and goes to subwoofer to shoot */
   public Command FarNote4() {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         parallel(runPathWithReset("AMP_to_AMPNote4"), endEffector.intakeNoteAndIndex()),
-        parallel(superstructure.setGoalState(Superstructure.State.stow),runPath("AMPNote4_to_AMP")),
+        parallel(
+            superstructure.setGoalState(Superstructure.State.stow), runPath("AMPNote4_to_AMP")),
         fireNoteFromSubwoofer());
   }
+
   /** shoots, goes to far note5 to pickup and goes to subwoofer to shoot */
   public Command FarNote5() {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         parallel(runPathWithReset("Center_to_AMPNote5"), endEffector.intakeNoteAndIndex()),
-        parallel(superstructure.setGoalState(Superstructure.State.stow),runPath("AMPNote5_to_AMP")),
+        parallel(
+            superstructure.setGoalState(Superstructure.State.stow), runPath("AMPNote5_to_AMP")),
         fireNoteFromSubwoofer());
   }
 
@@ -179,12 +186,12 @@ public class Autos {
         runPath("LN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPath("C_to_CN"),
+        runIntakePath("C_to_CN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("CN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPath("C_to_RN"),
+        runIntakePath("C_to_RN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("RN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
@@ -195,6 +202,13 @@ public class Autos {
     return sequence(
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         endEffector.spinUpAndShoot(autoShooterSpeed));
+  }
+
+  // Run intake along path. intake will run for up to 1 second after path ends
+  public Command runIntakePath(String pathName) {
+    return deadline(
+        runPath(pathName).andThen(Commands.waitSeconds(1).until(endEffector::hasNote)),
+        endEffector.intakeNoteAndIndex());
   }
 
   public Command runPath(String pathName) {
