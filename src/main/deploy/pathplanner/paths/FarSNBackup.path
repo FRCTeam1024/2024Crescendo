@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4703255471673857,
-        "y": 6.655908249159857
+        "x": 7.888428800113415,
+        "y": 0.7636554807993345
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.338917120369489,
-        "y": 6.862106306958816
+        "x": 7.315415232433858,
+        "y": 0.740267171914454
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Far1note"
     },
     {
       "anchor": {
-        "x": 7.570717497324719,
-        "y": 7.437746003311556
+        "x": 4.995893296629898,
+        "y": 1.1928037531288744
       },
       "prevControl": {
-        "x": 6.758017726561769,
-        "y": 7.417171325570721
+        "x": 5.440271165442615,
+        "y": 1.1343329809166744
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": "Far",
   "previewStartingState": {
-    "rotation": 38.85337434035324,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

@@ -1,0 +1,92 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7418259386281802,
+        "y": 4.445081117650386
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.7142401298345182,
+        "y": 1.8912451608379708
+      },
+      "isLocked": false,
+      "linkedName": "ShootRN"
+    },
+    {
+      "anchor": {
+        "x": 3.265158439148787,
+        "y": 1.052473899819595
+      },
+      "prevControl": {
+        "x": 2.451846757550378,
+        "y": 1.207959956595761
+      },
+      "nextControl": {
+        "x": 4.0603609412347055,
+        "y": 0.9004498920678761
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.888428800113415,
+        "y": 0.7636554807993345
+      },
+      "prevControl": {
+        "x": 6.450047803693303,
+        "y": 0.7987379441266529
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Far1note"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.35,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "runIntakeUntilNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Far",
+  "previewStartingState": {
+    "rotation": -60.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

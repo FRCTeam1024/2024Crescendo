@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.338386953626686,
+        "y": 5.540252206657979
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.457298717993846,
+        "y": 5.538358401093198
+      },
+      "isLocked": false,
+      "linkedName": "Center Start"
+    },
+    {
+      "anchor": {
+        "x": 4.672264371362375,
+        "y": 4.640675614088259
+      },
+      "prevControl": {
+        "x": 4.034872905688322,
+        "y": 5.340251612998805
+      },
+      "nextControl": {
+        "x": 5.274377346608004,
+        "y": 3.9798199095503737
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.888428800113415,
+        "y": 4.097305368134887
+      },
+      "prevControl": {
+        "x": 7.003331191933253,
+        "y": 4.069387849232522
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "FarCNote"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.5,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "runIntakeUntilNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Far",
+  "previewStartingState": {
+    "rotation": 0.0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

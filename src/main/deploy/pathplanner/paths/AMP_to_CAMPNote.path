@@ -3,50 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7418259386281802,
-        "y": 4.445081117650386
+        "x": 0.7,
+        "y": 6.69
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7142401298345182,
-        "y": 1.8912451608379708
+        "x": 2.3959836112891395,
+        "y": 7.416269573147391
       },
       "isLocked": false,
-      "linkedName": "ShootRN"
+      "linkedName": "AMPShoot"
     },
     {
       "anchor": {
-        "x": 3.265158439148787,
-        "y": 1.052473899819595
+        "x": 5.274377346609705,
+        "y": 6.843527962547889
       },
       "prevControl": {
-        "x": 2.451846757550378,
-        "y": 1.207959956595761
+        "x": 4.217008219349089,
+        "y": 6.961013421132403
       },
       "nextControl": {
-        "x": 4.0603609412347055,
-        "y": 0.9004498920678761
+        "x": 6.3699687442488235,
+        "y": 6.721795585032431
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.890917014061516,
-        "y": 0.7586790529031283
+        "x": 7.87374311779035,
+        "y": 5.800844517610323
       },
       "prevControl": {
-        "x": 6.452536017641404,
-        "y": 0.793761516230447
+        "x": 6.493288979424025,
+        "y": 5.653987694379698
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Far1note"
+      "linkedName": "FarCAMPNote"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 1.0,
       "rotationDegrees": 0,
       "rotateFast": false
     }
@@ -55,7 +55,7 @@
   "eventMarkers": [
     {
       "name": "New Event Marker",
-      "waypointRelativePos": 1.35,
+      "waypointRelativePos": 1.0,
       "command": {
         "type": "sequential",
         "data": {
@@ -79,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "NearSource",
+  "folder": "Far",
   "previewStartingState": {
-    "rotation": -60.0,
+    "rotation": 60.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

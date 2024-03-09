@@ -8,40 +8,40 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.3263028029815458,
-        "y": 3.240511744176239
+        "x": 1.04490083756554,
+        "y": 1.9531957489675267
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.348652301314629,
-        "y": 1.6871235747484037
+        "x": 5.289063028931068,
+        "y": 1.7182248317985018
       },
       "prevControl": {
-        "x": 3.933676856265188,
-        "y": 2.2560312279126156
+        "x": 3.8498661612707847,
+        "y": 1.688853467152373
       },
       "nextControl": {
-        "x": 6.346524171745086,
-        "y": 1.2859173588021366
+        "x": 6.449083330992503,
+        "y": 1.7418987155140417
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.64272886941764,
-        "y": 2.43809931228885
+        "x": 7.903114482436479,
+        "y": 2.437823265628643
       },
       "prevControl": {
-        "x": 7.036360383953396,
-        "y": 2.5127292797306033
+        "x": 7.296745996972235,
+        "y": 2.512453233070396
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "FarCSNote"
     }
   ],
   "rotationTargets": [
@@ -52,7 +52,25 @@
     }
   ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.35,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "runIntakeUntilNote"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
