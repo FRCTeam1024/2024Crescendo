@@ -7,8 +7,6 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import monologue.Annotations.Log;
@@ -17,9 +15,6 @@ import monologue.Logged;
 public class Intake extends SubsystemBase implements Logged {
   private final CANSparkMax intakeMotor = new CANSparkMax(intakeMotorId, MotorType.kBrushless);
   private final RelativeEncoder encoder = intakeMotor.getEncoder();
-
-  private final DigitalInput noteSensor = new DigitalInput(noteSensorId);
-  private final Debouncer filter = new Debouncer(.02);
 
   public Intake() {
 
@@ -37,16 +32,6 @@ public class Intake extends SubsystemBase implements Logged {
 
   public void stop() {
     setOutput(0);
-  }
-
-  @Log.NT
-  public boolean hasNote() {
-    return filter.calculate(!noteSensor.get());
-  }
-
-  @Log.NT
-  public boolean unfilteredHasNote() {
-    return !noteSensor.get();
   }
 
   @Log.NT(key = "Velocity")
