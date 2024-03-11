@@ -49,29 +49,43 @@ public class Autos {
         runPath("SourceShoot_to_OutsideLeave"));
   }
 
-  /** shoots, goes to far note1 to pickup and goes to subwoofer to shoot */
+  /** shoots from source side, goes to far note1 to pickup and goes to subwoofer to shoot */
   public Command FarNote1() {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         parallel(runPathWithReset("SourceShoot_to_FarNote1"), endEffector.intakeNoteAndIndex()),
         parallel(
-            superstructure.setGoalState(Superstructure.State.stow), runPath("FarSourceShoot1")),
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote1_to_Source")),
+        fireNoteFromSubwoofer());
+  }
+  /** shoots from source side, goes to far note1 to pickup and goes to subwoofer to shoot */
+  public Command FarNearNote1() {
+    return sequence(
+        fireNoteFromSubwoofer(),
+        superstructure.setGoalState(Superstructure.State.intake),
+        runPathWithReset("Source_to_SourceN"),
+        superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
+        runPath("SourceN_to_SourceShoot"),
+        endEffector.spinUpAndShoot(autoShooterSpeed),
+        parallel(runPathWithReset("SourceShoot_to_FarNote1"), endEffector.intakeNoteAndIndex()),
+        parallel(
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote1_to_Source")),
         fireNoteFromSubwoofer());
   }
 
-  /** shoots, goes to far note2 to pickup and goes to subwoofer to shoot */
+  /** shoots from source side, goes to far note2 to pickup and goes to subwoofer to shoot */
   public Command FarNote2() {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
         parallel(runPathWithReset("Source_to_FarNote2"), endEffector.intakeNoteAndIndex()),
         parallel(
-            superstructure.setGoalState(Superstructure.State.stow), runPath("FarSourceShoot2")),
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote2_to_Source")),
         fireNoteFromSubwoofer());
   }
 
-  /** shoots, goes to far note3(center) to pickup and goes to subwoofer to shoot */
+  /** shoots from center, goes to far note3(center) to pickup and goes to subwoofer to shoot */
   public Command FarNote3() {
     return sequence(
         fireNoteFromSubwoofer(),
@@ -79,31 +93,47 @@ public class Autos {
         parallel(runPathWithReset("C_to_CN"), endEffector.intakeNoteAndIndex()),
         runPath("CN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
-        parallel(runPathWithReset("Center_to_FarNote3"), endEffector.intakeNoteAndIndex()),
+        runIntakePath("Center_to_FarNote3"),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote3_to_Center")),
         fireNoteFromSubwoofer());
   }
 
-  /** shoots, goes to far note4 to pickup and goes to subwoofer to shoot */
+  /** shoots from AMP side, goes to far note4 to pickup and goes to subwoofer to shoot */
   public Command FarNote4() {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        parallel(runPathWithReset("AMP_to_AMPNote4"), endEffector.intakeNoteAndIndex()),
+        parallel(runPathWithReset("AMP_to_FarNote4"), endEffector.intakeNoteAndIndex()),
         parallel(
-            superstructure.setGoalState(Superstructure.State.stow), runPath("AMPNote4_to_AMP")),
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote4_to_AMP")),
         fireNoteFromSubwoofer());
   }
 
-  /** shoots, goes to far note5 to pickup and goes to subwoofer to shoot */
+  /** shoots from AMP side, goes to far note5 to pickup and goes to subwoofer to shoot */
   public Command FarNote5() {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        parallel(runPathWithReset("Center_to_AMPNote5"), endEffector.intakeNoteAndIndex()),
+        parallel(runPathWithReset("AMP_to_FarNote5"), endEffector.intakeNoteAndIndex()),
         parallel(
-            superstructure.setGoalState(Superstructure.State.stow), runPath("AMPNote5_to_AMP")),
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote5_to_AMP")),
+        fireNoteFromSubwoofer());
+  }
+
+  /** shoots from AMP side, goes to near AMP Note and far note5 to pickup and goes to subwoofer to shoot */
+  public Command FarNearNote5() {
+    return sequence(
+        fireNoteFromSubwoofer(),
+        superstructure.setGoalState(Superstructure.State.intake),
+        runPathWithReset("AMP_to_AMPN"),
+        superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
+        runPath("AMPN_to_AMPShoot"),
+        new WaitCommand(.5),
+        endEffector.spinUpAndShoot(autoShooterSpeed),
+        parallel(runPathWithReset("AMP_to_FarNote5"), endEffector.intakeNoteAndIndex()),
+        parallel(
+            superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote5_to_AMP")),
         fireNoteFromSubwoofer());
   }
 
@@ -144,7 +174,7 @@ public class Autos {
             runPath("SourceShoot_to_Leave")));
   }
 
-  /** shoots, goes to AMPNote, set shoot position, shoot and Leave/stow. */
+  /** shoots from AMP side, goes to AMPNote, set shoot position, shoot and Leave/stow. */
   public Command AMPTwoNote() {
     return sequence(
         fireNoteFromSubwoofer(),
