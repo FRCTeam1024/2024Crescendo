@@ -139,13 +139,8 @@ public class RobotContainer implements Logged {
             startEnd(
                 () -> operator.getHID().setRumble(RumbleType.kBothRumble, 1),
                 () -> operator.getHID().setRumble(RumbleType.kBothRumble, 0)));
-    operator
-        .rightTrigger()
-        .onTrue(superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer));
-    operator
-        .rightTrigger()
-        .and(superstructure::isInFiringPosition)
-        .whileTrue(shooter.velocityCommand(80));
+
+    operator.rightTrigger().whileTrue(shooter.velocityCommand(80));
 
     // trapScore.whileTrue(shooter.velocityCommand(40));
     // Fire

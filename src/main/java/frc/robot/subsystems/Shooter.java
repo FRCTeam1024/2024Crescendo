@@ -88,6 +88,9 @@ public class Shooter extends SubsystemBase implements Logged {
   }
 
   public void setVelocity(double speed) {
+    if (speed == 0) {
+      stop();
+    }
     if (speed < 0) {
       velocityRequest.LimitForwardMotion = true;
       velocityRequest.LimitReverseMotion = false;
@@ -115,7 +118,7 @@ public class Shooter extends SubsystemBase implements Logged {
    */
   @Log.NT(key = "Ready To Launch")
   public boolean readyToLaunch() {
-    return getVelocitySetpointRPS() > 0 && stableTime.hasElapsed(0.5);
+    return getVelocitySetpointRPS() > 0 && stableTime.hasElapsed(0.25);
   }
 
   public void stop() {
