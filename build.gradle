@@ -11,6 +11,8 @@ java {
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
 
+wpi.jreArtifactLocation = 'edu.wpi.first.jdk:roborio-2024:17.0.9u7-3'
+
 // Define my targets (RoboRIO) and artifacts (deployable files)
 // This is added by GradleRIO's backing project DeployUtils.
 deploy {
