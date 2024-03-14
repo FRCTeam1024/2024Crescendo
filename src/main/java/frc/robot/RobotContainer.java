@@ -1,6 +1,6 @@
 package frc.robot;
 
-import static edu.wpi.first.wpilibj2.command.Commands.startEnd;
+import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.cameraserver.CameraServer;
@@ -9,7 +9,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -18,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.lib.util.CommandUtils;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.*;
 import monologue.Logged;
@@ -36,7 +35,7 @@ public class RobotContainer implements Logged {
   private UsbCamera driverCam;
 
   /* Controllers */
-  private final XboxController driver = new XboxController(0);
+  private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
 
   /* Drive Controls */
@@ -46,16 +45,11 @@ public class RobotContainer implements Logged {
   private final int rotationYAxis = XboxController.Axis.kRightY.value;
 
   /* Driver Buttons */
-  private final JoystickButton zeroGyro =
-      new JoystickButton(driver, XboxController.Button.kY.value);
-  private final JoystickButton robotCentric =
-      new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-  private final JoystickButton headingControl =
-      new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-  private final JoystickButton targetTrack =
-      new JoystickButton(driver, XboxController.Button.kA.value);
-  private final JoystickButton snapToTag =
-      new JoystickButton(driver, XboxController.Button.kX.value);
+  private final Trigger zeroGyro = driver.y();
+  private final Trigger robotCentric = driver.leftBumper();
+  private final Trigger headingControl = driver.rightBumper();
+  private final Trigger targetTrack = driver.a();
+  private final Trigger snapToTag = driver.x();
   private final Trigger climbTrigger = operator.axisLessThan(5, -0.9);
   private final Trigger trapTrigger = operator.axisLessThan(5, 0.9);
   private final Trigger trapScore = new Trigger(() -> driver.getRightTriggerAxis() > 0.5);
@@ -114,7 +108,7 @@ public class RobotContainer implements Logged {
    * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * edu.wpi.first.wpilibj2.command.button.Trigger}.
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
@@ -135,10 +129,7 @@ public class RobotContainer implements Logged {
     operator
         .rightTrigger()
         .and(shooter::readyToLaunch)
-        .whileTrue(
-            startEnd(
-                () -> operator.getHID().setRumble(RumbleType.kBothRumble, 1),
-                () -> operator.getHID().setRumble(RumbleType.kBothRumble, 0)));
+        .whileTrue(CommandUtils.rumbleController(operator));
 
     operator.rightTrigger().whileTrue(shooter.velocityCommand(80));
 
@@ -151,14 +142,15 @@ public class RobotContainer implements Logged {
     operator
         .leftTrigger()
         .onTrue(superstructure.setGoalState(Superstructure.State.intake))
-        .whileTrue(
-            endEffector
-                .intakeNote()
-                .andThen(
-                    startEnd(
-                        () -> operator.getHID().setRumble(RumbleType.kBothRumble, 1),
-                        () -> operator.getHID().setRumble(RumbleType.kBothRumble, 0))))
+        .whileTrue(endEffector.intakeNote())
         .onFalse(endEffector.backOffNote());
+
+    operator
+        .leftTrigger()
+        .and(endEffector::hasNote)
+        .onTrue(
+            parallel(
+                CommandUtils.rumbleController(operator), CommandUtils.rumbleController(driver)));
     // Reverse intake
     operator
         .leftBumper()

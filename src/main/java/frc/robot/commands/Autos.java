@@ -59,6 +59,7 @@ public class Autos {
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote1_to_Source")),
         fireNoteFromSubwoofer());
   }
+
   /** shoots from source side, goes to far note1 to pickup and goes to subwoofer to shoot */
   public Command FarNearNote1() {
     return sequence(
@@ -121,7 +122,10 @@ public class Autos {
         fireNoteFromSubwoofer());
   }
 
-  /** shoots from AMP side, goes to near AMP Note and far note5 to pickup and goes to subwoofer to shoot */
+  /**
+   * shoots from AMP side, goes to near AMP Note and far note5 to pickup and goes to subwoofer to
+   * shoot
+   */
   public Command FarNearNote5() {
     return sequence(
         fireNoteFromSubwoofer(),
