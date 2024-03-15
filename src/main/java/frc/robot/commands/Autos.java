@@ -30,11 +30,11 @@ public class Autos {
   }
 
   public Command driveStraight() {
-    return runPathWithReset("3 Feet");
+    return runPath("3 Feet", true);
   }
 
   public Command circuitAuto() {
-    return runPathWithReset("Circuit");
+    return runPath("Circuit", true);
   }
 
   public Command shootStay() {
@@ -54,7 +54,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        parallel(runPathWithReset("SourceShoot_to_FarNote1"), endEffector.intakeNoteAndIndex()),
+        runIntakePath("SourceShoot_to_FarNote1", true),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote1_to_Source")),
         fireNoteFromSubwoofer());
@@ -65,11 +65,11 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("Source_to_SourceN"),
+        runIntakePath("Source_to_SourceN", true),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("SourceN_to_SourceShoot"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
-        parallel(runPathWithReset("SourceShoot_to_FarNote1"), endEffector.intakeNoteAndIndex()),
+        runIntakePath("SourceShoot_to_FarNote1"),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote1_to_Source")),
         fireNoteFromSubwoofer());
@@ -80,7 +80,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        parallel(runPathWithReset("Source_to_FarNote2"), endEffector.intakeNoteAndIndex()),
+        runIntakePath("Source_to_FarNote2", true),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote2_to_Source")),
         fireNoteFromSubwoofer());
@@ -91,7 +91,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        parallel(runPathWithReset("C_to_CN"), endEffector.intakeNoteAndIndex()),
+        runIntakePath("C_to_CN", true),
         runPath("CN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         runIntakePath("Center_to_FarNote3"),
@@ -105,7 +105,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        parallel(runPathWithReset("AMP_to_FarNote4"), endEffector.intakeNoteAndIndex()),
+        runIntakePath("AMP_to_FarNote4", true),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote4_to_AMP")),
         fireNoteFromSubwoofer());
@@ -116,7 +116,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        parallel(runPathWithReset("AMP_to_FarNote5"), endEffector.intakeNoteAndIndex()),
+        runIntakePath("AMP_to_FarNote5", true),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote5_to_AMP")),
         fireNoteFromSubwoofer());
@@ -130,12 +130,12 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("AMP_to_AMPN"),
+        runIntakePath("AMP_to_AMPN", true),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("AMPN_to_AMPShoot"),
         new WaitCommand(.5),
         endEffector.spinUpAndShoot(autoShooterSpeed),
-        parallel(runPathWithReset("AMP_to_FarNote5"), endEffector.intakeNoteAndIndex()),
+        parallel(runIntakePath("AMP_to_FarNote5"), endEffector.intakeNoteAndIndex()),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote5_to_AMP")),
         fireNoteFromSubwoofer());
@@ -146,7 +146,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("C_to_CN"),
+        runIntakePath("C_to_CN", true),
         parallel(superstructure.setGoalState(Superstructure.State.stow), runPath("CN_to_C")),
         superstructure.setGoalState(Superstructure.State.intake),
         endEffector.spinUpAndShoot(autoShooterSpeed),
@@ -158,7 +158,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("Source_to_SourceN"),
+        runIntakePath("Source_to_SourceN", true),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("SourceN_to_SourceShoot"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
@@ -172,7 +172,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("Source_to_SourceN"),
+        runIntakePath("Source_to_SourceN", true),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow),
             runPath("SourceShoot_to_Leave")));
@@ -183,7 +183,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("AMP_to_AMPN"),
+        runIntakePath("AMP_to_AMPN", true),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("AMPN_to_AMPShoot"),
         new WaitCommand(.5),
@@ -206,7 +206,7 @@ public class Autos {
     return sequence(
         fireNoteFromSubwoofer(),
         superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("C_to_CN1"),
+        runIntakePath("C_to_CN1", true),
         superstructure.setGoalState(Superstructure.State.stow));
   }
 
@@ -214,17 +214,14 @@ public class Autos {
   public Command allNear() {
     return sequence(
         fireNoteFromSubwoofer(),
-        superstructure.setGoalState(Superstructure.State.intake),
-        runPathWithReset("C_to_LN"),
+        runIntakePath("C_to_LN", true),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("LN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
-        superstructure.setGoalState(Superstructure.State.intake),
         runIntakePath("C_to_CN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("CN_to_C"),
         endEffector.spinUpAndShoot(autoShooterSpeed),
-        superstructure.setGoalState(Superstructure.State.intake),
         runIntakePath("C_to_RN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("RN_to_C"),
@@ -239,15 +236,37 @@ public class Autos {
   }
 
   // Run intake along path. intake will run for up to 1 second after path ends
-  public Command runIntakePath(String pathName) {
+  public Command runIntakePath(String pathName, boolean resetPose) {
     return deadline(
-        runPath(pathName).andThen(Commands.waitSeconds(1).until(endEffector::hasNote)),
-        endEffector.intakeNoteAndIndex());
+            runPath(pathName, resetPose)
+                .andThen(Commands.waitSeconds(1).until(endEffector::hasNote)),
+            endEffector.intakeNote(),
+            superstructure.setGoalState(Superstructure.State.intake))
+        .andThen(endEffector.backOffNote());
+  }
+
+  public Command runIntakePath(String pathName) {
+    return runIntakePath(pathName, false);
+  }
+
+  public Command runPath(String pathName, boolean resetPose) {
+    var path = PathPlannerPath.fromPathFile(pathName);
+    if (resetPose) {
+      return runOnce(
+              () -> {
+                var startingPose = path.getPreviewStartingHolonomicPose();
+                if (drivetrain.shouldFlipPath()) {
+                  startingPose = GeometryUtil.flipFieldPose(startingPose);
+                }
+                drivetrain.setPose(startingPose);
+              })
+          .andThen(AutoBuilder.followPath(path));
+    }
+    return AutoBuilder.followPath(path);
   }
 
   public Command runPath(String pathName) {
-    var path = PathPlannerPath.fromPathFile(pathName);
-    return AutoBuilder.followPath(path);
+    return runPath(pathName, false);
   }
 
   public Command runPathWithReset(String pathName) {

@@ -27,7 +27,7 @@ public class EndEffector implements Logged {
     return intake
         .runIntakeCommand(IntakeConstants.intakingSetpoint)
         .alongWith(feed.runFeedCommand(FeedConstants.intakingSetpoint))
-        .until(intake::hasNote);
+        .until(this::hasNote);
   }
 
   public Command backOffNote() {
@@ -50,6 +50,8 @@ public class EndEffector implements Logged {
 
   public Command spinUpAndShoot(double shotSetpoint) {
     return race(
-        shooter.velocityCommand(() -> shotSetpoint), waitSeconds(1).andThen(fireWhenReady()));
+            shooter.velocityCommand(() -> shotSetpoint), waitSeconds(1).andThen(fireWhenReady()))
+        // brake during auto to prevent next note from getting shot during intaking
+        .andThen(shooter.runOnce(() -> shooter.brake()));
   }
 }

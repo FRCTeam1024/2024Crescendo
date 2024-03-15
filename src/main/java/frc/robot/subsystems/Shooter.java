@@ -6,6 +6,7 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.StaticBrake;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -33,7 +34,8 @@ public class Shooter extends SubsystemBase implements Logged {
   private final StatusSignal<Double> shooterBError = shooterB.getClosedLoopError();
 
   private final VelocityVoltage velocityRequest = new VelocityVoltage(0).withSlot(0);
-  private final NeutralOut stopRequest = new NeutralOut();
+  private final StaticBrake brakeRequest = new StaticBrake();
+  private final NeutralOut idleRequest = new NeutralOut();
 
   private Timer stableTime = new Timer();
 
@@ -88,15 +90,15 @@ public class Shooter extends SubsystemBase implements Logged {
   }
 
   public void setVelocity(double speed) {
-    if (speed == 0) {
-      stop();
-    }
     if (speed < 0) {
       velocityRequest.LimitForwardMotion = true;
       velocityRequest.LimitReverseMotion = false;
-    } else {
+    } else if (speed > 0) {
       velocityRequest.LimitForwardMotion = false;
       velocityRequest.LimitReverseMotion = true;
+    } else {
+      velocityRequest.LimitForwardMotion = false;
+      velocityRequest.LimitReverseMotion = false;
     }
     shooterA.setControl(velocityRequest.withVelocity(speed));
     shooterB.setControl(velocityRequest.withVelocity(speed));
@@ -104,7 +106,8 @@ public class Shooter extends SubsystemBase implements Logged {
 
   @Log.NT(key = "Velocity Setpoint (RPS)")
   public double getVelocitySetpointRPS() {
-    if (shooterA.getAppliedControl().equals(stopRequest)) {
+    if (shooterA.getAppliedControl().equals(brakeRequest)
+        || shooterA.getAppliedControl().equals(idleRequest)) {
       return 0;
     } else {
       return velocityRequest.Velocity;
@@ -122,8 +125,13 @@ public class Shooter extends SubsystemBase implements Logged {
   }
 
   public void stop() {
-    shooterA.setControl(stopRequest);
-    shooterB.setControl(stopRequest);
+    shooterA.setControl(idleRequest);
+    shooterB.setControl(idleRequest);
+  }
+
+  public void brake() {
+    shooterA.setControl(brakeRequest);
+    shooterB.setControl(brakeRequest);
   }
 
   public Command velocityCommand(double velocityRPS) {
