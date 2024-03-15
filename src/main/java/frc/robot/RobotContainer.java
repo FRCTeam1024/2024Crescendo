@@ -148,7 +148,7 @@ public class RobotContainer implements Logged {
     operator
         .leftTrigger()
         .and(endEffector::hasNote)
-        .onTrue(
+        .whileTrue(
             parallel(
                 CommandUtils.rumbleController(operator), CommandUtils.rumbleController(driver)));
     // Reverse intake
