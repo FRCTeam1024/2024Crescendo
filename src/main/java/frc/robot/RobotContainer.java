@@ -93,14 +93,14 @@ public class RobotContainer implements Logged {
     autoChooser.addOption("Center Two Note", autos.centerTwoNote());
     autoChooser.addOption("Amp Two Note", autos.AMPTwoNote());
     autoChooser.addOption("Source Two Note", autos.SourceTwoNote());
-    autoChooser.addOption("Shoot OutsideLeave", autos.shootOutsideLeave());
-    autoChooser.addOption("SourceNoteLeave", autos.SourceNoteLeave());
-    autoChooser.addOption("AllNotesNear", autos.allNear());
-    autoChooser.addOption("FarSourceNote1", autos.FarNote1());
-    autoChooser.addOption("FarSourceNote2", autos.FarNote2());
-    autoChooser.addOption("CenterNear and FarNote", autos.FarNote3());
-    autoChooser.addOption("FarAMPNote4", autos.FarNote4());
-    // autoChooser.addOption("FarAMPNote5", autos.FarNote5()); // Files missing
+    autoChooser.addOption("Source Outside Leave", autos.shootOutsideLeave());
+    autoChooser.addOption("Source Note Leave", autos.SourceNoteLeave());
+    autoChooser.addOption("Center All Notes Near", autos.allNear());
+    autoChooser.addOption("Source to FarNote1", autos.FarNote1());
+    autoChooser.addOption("Source to FarNote2", autos.FarNote2());
+    //autoChooser.addOption("CenterNear and FarNote", autos.FarNote3());
+    autoChooser.addOption("AMP Near then Far Note4", autos.FarNearNote4());
+    autoChooser.addOption("AMP Near then Far Note5", autos.FarNearNote5());
   }
 
   /**
