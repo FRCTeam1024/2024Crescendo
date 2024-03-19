@@ -50,7 +50,7 @@ public class EndEffector implements Logged {
 
   public Command spinUpAndShoot(double shotSetpoint) {
     return race(
-            shooter.velocityCommand(() -> shotSetpoint), waitSeconds(1).andThen(fireWhenReady()))
+            shooter.velocityCommand(() -> shotSetpoint), waitSeconds(.2).andThen(fireWhenReady()))
         // brake during auto to prevent next note from getting shot during intaking
         .andThen(shooter.runOnce(() -> shooter.brake()));
   }

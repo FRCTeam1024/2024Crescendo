@@ -128,6 +128,7 @@ public class Autos {
   }
 
   /** shoots from AMP side, goes to far note5 to pickup and goes to subwoofer to shoot */
+ 
   public Command FarNote5() {
     return sequence(
         fireNoteFromSubwoofer(),
@@ -151,7 +152,7 @@ public class Autos {
         runPath("AMPN_to_AMPShoot"),
         new WaitCommand(.5),
         endEffector.spinUpAndShoot(autoShooterSpeed),
-        parallel(runIntakePath("AMP_to_FarNote5"), endEffector.intakeNoteAndIndex()),
+        runIntakePath("AMP_to_FarNote5"),
         parallel(
             superstructure.setGoalState(Superstructure.State.stow), runPath("FarNote5_to_AMP")),
         fireNoteFromSubwoofer());
