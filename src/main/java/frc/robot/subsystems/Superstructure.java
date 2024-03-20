@@ -215,6 +215,7 @@ public class Superstructure implements Logged {
     public static final State scoreOverDefense =
         new State(degreesToRadians(30), degreesToRadians(15));
     public static final State climb = new State(1.158062789394613, 1.0122905035569956);
+    public static final State scoreFromPodium = new State(0.8962634625997165, 0.6632243401595465);
   }
 
   private static boolean isBetween(double value, double lower, double upper) {

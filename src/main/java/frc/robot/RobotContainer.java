@@ -51,7 +51,7 @@ public class RobotContainer implements Logged {
   private final Trigger targetTrack = driver.a();
   private final Trigger snapToTag = driver.x();
   private final Trigger climbTrigger = operator.axisLessThan(5, -0.9);
-  private final Trigger trapTrigger = operator.axisLessThan(5, 0.9);
+  private final Trigger podiumScore = operator.axisLessThan(5, 0.9);
   private final Trigger trapScore = new Trigger(() -> driver.getRightTriggerAxis() > 0.5);
 
   /* Subsystems */
@@ -99,8 +99,8 @@ public class RobotContainer implements Logged {
     autoChooser.addOption("Source to FarNote1", autos.FarNote1());
     autoChooser.addOption("Source to Far and NearNote1", autos.FarNearNote1());
     autoChooser.addOption("Source to FarNote2", autos.FarNote2());
-    //autoChooser.addOption("CenterNear and FarNote", autos.FarNote3());
-    //autoChooser.addOption("AMP Near then Far Note4", autos.FarNearNote4());
+    // autoChooser.addOption("CenterNear and FarNote", autos.FarNote3());
+    // autoChooser.addOption("AMP Near then Far Note4", autos.FarNearNote4());
     autoChooser.addOption("AMP Near then Far Note5", autos.FarNearNote5());
   }
 
@@ -168,7 +168,7 @@ public class RobotContainer implements Logged {
     // Score amp
     operator.x().onTrue(superstructure.setGoalState(Superstructure.State.scoreAmp));
 
-    trapTrigger.onTrue(superstructure.setGoalState(Superstructure.State.scoreTrap));
+    podiumScore.onTrue(superstructure.setGoalState(Superstructure.State.scoreFromPodium));
     climbTrigger.onTrue(superstructure.setGoalState(Superstructure.State.climb));
 
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
