@@ -258,7 +258,7 @@ public class Autos {
   public Command runIntakePath(String pathName, boolean resetPose) {
     return deadline(
             runPath(pathName, resetPose)
-                .andThen(Commands.waitSeconds(1).until(endEffector::hasNote)),
+                .andThen(Commands.waitSeconds(.1).until(endEffector::hasNote)),
             endEffector.intakeNote(),
             superstructure.setGoalState(Superstructure.State.intake))
         .andThen(endEffector.backOffNote());
