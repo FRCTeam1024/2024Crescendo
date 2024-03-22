@@ -79,11 +79,11 @@ public class Intake extends SubsystemBase implements Logged {
   public static void configurePeriodicFrames(CANSparkMax sparkMax) {
     sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 20);
     sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 20);
-    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 65535);
-    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 65535);
-    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 65535);
-    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 65535);
-    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 65535);
-    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus7, 65535);
+    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 32767);
+    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 32767);
+    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 32767);
+    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 32767);
+    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 32767);
+    sparkMax.setPeriodicFramePeriod(PeriodicFrame.kStatus7, 32767);
   }
 }
