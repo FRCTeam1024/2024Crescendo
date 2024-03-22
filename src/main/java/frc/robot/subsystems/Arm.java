@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.ArmConstants.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,14 +23,23 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.StatusDashboard;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Arm extends SubsystemBase implements Logged {
-  private final TalonFX armMotor = new TalonFX(kWristId);
   private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(kAbsEncoderPin);
+
+  private final TalonFX armMotor = new TalonFX(kWristId);
+
+  private final StatusSignal<Double> statorCurrent = armMotor.getStatorCurrent();
+  private final StatusSignal<Double> supplyVoltage = armMotor.getSupplyVoltage();
+  private final StatusSignal<Double> supplyCurrent = armMotor.getSupplyCurrent();
+  private final StatusSignal<Double> motorTemperature = armMotor.getDeviceTemp();
+  private final StatusSignal<Double> appliedVoltage = armMotor.getMotorVoltage();
+
   private final Encoder quadEncoder = new Encoder(kQuadEncoderAPin, kQuadEncoderBPin);
 
   @Log.NT
@@ -48,12 +59,23 @@ public class Arm extends SubsystemBase implements Logged {
 
   private boolean initializedProperly = true;
 
+  @Log.Once(key = "EncoderInitTime")
+  private double initTime;
+
   public Arm() {
     var armConfig = new TalonFXConfiguration();
     armConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     armConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     armConfig.Feedback.SensorToMechanismRatio = kMotorToArmRatio;
     armMotor.getConfigurator().apply(armConfig);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(20, statorCurrent, supplyVoltage, supplyCurrent);
+    motorTemperature.setUpdateFrequency(4);
+    appliedVoltage.setUpdateFrequency(50);
+
+    if (Constants.disableUnusedSignals) {
+      armMotor.optimizeBusUtilization();
+    }
 
     quadEncoder.setDistancePerPulse((2.0 * Math.PI / kQuadTicks) / kGearboxToArmRatio);
     quadEncoder.setSamplesToAverage(80);
@@ -72,7 +94,7 @@ public class Arm extends SubsystemBase implements Logged {
       }
       Timer.delay(0.01);
     } while (absoluteEncoder.getFrequency() < 950 && RobotBase.isReal());
-    log("EncoderInitTime", timeout.get());
+    initTime = timeout.get();
 
     kInitializationOffset = getAbsolutePosition();
 
@@ -257,6 +279,8 @@ public class Arm extends SubsystemBase implements Logged {
 
   @Override
   public void periodic() {
+    BaseStatusSignal.refreshAll(
+        statorCurrent, supplyVoltage, supplyCurrent, motorTemperature, appliedVoltage);
     // Reset the controller when disabled so it profiles to the setpoint when re-enabled
     if (DriverStation.isDisabled()) {
       controller.reset(getPosition());
@@ -264,8 +288,13 @@ public class Arm extends SubsystemBase implements Logged {
     var setpoint = getSetpoint();
     log("Setpoint Position", setpoint.position);
     log("Setpoint Velocity", setpoint.velocity);
-    log("Stator Current", armMotor.getStatorCurrent().getValue());
-    log("Supply Voltage", armMotor.getSupplyVoltage().getValue());
+    log("Setpoint Position", setpoint.position);
+    log("Setpoint Velocity", setpoint.velocity);
+    log("Stator Current", statorCurrent.getValue());
+    log("Supply Voltage", supplyVoltage.getValue());
+    log("Supply Current", supplyCurrent.getValue());
+    log("Motor Temperature", motorTemperature.getValue());
+    log("Applied Voltage", appliedVoltage.getValue());
     log("Absolute Encoder Frequency", absoluteEncoder.getFrequency());
   }
 }

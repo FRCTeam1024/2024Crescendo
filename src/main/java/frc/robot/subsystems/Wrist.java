@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.WristConstants.*;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,14 +23,23 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.StatusDashboard;
 import java.util.function.DoubleSupplier;
 import monologue.Annotations.Log;
 import monologue.Logged;
 
 public class Wrist extends SubsystemBase implements Logged {
-  private final TalonFX wristMotor = new TalonFX(kWristId);
   private final DutyCycleEncoder absoluteEncoder = new DutyCycleEncoder(kAbsEncoderPin);
+
+  private final TalonFX wristMotor = new TalonFX(kWristId);
+
+  private final StatusSignal<Double> statorCurrent = wristMotor.getStatorCurrent();
+  private final StatusSignal<Double> supplyVoltage = wristMotor.getSupplyVoltage();
+  private final StatusSignal<Double> supplyCurrent = wristMotor.getSupplyCurrent();
+  private final StatusSignal<Double> motorTemperature = wristMotor.getDeviceTemp();
+  private final StatusSignal<Double> appliedVoltage = wristMotor.getMotorVoltage();
+
   private final Encoder quadEncoder = new Encoder(kQuadEncoderAPin, kQuadEncoderBPin);
 
   @Log.NT
@@ -48,12 +59,23 @@ public class Wrist extends SubsystemBase implements Logged {
 
   private boolean initializedProperly = true;
 
+  @Log.Once(key = "EncoderInitTime")
+  private double initTime;
+
   public Wrist() {
     var wristConfig = new TalonFXConfiguration();
     wristConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     wristConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     wristConfig.Feedback.SensorToMechanismRatio = kMotorToWristRatio;
     wristMotor.getConfigurator().apply(wristConfig);
+
+    BaseStatusSignal.setUpdateFrequencyForAll(20, statorCurrent, supplyVoltage, supplyCurrent);
+    motorTemperature.setUpdateFrequency(4);
+    appliedVoltage.setUpdateFrequency(50);
+
+    if (Constants.disableUnusedSignals) {
+      wristMotor.optimizeBusUtilization();
+    }
 
     quadEncoder.setDistancePerPulse(2.0 * Math.PI / kQuadTicks);
     quadEncoder.setSamplesToAverage(127);
@@ -72,7 +94,7 @@ public class Wrist extends SubsystemBase implements Logged {
       }
       Timer.delay(0.01);
     } while (absoluteEncoder.getFrequency() < 950 && RobotBase.isReal());
-    log("EncoderInitTime", timeout.get());
+    initTime = timeout.get();
 
     kInitializationOffset = getAbsolutePosition();
     setGoal(getPosition());
@@ -267,6 +289,8 @@ public class Wrist extends SubsystemBase implements Logged {
 
   @Override
   public void periodic() {
+    BaseStatusSignal.refreshAll(
+        statorCurrent, supplyVoltage, supplyCurrent, motorTemperature, appliedVoltage);
     // Reset the controller when disabled so it profiles to the setpoint when re-enabled
     if (DriverStation.isDisabled()) {
       controller.reset(getPosition());
@@ -274,8 +298,11 @@ public class Wrist extends SubsystemBase implements Logged {
     var setpoint = getSetpoint();
     log("Setpoint Position", setpoint.position);
     log("Setpoint Velocity", setpoint.velocity);
-    log("Stator Current", wristMotor.getStatorCurrent().getValue());
-    log("Supply Voltage", wristMotor.getSupplyVoltage().getValue());
+    log("Stator Current", statorCurrent.getValue());
+    log("Supply Voltage", supplyVoltage.getValue());
+    log("Supply Current", supplyCurrent.getValue());
+    log("Motor Temperature", motorTemperature.getValue());
+    log("Applied Voltage", appliedVoltage.getValue());
     log("Absolute Encoder Frequency", absoluteEncoder.getFrequency());
   }
 }
