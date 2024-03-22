@@ -39,9 +39,11 @@ public class EndEffector implements Logged {
   }
 
   public Command fireNote() {
-    return feed.runFeedCommand(FeedConstants.fireSetpoint)
-        .alongWith(intake.runIntakeCommand(IntakeConstants.fireSetpoint))
-        .withTimeout(1.0);
+    return race(
+        feed.runFeedCommand(FeedConstants.fireSetpoint)
+            .alongWith(intake.runIntakeCommand(IntakeConstants.fireSetpoint))
+            .withTimeout(1.0),
+        waitUntil(() -> !hasNote()).andThen(waitSeconds(0.25)));
   }
 
   public Command fireWhenReady() {
