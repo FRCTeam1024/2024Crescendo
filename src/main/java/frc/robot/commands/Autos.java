@@ -235,15 +235,15 @@ public class Autos {
         fireNoteFromSubwoofer(),
         runIntakePath("C_to_LN", true),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
-        runPath("LN_to_C"),
+        runPath("LN_to_C").raceWith(endEffector.preSpinUp(autoShooterSpeed)),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         runIntakePath("C_to_CN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
-        runPath("CN_to_C"),
+        runPath("CN_to_C").raceWith(endEffector.preSpinUp(autoShooterSpeed)),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         runIntakePath("C_to_RN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
-        runPath("RN_to_C"),
+        runPath("RN_to_C").raceWith(endEffector.preSpinUp(autoShooterSpeed)),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         parallel(runPath("C_to_Leave"), superstructure.setGoalState(Superstructure.State.stow)));
   }

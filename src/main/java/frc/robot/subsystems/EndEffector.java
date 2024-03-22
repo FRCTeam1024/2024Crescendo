@@ -43,11 +43,15 @@ public class EndEffector implements Logged {
         feed.runFeedCommand(FeedConstants.fireSetpoint)
             .alongWith(intake.runIntakeCommand(IntakeConstants.fireSetpoint))
             .withTimeout(1.0),
-        waitUntil(() -> !hasNote()).andThen(waitSeconds(0.25)));
+        waitUntil(() -> !hasNote()).andThen(waitSeconds(0.5)));
   }
 
   public Command fireWhenReady() {
     return waitUntil(shooter::readyToLaunch).andThen(fireNote());
+  }
+
+  public Command preSpinUp(double shotSetpoint) {
+    return shooter.velocityCommand(() -> shotSetpoint);
   }
 
   public Command spinUpAndShoot(double shotSetpoint) {
