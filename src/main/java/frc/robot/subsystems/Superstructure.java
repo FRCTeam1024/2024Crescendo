@@ -217,6 +217,8 @@ public class Superstructure implements Logged {
     public static final State climb = new State(1.158062789394613, 1.0122905035569956);
     public static final State scoreFromPodium =
         new State(0.8962634625997165, 0.628324); // 0.6632243401595465
+    public static final State scoreFromLine =
+        new State(stow.armPosition, 0.36651868031909285); // Actual position was 0.35781827454313775
   }
 
   private static boolean isBetween(double value, double lower, double upper) {
