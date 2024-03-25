@@ -295,7 +295,7 @@ public final class Constants {
     public static final double kMotorToArmRatio = 3.0 * 3.0 * 4.0 * kGearboxToArmRatio;
     public static final int kQuadTicks = 2048;
 
-    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(120);
+    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(240);
     public static final double kMaxAccelerationRadiansPerSecondSquared =
         Units.degreesToRadians(480);
 
