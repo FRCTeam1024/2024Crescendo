@@ -74,7 +74,8 @@ public class Superstructure implements Logged {
    * @return the command
    */
   public Command setGoalState(State goalState) {
-    return optimizedSafeWristFirst(goalState);
+    return optimizedSafeWristFirst(goalState)
+        .withName("SetGoalState(" + goalState.armPosition + "," + goalState.wristPosition + ")");
   }
 
   public State getState() {

@@ -102,7 +102,7 @@ public class Arm extends SubsystemBase implements Logged {
 
     setGoal(getPosition());
     setDefaultCommand(holdPositionCommand());
-    
+
     StatusDashboard.addStatusIndicator("Arm Initialized", initializedProperly);
     StatusDashboard.addStatusIndicator("Arm Encoder", absoluteEncoder::isConnected);
     Shuffleboard.getTab("Offsets")

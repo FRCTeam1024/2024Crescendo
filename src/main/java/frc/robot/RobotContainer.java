@@ -141,7 +141,7 @@ public class RobotContainer implements Logged {
     // Intake - rumble when note detected
     operator
         .leftTrigger()
-        .onTrue(superstructure.setGoalState(Superstructure.State.intake))
+        .onTrue(superstructure.setGoalState(Superstructure.State.intake).withName("IntakeState"))
         .whileTrue(endEffector.intakeNote())
         .onFalse(endEffector.backOffNote());
 
@@ -160,16 +160,30 @@ public class RobotContainer implements Logged {
     operator.start().whileTrue(feed.runFeedCommand(-0.3).alongWith(intake.runIntakeCommand(-0.2)));
 
     // Intake + Shoot Position
-    operator.b().onTrue(superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer));
+    operator
+        .b()
+        .onTrue(
+            superstructure
+                .setGoalState(Superstructure.State.scoreFromSubwoofer)
+                .withName("ScoreState"));
 
     // Stow
-    operator.a().onTrue(superstructure.setGoalState(Superstructure.State.stow));
+    operator
+        .a()
+        .onTrue(superstructure.setGoalState(Superstructure.State.stow).withName("StowState"));
 
     // Score amp
-    operator.x().onTrue(superstructure.setGoalState(Superstructure.State.scoreAmp));
+    operator
+        .x()
+        .onTrue(
+            superstructure.setGoalState(Superstructure.State.scoreAmp).withName("ScoreAmpState"));
 
-    podiumScore.onTrue(superstructure.setGoalState(Superstructure.State.scoreFromPodium));
-    climbTrigger.onTrue(superstructure.setGoalState(Superstructure.State.climb));
+    podiumScore.onTrue(
+        superstructure
+            .setGoalState(Superstructure.State.scoreFromPodium)
+            .withName("ScoreFromPodiumState"));
+    climbTrigger.onTrue(
+        superstructure.setGoalState(Superstructure.State.climb).withName("ClimbState"));
 
     operator.pov(0).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(5)));
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
