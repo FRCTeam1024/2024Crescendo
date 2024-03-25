@@ -83,6 +83,8 @@ public class Arm extends SubsystemBase implements Logged {
 
     absoluteEncoder.setConnectedFrequencyThreshold(950);
 
+    controller.setTolerance(Units.degreesToRadians(5));
+
     // Wait for encoder to produce valid values
     var timeout = new Timer();
     timeout.start();
@@ -100,6 +102,7 @@ public class Arm extends SubsystemBase implements Logged {
 
     setGoal(getPosition());
     setDefaultCommand(holdPositionCommand());
+    
     StatusDashboard.addStatusIndicator("Arm Initialized", initializedProperly);
     StatusDashboard.addStatusIndicator("Arm Encoder", absoluteEncoder::isConnected);
     Shuffleboard.getTab("Offsets")
