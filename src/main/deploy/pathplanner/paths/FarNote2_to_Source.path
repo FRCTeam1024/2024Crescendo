@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.903114482436479,
-        "y": 2.437823265628643
+        "x": 8.002785729882236,
+        "y": 2.3455132624550967
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.345058554160043,
-        "y": 2.2322237131057445
+        "x": 7.519280802972632,
+        "y": 2.0677551129538356
       },
       "isLocked": false,
       "linkedName": "FarCSNote"
     },
     {
       "anchor": {
-        "x": 3.589517354473306,
-        "y": 1.5842501860442317
+        "x": 5.5646864175933874,
+        "y": 1.6356868803963172
       },
       "prevControl": {
-        "x": 5.130035838122082,
-        "y": 1.0024276188033905
+        "x": 7.2112468932423575,
+        "y": 1.6121645878870452
       },
       "nextControl": {
-        "x": 2.0489988708245312,
-        "y": 2.166072753285074
+        "x": 4.124458975734994,
+        "y": 1.6562615581371523
       },
       "isLocked": false,
       "linkedName": null
@@ -48,8 +48,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -61,8 +61,8 @@
   "reversed": false,
   "folder": "Far",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 30.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

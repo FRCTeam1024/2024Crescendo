@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.95,
-        "y": 0.7636554807993345
+        "x": 7.951349035530153,
+        "y": 0.7715504152812825
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.985858584006378,
-        "y": 0.9823921069643075
+        "x": 4.98720761953653,
+        "y": 0.9902870414462555
       },
       "isLocked": false,
       "linkedName": "Far1note"
@@ -20,8 +20,8 @@
         "y": 4.44
       },
       "prevControl": {
-        "x": 0.7626459750549829,
-        "y": 2.548930176343765
+        "x": 2.1184278960036624,
+        "y": 2.602696734215524
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 4.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
@@ -60,5 +60,5 @@
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
