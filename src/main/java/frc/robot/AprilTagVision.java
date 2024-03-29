@@ -75,7 +75,7 @@ public class AprilTagVision implements Logged {
     // Reject if tag is too far away
     var distanceToTag =
         curPose.getTranslation().getDistance(apriltagPose.get().getTranslation().toTranslation2d());
-    if (distanceToTag > 4) {
+    if (distanceToTag > 7) {
       return false;
     }
 
