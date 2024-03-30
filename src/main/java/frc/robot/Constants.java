@@ -242,7 +242,7 @@ public final class Constants {
      * radians To find this, set the offset to 0 and read the measured position of the wrist when
      * the wrist is at 0
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -2.741 : 0.806;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -2.741 : 0.785;
 
     public static final double kHardStopToMaxExtension = -0.511786;
     public static final double kHardStopToCOG = 0;
