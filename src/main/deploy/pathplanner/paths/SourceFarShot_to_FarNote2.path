@@ -1,0 +1,70 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.467,
+        "y": 3.0
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.377386188356338,
+        "y": 0.4937922657748791
+      },
+      "isLocked": false,
+      "linkedName": "SourceSideFarShot"
+    },
+    {
+      "anchor": {
+        "x": 8.085084440845574,
+        "y": 2.273501890357035
+      },
+      "prevControl": {
+        "x": 7.642728869417639,
+        "y": 1.9501076478240593
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "FarCSNote"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 40.0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.0,
+      "maxWaypointRelativePos": 1.5,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 40.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Far",
+  "previewStartingState": {
+    "rotation": -40.69999999999999,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

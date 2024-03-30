@@ -8,60 +8,56 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.601579513935969,
-        "y": 1.995743740855774
+        "x": 6.883830418292156,
+        "y": 1.7274197149157697
       },
       "isLocked": false,
       "linkedName": "FarCSNote"
     },
     {
       "anchor": {
-        "x": 5.5646864175933874,
-        "y": 1.6356868803963172
+        "x": 3.467,
+        "y": 3.0
       },
       "prevControl": {
-        "x": 7.2112468932423575,
-        "y": 1.6121645878870452
-      },
-      "nextControl": {
-        "x": 4.124458975734994,
-        "y": 1.6562615581371523
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.73,
-        "y": 4.44
-      },
-      "prevControl": {
-        "x": 1.0573952979986165,
-        "y": 3.918901431888078
+        "x": 5.945317955798818,
+        "y": 0.9772971926896242
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootRN"
+      "linkedName": "SourceSideFarShot"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 1.5,
+      "maxWaypointRelativePos": 1.75,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -60.0,
+    "rotation": -40.69999999999999,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Far",
   "previewStartingState": {
-    "rotation": 30.0,
+    "rotation": 40.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

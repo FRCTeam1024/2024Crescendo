@@ -247,10 +247,28 @@ public class Autos {
         endEffector.spinUpAndShoot(autoShooterSpeed),
         parallel(runPath("C_to_Leave"), superstructure.setGoalState(Superstructure.State.stow)));
   }
+  //Auto for picking up and shooting far notes 1 and 2
+  public Command farNote1and2() {
+    return sequence(
+        fireNoteFromSubwoofer(),
+       parallel(superstructure.setGoalState(Superstructure.State.intake), runIntakePath("SourceShoot_to_FarNote1", true)), 
+        parallel(superstructure.setGoalState(Superstructure.State.scoreFromSourceFar), runPath("FarNote1_to_SourceFarShot")),
+        endEffector.spinUpAndShoot(autoShooterSpeed),
+        runIntakePath("SourceFarShot_to_FarNote2"),
+        parallel(superstructure.setGoalState(Superstructure.State.scoreFromSourceFar), runPath("FarNote2_to_SourceFarShot")),
+        endEffector.spinUpAndShoot(autoShooterSpeed));
+  }
+
 
   public Command fireNoteFromSubwoofer() {
     return sequence(
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
+        endEffector.spinUpAndShoot(autoShooterSpeed));
+  }
+
+  public Command fireNoteFromSourceFar() {
+    return sequence(
+        superstructure.setGoalState(Superstructure.State.scoreFromSourceFar),
         endEffector.spinUpAndShoot(autoShooterSpeed));
   }
 
