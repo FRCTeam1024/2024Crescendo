@@ -208,16 +208,18 @@ public class Superstructure implements Logged {
         new State(stow.armPosition(), 0.087266 - Units.degreesToRadians(1));
     public static final State scoreFromSubwoofer =
         new State(stow.armPosition(), 0.087266 + Units.degreesToRadians(1));
+    public static final State scoreFromSourceFar =
+        new State(stow.armPosition(), .563);
     public static final State scoreFromSpikeMark =
         new State(stow.armPosition(), degreesToRadians(15));
     public static final State scoreTrap = new State(0.6344640748005669, 2.007128156715125);
-    public static final State scoreAmp = new State(0.808997, 0.506145);
+    public static final State scoreAmp = new State(0.808997, 0.54105155);
     public static final State scoreFromAmp = new State(stow.armPosition(), 0.314159);
     public static final State scoreOverDefense =
         new State(degreesToRadians(30), degreesToRadians(15));
     public static final State climb = new State(1.158062789394613, 1.0122905035569956);
     public static final State scoreFromPodium =
-        new State(0.8962634625997165, 0.628324); // 0.6632243401595465
+        new State(0.8962634625997165, 0.68068384); // 0.6632243401595465
     public static final State scoreFromLine =
         new State(stow.armPosition, 0.36651868031909285); // Actual position was 0.35781827454313775
   }
