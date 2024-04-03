@@ -41,12 +41,12 @@ public class Intake extends SubsystemBase implements Logged {
 
   @Log.NT
   public boolean hasNote() {
-    return filter.calculate(!noteSensor.get());
+    return filter.calculate(unfilteredHasNote());
   }
 
   @Log.NT
   public boolean unfilteredHasNote() {
-    return !noteSensor.get();
+    return noteSensor.get();
   }
 
   @Log.NT(key = "Velocity")
