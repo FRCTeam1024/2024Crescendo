@@ -7,7 +7,7 @@ import java.util.function.BooleanSupplier;
 public class StatusDashboard {
   private static ShuffleboardTab tab = Shuffleboard.getTab("Status");
 
-  private static int maxColumns = 5;
+  private static int maxColumns = 6;
 
   private static int count = 0;
 

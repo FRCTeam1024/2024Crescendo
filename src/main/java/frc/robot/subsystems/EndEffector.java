@@ -31,7 +31,7 @@ public class EndEffector implements Logged {
   }
 
   public Command backOffNote() {
-    return feed.runFeedCommand(-0.1).alongWith(shooter.velocityCommand(-10)).withTimeout(0.25);
+    return feed.runFeedCommand(-0.1).alongWith(shooter.velocityCommand(-10)).withTimeout(0.5);
   }
 
   public Command intakeNoteAndIndex() {

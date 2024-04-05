@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase implements Logged {
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.setInverted(isInverted);
     intakeMotor.setIdleMode(IdleMode.kCoast);
-    intakeMotor.setSmartCurrentLimit(40);
+    intakeMotor.setSmartCurrentLimit(50);
     configurePeriodicFrames(intakeMotor);
     intakeMotor.burnFlash();
   }

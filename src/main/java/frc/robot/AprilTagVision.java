@@ -33,6 +33,7 @@ public class AprilTagVision implements Logged {
             camera,
             robotToCamera);
     cameras.add(new VisionCamera(name, camera, estimator));
+    StatusDashboard.addStatusIndicator(name + "Connected", camera::isConnected);
   }
 
   public void processVisionUpdates(Consumer<EstimatedRobotPose> poseConsumer, Pose2d curPose) {
