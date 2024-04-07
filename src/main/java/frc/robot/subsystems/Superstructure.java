@@ -207,7 +207,7 @@ public class Superstructure implements Logged {
     public static final State intake =
         new State(stow.armPosition(), 0.087266);
     public static final State scoreFromSubwoofer =
-        new State(stow.armPosition(), 0.087266 + Units.degreesToRadians(1));
+        new State(stow.armPosition(), 0.087266 + Units.degreesToRadians(3));
     public static final State scoreFromSourceFar =
         new State(stow.armPosition(), .563);
     public static final State scoreFromSpikeMark =

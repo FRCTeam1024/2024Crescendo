@@ -53,7 +53,7 @@ public final class Constants {
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
     // 4 inches * correction factor obtained via measured distance
-    public static final double wheelCircumference = Units.inchesToMeters(isPracticeBot ? Math.PI * 4 : Math.PI * 3.6);
+    public static final double wheelCircumference = Units.inchesToMeters(isPracticeBot ? Math.PI * 4 : Math.PI * 3.8);
 
     /* Heading Control PID Values */
     public static final double headingkP = 2;
@@ -242,7 +242,7 @@ public final class Constants {
      * radians To find this, set the offset to 0 and read the measured position of the wrist when
      * the wrist is at 0
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -2.741 : 0.758;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -2.741 : 0.786;
 
     public static final double kHardStopToMaxExtension = -0.511786;
     public static final double kHardStopToCOG = 0;
@@ -282,7 +282,7 @@ public final class Constants {
      * radians. To find this, position the arm at the hard stop and use "Position No Offset" as the
      * new offset
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.309 : 0.736;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.309 : 0.801;
 
     public static final double kHardStopPosition = -0.5;
     public static final double kPositionOffset = kOffsetAtLowerHardStop - kHardStopPosition;

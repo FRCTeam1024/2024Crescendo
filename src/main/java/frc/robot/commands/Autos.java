@@ -229,7 +229,7 @@ public class Autos {
         superstructure.setGoalState(Superstructure.State.stow));
   }
 
-  /** shoot preload, pickup and shoot all notes near, and leave/stow. */
+  /** shoot preload, pickup(picks up AMP note first instead) and shoot all notes near, and leave/stow. */
   public Command allNear() {
     return sequence(
         fireNoteFromSubwoofer(),
@@ -244,6 +244,24 @@ public class Autos {
         runIntakePath("C_to_RN"),
         superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
         runPath("RN_to_C").raceWith(endEffector.preSpinUp(autoShooterSpeed)),
+        endEffector.spinUpAndShoot(autoShooterSpeed),
+        parallel(runPath("C_to_Leave"), superstructure.setGoalState(Superstructure.State.stow)));
+  }
+  /** shoot preload, pickup (picks up source note first instead) and shoot all notes near, and leave/stow. */
+  public Command allNear2() {
+    return sequence(
+        fireNoteFromSubwoofer(),
+        runIntakePath("C_to_RN", true),
+        superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
+        runPath("RN_to_C").raceWith(endEffector.preSpinUp(autoShooterSpeed)),
+        endEffector.spinUpAndShoot(autoShooterSpeed),
+        runIntakePath("C_to_CN"),
+        superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
+        runPath("CN_to_C").raceWith(endEffector.preSpinUp(autoShooterSpeed)),
+        endEffector.spinUpAndShoot(autoShooterSpeed),
+        runIntakePath("C_to_LN"),
+        superstructure.setGoalState(Superstructure.State.scoreFromSubwoofer),
+        runPath("LN_to_C").raceWith(endEffector.preSpinUp(autoShooterSpeed)),
         endEffector.spinUpAndShoot(autoShooterSpeed),
         parallel(runPath("C_to_Leave"), superstructure.setGoalState(Superstructure.State.stow)));
   }
