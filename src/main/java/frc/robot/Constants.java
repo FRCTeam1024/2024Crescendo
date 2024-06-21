@@ -209,7 +209,7 @@ public final class Constants {
                 Units.inchesToMeters(isPracticeBot ? 6.5 : 6.5),
                 Units.inchesToMeters(isPracticeBot ? 19.25 : 19.25)),
             new Rotation3d(
-                Units.degreesToRadians(isPracticeBot ? 0 : 0),
+                Units.degreesToRadians(isPracticeBot ? 180 : 180),
                 Units.degreesToRadians(isPracticeBot ? -25 : -25),
                 Units.degreesToRadians(isPracticeBot ? 0 : 0)));
 
@@ -223,7 +223,7 @@ public final class Constants {
                 Units.inchesToMeters(isPracticeBot ? -6.5 : -6.5),
                 Units.inchesToMeters(isPracticeBot ? 20.875 : 20.875)),
             new Rotation3d(
-                Units.degreesToRadians(isPracticeBot ? 0 : 0),
+                Units.degreesToRadians(isPracticeBot ? 180 : 180),
                 Units.degreesToRadians(isPracticeBot ? -18 : -24),
                 Units.degreesToRadians(isPracticeBot ? 180 : 180)));
   }
