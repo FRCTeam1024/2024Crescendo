@@ -26,8 +26,6 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private UsbCamera driverCam;
-
   private Timer loopTimer = new Timer();
   private Timer userCodeTimer = new Timer();
 
