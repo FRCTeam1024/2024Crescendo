@@ -265,7 +265,7 @@ public final class Constants {
     public static final double kA = 0.0;
     public static final double kG = 0.36;
 
-    public static final double kP = isPracticeBot ? 5 : 10;
+    public static final double kP = isPracticeBot ? 5 : 7.5;
     public static final double kI = 0.0;
     public static final double kD = isPracticeBot ? 0 : 0.05;
   }
