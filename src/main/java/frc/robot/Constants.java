@@ -24,7 +24,7 @@ import org.photonvision.PhotonCamera;
 public final class Constants {
   public static final double stickDeadband = 0.04;
 
-  public static final boolean apriltagsEnabled = true;
+  public static final boolean apriltagsEnabled = false;
 
   public static final boolean disableUnusedSignals = true;
 
@@ -53,7 +53,8 @@ public final class Constants {
     public static final double trackWidth = Units.inchesToMeters(21.75);
     public static final double wheelBase = Units.inchesToMeters(21.75);
     // 4 inches * correction factor obtained via measured distance
-    public static final double wheelCircumference = Units.inchesToMeters(isPracticeBot ? Math.PI * 4 : Math.PI * 4);
+    public static final double wheelCircumference =
+        Units.inchesToMeters(isPracticeBot ? Math.PI * 4 : Math.PI * 4);
 
     /* Heading Control PID Values */
     public static final double headingkP = 2;
@@ -242,7 +243,7 @@ public final class Constants {
      * radians To find this, set the offset to 0 and read the measured position of the wrist when
      * the wrist is at 0
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -2.741 : 0.786;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -2.741 : 1.04;
 
     public static final double kHardStopToMaxExtension = -0.511786;
     public static final double kHardStopToCOG = 0;
@@ -256,7 +257,7 @@ public final class Constants {
     public static final double kMotorToWristRatio = 3.0 * 3.0 * 4.0 * (72 / 64);
     public static final int kQuadTicks = 2048;
 
-    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(240);
+    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(120);
     public static final double kMaxAccelerationRadiansPerSecondSquared =
         Units.degreesToRadians(800);
 
@@ -282,7 +283,7 @@ public final class Constants {
      * radians. To find this, position the arm at the hard stop and use "Position No Offset" as the
      * new offset
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.309 : 0.801;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.309 : 0.847;
 
     public static final double kHardStopPosition = -0.5;
     public static final double kPositionOffset = kOffsetAtLowerHardStop - kHardStopPosition;
@@ -295,7 +296,7 @@ public final class Constants {
     public static final double kMotorToArmRatio = 3.0 * 3.0 * 4.0 * kGearboxToArmRatio;
     public static final int kQuadTicks = 2048;
 
-    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(240);
+    public static final double kMaxVelocityRadiansPerSecond = Units.degreesToRadians(120);
     public static final double kMaxAccelerationRadiansPerSecondSquared =
         Units.degreesToRadians(480);
 

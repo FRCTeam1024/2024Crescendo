@@ -5,7 +5,6 @@ import static edu.wpi.first.wpilibj2.command.Commands.parallel;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -74,9 +73,9 @@ public class RobotContainer implements Logged {
   public RobotContainer() {
     swerve.setDefaultCommand(
         swerve.teleopDriveCommand(
-            () -> -driver.getRawAxis(translationAxis),
-            () -> -driver.getRawAxis(strafeAxis),
-            () -> -driver.getRawAxis(rotationXAxis),
+            () -> -driver.getRawAxis(translationAxis) * 0.35,
+            () -> -driver.getRawAxis(strafeAxis) * 0.35,
+            () -> -driver.getRawAxis(rotationXAxis) * 0.5,
             robotCentric));
 
     // Configure the button bindings
@@ -87,7 +86,9 @@ public class RobotContainer implements Logged {
   }
 
   public void setupAutoChooser() {
+    autoChooser.setDefaultOption("AUTO MODES DISABLED", Commands.none());
     // autoChooser.setDefaultOption("Drive Straight", autos.driveStraight());
+    /*
     autoChooser.setDefaultOption("Do Nothing", Commands.none());
     autoChooser.addOption("Shoot Stay", autos.shootStay());
     autoChooser.addOption("Center Two Note", autos.centerTwoNote());
@@ -104,6 +105,7 @@ public class RobotContainer implements Logged {
     // autoChooser.addOption("AMP Near then Far Note4", autos.FarNearNote4());
     autoChooser.addOption("AMP Near then Far Note5", autos.FarNearNote5());
     autoChooser.addOption("Source to Far Notes 1 and 2", autos.farNote1and2());
+    */
   }
 
   /**
@@ -114,16 +116,7 @@ public class RobotContainer implements Logged {
    */
   private void configureButtonBindings() {
     /* Driver Buttons */
-    zeroGyro.onTrue(new InstantCommand(() -> swerve.resetHeading()));
-
-    headingControl.whileTrue(
-        swerve.teleopHeadingDriveCommand(
-            () -> -driver.getRawAxis(translationAxis),
-            () -> -driver.getRawAxis(strafeAxis),
-            () -> -driver.getRawAxis(rotationYAxis),
-            () -> -driver.getRawAxis(rotationXAxis),
-            targetTrack,
-            snapToTag));
+    zeroGyro.onTrue(new InstantCommand(() -> swerve.resetHeading()).ignoringDisable(true));
 
     /*Operator Buttons */
     // Spin up shooter
@@ -133,7 +126,7 @@ public class RobotContainer implements Logged {
         .and(shooter::readyToLaunch)
         .whileTrue(CommandUtils.rumbleController(operator));
 
-    operator.rightTrigger().whileTrue(shooter.velocityCommand(80));
+    operator.rightTrigger().whileTrue(shooter.velocityCommand(30));
 
     // trapScore.whileTrue(shooter.velocityCommand(40));
     // Fire
@@ -191,9 +184,6 @@ public class RobotContainer implements Logged {
     operator.pov(180).onTrue(arm.incrementGoalCommand(Units.degreesToRadians(-5)));
     operator.pov(270).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(1)));
     operator.pov(90).onTrue(wrist.incrementGoalCommand(Units.degreesToRadians(-1)));
-
-    climber.setDefaultCommand(
-        climber.climbCommand(() -> MathUtil.applyDeadband(-operator.getLeftY(), 0.04)));
   }
 
   public void initializeNamedCommands() {
