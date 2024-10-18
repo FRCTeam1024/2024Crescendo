@@ -282,7 +282,7 @@ public final class Constants {
      * radians. To find this, position the arm at the hard stop and use "Position No Offset" as the
      * new offset
      */
-    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.309 : 0.847;
+    public static final double kOffsetAtLowerHardStop = isPracticeBot ? -0.309 : -0.873;
 
     public static final double kHardStopPosition = -0.5;
     public static final double kPositionOffset = kOffsetAtLowerHardStop - kHardStopPosition;
